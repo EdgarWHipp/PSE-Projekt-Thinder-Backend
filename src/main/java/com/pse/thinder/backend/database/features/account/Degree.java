@@ -1,6 +1,4 @@
-package database.features.account;
-
-import database.features.account.University;
+package com.pse.thinder.backend.database.features.account;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

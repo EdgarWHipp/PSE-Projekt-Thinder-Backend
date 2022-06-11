@@ -1,4 +1,4 @@
-package restController;
+package com.pse.thinder.backend.restController;
 
 import org.springframework.web.bind.annotation.RestController;
 

@@ -1,4 +1,4 @@
-package database.features.account;
+package com.pse.thinder.backend.database.features.account;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;

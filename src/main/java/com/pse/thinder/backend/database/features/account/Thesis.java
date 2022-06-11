@@ -1,8 +1,7 @@
-package database.features.account;
+package com.pse.thinder.backend.database.features.account;
 
 
-import database.features.Image;
-import database.features.account.Supervisor;
+import com.pse.thinder.backend.database.features.Image;
 
 import javax.persistence.*;
 import java.util.Set;

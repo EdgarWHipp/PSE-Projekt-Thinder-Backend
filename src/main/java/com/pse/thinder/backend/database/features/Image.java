@@ -1,6 +1,6 @@
-package database.features;
+package com.pse.thinder.backend.database.features;
 
-import database.features.account.Thesis;
+import com.pse.thinder.backend.database.features.account.Thesis;
 
 import javax.persistence.*;
 
