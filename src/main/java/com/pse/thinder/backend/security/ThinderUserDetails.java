@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import database.features.account.User;
+import com.pse.thinder.backend.database.features.account.User;
 
 public class ThinderUserDetails implements UserDetails{
 

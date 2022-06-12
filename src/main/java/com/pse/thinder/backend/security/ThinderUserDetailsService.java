@@ -8,9 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.pse.thinder.backend.database.features.account.User;
 import com.pse.thinder.backend.repositories.UserRepository;
-
-import database.features.account.User;
 
 @Service
 public class ThinderUserDetailsService implements UserDetailsService{
