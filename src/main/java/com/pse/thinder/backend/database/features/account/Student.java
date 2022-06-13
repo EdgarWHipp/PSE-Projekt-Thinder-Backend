@@ -4,7 +4,7 @@ package com.pse.thinder.backend.database.features.account;
 import javax.persistence.*;
 import java.util.Set;
 
-@Entity
+@Entity @Table(name="students")
 public class Student extends User{
 
 

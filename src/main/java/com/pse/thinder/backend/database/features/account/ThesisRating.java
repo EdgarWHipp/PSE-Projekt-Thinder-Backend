@@ -2,7 +2,7 @@ package com.pse.thinder.backend.database.features.account;
 
 import javax.persistence.*;
 
-@Entity
+@Entity @Table(name="thesisRatings")
 public class ThesisRating {
 
     @EmbeddedId

@@ -9,7 +9,8 @@ public class Supervisor extends User {
 
 
     private String acedemicDegree;
-    private String location;
+    private String building;
+    private String officeNumber;
     private String institute;
     private String phoneNumber;
 
@@ -19,11 +20,12 @@ public class Supervisor extends User {
     protected Supervisor(){}
 
     public Supervisor(String firstName, String lastName, String password,
-                      String mail, String acedemicDegree, String location,
-                      String institute, String phoneNumber){
+                      String mail, String acedemicDegree, String building,
+                      String officeNumber, String institute, String phoneNumber){
         super(firstName, lastName, password, mail);
         this.acedemicDegree = acedemicDegree;
-        this.location = location;
+        this.building = building;
+        this.officeNumber = officeNumber;
         this.institute = institute;
         this.phoneNumber = phoneNumber;
     }
@@ -36,12 +38,12 @@ public class Supervisor extends User {
         this.acedemicDegree = acedemicDegree;
     }
 
-    public String getLocation() {
-        return location;
+    public String getBuilding() {
+        return building;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setBuilding(String building) {
+        this.building = building;
     }
 
     public String getInstitute() {
@@ -66,5 +68,13 @@ public class Supervisor extends User {
 
     public void setTheses(Set<Thesis> theses) {
         this.theses = theses;
+    }
+
+    public String getOfficeNumber() {
+        return officeNumber;
+    }
+
+    public void setOfficeNumber(String officeNumber) {
+        this.officeNumber = officeNumber;
     }
 }

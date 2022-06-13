@@ -3,9 +3,10 @@ package com.pse.thinder.backend.database.features.account;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.Set;
 
-@Entity
+@Entity @Table(name = "degrees")
 public class Degree {
 
     @Id

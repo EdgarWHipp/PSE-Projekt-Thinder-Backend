@@ -3,9 +3,10 @@ package com.pse.thinder.backend.database.features.account;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.Set;
 
-@Entity
+@Entity @Table(name="universities")
 public class University {
 
     @Id

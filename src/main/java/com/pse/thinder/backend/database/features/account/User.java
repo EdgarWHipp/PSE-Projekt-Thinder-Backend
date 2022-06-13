@@ -2,7 +2,7 @@ package com.pse.thinder.backend.database.features.account;
 
 import javax.persistence.*;
 
-@Entity
+@Entity @Table(name="users")
 public abstract class User {
 
     @Id @GeneratedValue

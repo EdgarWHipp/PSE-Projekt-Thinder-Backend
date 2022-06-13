@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 
-@Entity
+@Entity @Table(name="theses")
 public class Thesis {
 
     @Id @GeneratedValue
