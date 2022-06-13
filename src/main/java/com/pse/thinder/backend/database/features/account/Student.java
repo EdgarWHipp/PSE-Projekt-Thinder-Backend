@@ -10,7 +10,7 @@ public class Student extends User{
 
     @ManyToMany
     @JoinTable(
-            name="degrees",
+            name="current_degrees",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "degree_id")
     )
