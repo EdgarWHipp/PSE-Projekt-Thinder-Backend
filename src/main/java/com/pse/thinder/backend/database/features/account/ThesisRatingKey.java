@@ -9,7 +9,12 @@ import java.util.UUID;
 @Embeddable
 public class ThesisRatingKey implements Serializable {
 
-    @Column(name="student_id")
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6055725663958553776L;
+
+	@Column(name="student_id")
     private UUID studentId;
 
     @Column(name="thesis_id")
