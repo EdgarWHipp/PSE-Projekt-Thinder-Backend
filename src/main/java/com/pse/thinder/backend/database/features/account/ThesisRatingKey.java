@@ -2,6 +2,7 @@ package com.pse.thinder.backend.database.features.account;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -20,5 +21,13 @@ public class ThesisRatingKey implements Serializable {
     @Column(name="thesis_id")
     private UUID thesisId;
 
+    @Override
+    public boolean equals(Object obj) {
+    	return super.equals(obj);
+    }
 
+    @Override
+    public int hashCode() {
+    	return super.hashCode();
+    }
 }

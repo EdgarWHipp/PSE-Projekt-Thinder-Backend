@@ -10,15 +10,15 @@ public class ThesisRating {
 
     @ManyToOne
     @MapsId("studentId")
-    @JoinColumn(name ="student_id")
+    @JoinColumn(name ="student_id", columnDefinition="uuid")
     private Student student;
-
 
     @ManyToOne
     @MapsId("thesisId")
-    @JoinColumn(name ="thesis_id")
+    @JoinColumn(name ="thesis_id", columnDefinition="uuid")
     private Thesis thesis;
 
+    @Column
     private boolean positiveRated;
 
     public ThesisRatingKey getId() {
