@@ -5,13 +5,14 @@ import com.pse.thinder.backend.database.features.Image;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 
 @Entity @Table(name="theses")
 public class Thesis {
 
-    @Id @GeneratedValue
-    private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     private String name;
     private String description;
@@ -45,11 +46,11 @@ public class Thesis {
         this.questionForm = questionForm;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

@@ -1,15 +1,15 @@
 package com.pse.thinder.backend.database.features.account;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity @Table(name="universities")
 public class University {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
     private String name;
 
     @OneToMany(mappedBy = "university")
@@ -19,6 +19,14 @@ public class University {
 
     public University(String name){
         this.name = name;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getName() {

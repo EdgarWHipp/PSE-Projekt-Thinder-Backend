@@ -1,15 +1,15 @@
 package com.pse.thinder.backend.database.features.account;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity @Table(name = "degrees")
 public class Degree {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
     private String name;
     private String degree;
 
@@ -26,6 +26,14 @@ public class Degree {
     }
 
     protected Degree(){}
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

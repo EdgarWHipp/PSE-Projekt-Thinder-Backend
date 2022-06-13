@@ -1,12 +1,14 @@
 package com.pse.thinder.backend.database.features.account;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity @Table(name="users")
 public abstract class User {
 
-    @Id @GeneratedValue
-    private Long id;
+
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     private String firstName;
     private String lastName;
@@ -28,11 +30,12 @@ public abstract class User {
         this.mail = mail;
     }
 
-    public Long getId() {
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
