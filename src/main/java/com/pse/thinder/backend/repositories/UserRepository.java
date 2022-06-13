@@ -8,5 +8,5 @@ import com.pse.thinder.backend.database.features.account.User;
 
 public interface UserRepository extends JpaRepository<User, Long>{
 
-	public Optional<User> findByMail(String Mail);
+	public Optional<User> findByMail(String mail);
 }
