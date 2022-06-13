@@ -12,6 +12,7 @@ import java.util.UUID;
 public class Thesis {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition="character varying (100)")
     private UUID id;
 
     private String name;

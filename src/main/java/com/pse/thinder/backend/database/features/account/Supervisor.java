@@ -2,9 +2,10 @@ package com.pse.thinder.backend.database.features.account;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.Set;
 
-@Entity
+@Entity @Table(name="supervisors")
 public class Supervisor extends User {
 
 
