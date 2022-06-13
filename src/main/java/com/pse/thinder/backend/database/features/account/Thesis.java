@@ -31,7 +31,7 @@ public class Thesis {
 
     @ManyToMany
     @JoinTable(
-            name = "",
+            name = "theses_for_degree",
             joinColumns = @JoinColumn(name = "thesis_id"),
             inverseJoinColumns = @JoinColumn(name = "degree_id")
     )
