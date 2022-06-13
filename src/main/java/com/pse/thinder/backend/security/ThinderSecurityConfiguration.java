@@ -13,7 +13,10 @@ public class ThinderSecurityConfiguration {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		//Only HTTPS requests
-		http.requiresChannel().anyRequest().requiresSecure();
+		http.requiresChannel()
+			//Only works on Heroku
+			.requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
+			.requiresSecure();
 		//TODO public endpoints
 		http.authorizeRequests()
 			.anyRequest().authenticated().and().httpBasic();
