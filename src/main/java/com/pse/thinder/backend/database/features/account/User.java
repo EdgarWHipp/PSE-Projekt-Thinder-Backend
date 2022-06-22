@@ -10,9 +10,15 @@ public abstract class User {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Column(columnDefinition = "character varying(30) not null")
     private String firstName;
+
+    @Column(columnDefinition = "character varying(30) not null")
     private String lastName;
+
+    @Column(columnDefinition = "character varying(30) not null")
     private String password;
+    @Column(columnDefinition = "unique character varying(30) not null")
     private String mail;
 
     @ManyToOne

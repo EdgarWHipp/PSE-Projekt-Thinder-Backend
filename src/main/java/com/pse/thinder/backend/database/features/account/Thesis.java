@@ -14,8 +14,13 @@ public class Thesis {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Column(columnDefinition = "character varying(100) not null")
     private String name;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(columnDefinition = "TEXT")
     private String questionForm;
 
     @OneToMany(mappedBy ="thesis")

@@ -10,8 +10,9 @@ public class Degree {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Column(columnDefinition = "character varying(30) not null")
     private String name;
-    private String degree;
+    private String degree; //I could reuse the Enum here.
 
     @ManyToMany(mappedBy = "degrees")
     private Set<Student> students;

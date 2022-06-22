@@ -10,6 +10,7 @@ public class University {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Column(columnDefinition = "unique character varying(50) not null")
     private String name;
 
     @OneToMany(mappedBy = "university")
