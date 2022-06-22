@@ -15,7 +15,7 @@ public class ThesisRatingKey implements Serializable {
 	 */
 	private static final long serialVersionUID = 6055725663958553776L;
     
-	@Column(name="student_id")
+	@Column(name="student_i d")
     private UUID studentId;
 
     @Column(name="thesis_id")

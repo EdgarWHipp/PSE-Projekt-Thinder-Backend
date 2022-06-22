@@ -1,5 +1,6 @@
 package com.pse.thinder.backend.database.features.account;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.Set;
@@ -8,10 +9,16 @@ import java.util.Set;
 public class Supervisor extends User {
 
 
-    private String acedemicDegree;
+
+    private String acedemicDegree; //could this be an enum?
+
+    @Column(columnDefinition = "character varying(20) not null")
     private String building;
+    @Column(columnDefinition = "character varying(10) not null")
     private String officeNumber;
+    @Column(columnDefinition = "character varying(50) not null")
     private String institute;
+    @Column(columnDefinition = "character varying(15) not null unique")
     private String phoneNumber;
 
     @OneToMany(mappedBy="supervisor")
