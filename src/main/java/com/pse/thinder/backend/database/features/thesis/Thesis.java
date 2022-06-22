@@ -1,7 +1,9 @@
-package com.pse.thinder.backend.database.features.account;
+package com.pse.thinder.backend.database.features.thesis;
 
 
 import com.pse.thinder.backend.database.features.Image;
+import com.pse.thinder.backend.database.features.Degree;
+import com.pse.thinder.backend.database.features.account.Supervisor;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -30,8 +32,11 @@ public class Thesis {
     @JoinColumn(name="supervisor_id",nullable=false)
     private Supervisor supervisor;
 
-    @OneToMany(mappedBy= "thesis")
+    @OneToMany(mappedBy= "thesis", cascade = CascadeType.REMOVE)
     private Set<ThesisRating> ratedByStudents;
+
+    @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE)
+    private Set<Image> images;
 
 
     @ManyToMany

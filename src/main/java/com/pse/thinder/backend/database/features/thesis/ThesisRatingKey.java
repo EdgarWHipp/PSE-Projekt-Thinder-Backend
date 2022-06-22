@@ -1,4 +1,4 @@
-package com.pse.thinder.backend.database.features.account;
+package com.pse.thinder.backend.database.features.thesis;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -15,7 +15,7 @@ public class ThesisRatingKey implements Serializable {
 	 */
 	private static final long serialVersionUID = 6055725663958553776L;
     
-	@Column(name="student_i d")
+	@Column(name="student_id")
     private UUID studentId;
 
     @Column(name="thesis_id")

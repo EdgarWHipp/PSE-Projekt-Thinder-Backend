@@ -1,5 +1,7 @@
 package com.pse.thinder.backend.database.features.account;
 
+import com.pse.thinder.backend.database.features.University;
+
 import javax.persistence.*;
 import java.util.UUID;
 

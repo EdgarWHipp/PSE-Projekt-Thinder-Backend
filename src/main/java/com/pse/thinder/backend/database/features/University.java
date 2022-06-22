@@ -1,4 +1,6 @@
-package com.pse.thinder.backend.database.features.account;
+package com.pse.thinder.backend.database.features;
+
+import com.pse.thinder.backend.database.features.account.User;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -13,7 +15,7 @@ public class University {
     @Column(columnDefinition = "unique character varying(50) not null unique")
     private String name;
 
-    @OneToMany(mappedBy = "university")
+    @OneToMany(mappedBy = "university", cascade = CascadeType.REMOVE)
     private Set<User> members;
 
     protected University(){}
