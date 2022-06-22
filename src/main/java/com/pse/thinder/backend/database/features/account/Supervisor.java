@@ -1,9 +1,8 @@
 package com.pse.thinder.backend.database.features.account;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import com.pse.thinder.backend.database.features.thesis.Thesis;
+
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity @Table(name="supervisors")
@@ -22,7 +21,7 @@ public class Supervisor extends User {
     @Column(columnDefinition = "character varying(15) not null unique")
     private String phoneNumber;
 
-    @OneToMany(mappedBy="supervisor")
+    @OneToMany(mappedBy="supervisor", cascade = CascadeType.REMOVE)
     private Set<Thesis> theses;
 
     protected Supervisor(){}

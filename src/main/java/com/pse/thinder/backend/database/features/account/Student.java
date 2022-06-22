@@ -1,6 +1,9 @@
 package com.pse.thinder.backend.database.features.account;
 
 
+import com.pse.thinder.backend.database.features.Degree;
+import com.pse.thinder.backend.database.features.thesis.ThesisRating;
+
 import javax.persistence.*;
 import java.util.Set;
 

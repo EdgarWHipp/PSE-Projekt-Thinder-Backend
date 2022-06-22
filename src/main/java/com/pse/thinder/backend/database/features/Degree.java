@@ -1,4 +1,7 @@
-package com.pse.thinder.backend.database.features.account;
+package com.pse.thinder.backend.database.features;
+
+import com.pse.thinder.backend.database.features.account.Student;
+import com.pse.thinder.backend.database.features.thesis.Thesis;
 
 import javax.persistence.*;
 import java.util.Set;
