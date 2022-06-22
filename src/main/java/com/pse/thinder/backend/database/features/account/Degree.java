@@ -12,7 +12,7 @@ public class Degree {
 
     @Column(columnDefinition = "character varying(30) not null")
     private String name;
-    private String degree; //I could reuse the Enum here.
+    private String degree; //To-do: Find out whether an enum is better
 
     @ManyToMany(mappedBy = "degrees")
     private Set<Student> students;

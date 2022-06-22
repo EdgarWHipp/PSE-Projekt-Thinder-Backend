@@ -19,7 +19,7 @@ public class Supervisor extends User {
     private String officeNumber;
     @Column(columnDefinition = "character varying(50) not null")
     private String institute;
-    @Column(columnDefinition = "character varying(15) not null")
+    @Column(columnDefinition = "character varying(15) not null unique")
     private String phoneNumber;
 
     @OneToMany(mappedBy="supervisor")
