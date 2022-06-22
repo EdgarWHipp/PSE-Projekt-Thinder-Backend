@@ -1,14 +1,11 @@
 package com.pse.thinder.backend.database.features.account;
 
-<<<<<<< HEAD
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-=======
 import com.pse.thinder.backend.database.features.thesis.Thesis;
 
 import javax.persistence.*;
->>>>>>> database
 import java.util.Set;
 
 @Entity
@@ -32,15 +29,8 @@ public class Supervisor extends User {
 
     protected Supervisor(){}
 
-    public Supervisor(String firstName, String lastName, String password,
-                      String mail, String acedemicDegree, String building,
-                      String officeNumber, String institute, String phoneNumber){
+    public Supervisor(String firstName, String lastName, String password, String mail){
         super(firstName, lastName, password, mail);
-        this.acedemicDegree = acedemicDegree;
-        this.building = building;
-        this.officeNumber = officeNumber;
-        this.institute = institute;
-        this.phoneNumber = phoneNumber;
     }
 
     public String getAcedemicDegree() {

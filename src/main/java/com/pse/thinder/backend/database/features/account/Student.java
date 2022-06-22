@@ -22,6 +22,12 @@ public class Student extends User{
     @OneToMany(mappedBy = "student")
     private Set<ThesisRating> thesesRatings;
 
+    protected Student() {}
+
+    public Student(String firstName, String lastName, String password, String mail) {
+        super(firstName, lastName, password, mail);
+    }
+
     public Set<Degree> getDegrees() {
         return degrees;
     }

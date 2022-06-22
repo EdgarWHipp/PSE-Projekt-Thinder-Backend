@@ -18,8 +18,12 @@ public class ThinderSecurityConfiguration {
 			.requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
 			.requiresSecure();
 		//TODO public endpoints
-		http.authorizeRequests()
-			.anyRequest().authenticated().and().httpBasic();
+		http.authorizeRequests().anyRequest().permitAll();
+	//		.antMatchers("/helloOpen").permitAll()
+	//		.anyRequest().authenticated().and().httpBasic();
+
+
+		http.csrf().disable(); //todo without this http post doesnt work
 		return http.build();
 	}
 	
