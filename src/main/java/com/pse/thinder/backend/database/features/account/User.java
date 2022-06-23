@@ -18,9 +18,9 @@ public class User {
     @Column(columnDefinition = "character varying(30) not null")
     private String lastName;
 
-    @Column(columnDefinition = "character varying(30) not null unique")
+    @Column(columnDefinition = "character varying(50) not null")
     private String password;
-    @Column(columnDefinition = "unique character varying(30) not null unique")
+    @Column(columnDefinition = "character varying(30) unique not null")
     private String mail;
 
     @ManyToOne
