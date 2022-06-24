@@ -7,7 +7,6 @@ import com.pse.thinder.backend.repositories.StudentRepository;
 import com.pse.thinder.backend.repositories.SupervisorRepository;
 import com.pse.thinder.backend.repositories.UniversityRepository;
 import com.pse.thinder.backend.repositories.UserRepository;
-import com.pse.thinder.backend.restController.errorHandler.RestExceptionHandler;
 import com.pse.thinder.backend.restController.errorHandler.exceptions.EntityNotAddedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,9 +34,6 @@ public class UserService {
 
     @Autowired
     SupervisorRepository supervisorRepository;
-
-    @Autowired
-    RestExceptionHandler restExceptionHandler;
 
     //todo implement design pattern & outsource regexes
     static final String KIT_STUDENT = ".*@student.kit.edu";
