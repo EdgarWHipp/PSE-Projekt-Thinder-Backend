@@ -37,10 +37,6 @@ public class UserService {
     @Autowired
     SupervisorRepository supervisorRepository;
 
-    //todo implement design pattern & outsource regexes
-    static final String KIT_STUDENT = ".*@student.kit.edu";
-    static final String KIT_SUPERVISOR = ".*@kit.edu";
-
     public void addUser(User user) {
         List<University> universities = universityRepository.findAll();
 
