@@ -53,4 +53,20 @@ public class University {
     public void setMembers(Set<User> members) {
         this.members = members;
     }
+
+    public String getStudentMailRegex() {
+        return studentMailRegex;
+    }
+
+    public void setStudentMailRegex(String studentMailRegex) {
+        this.studentMailRegex = studentMailRegex;
+    }
+
+    public String getSupervisorMailRegex() {
+        return supervisorMailRegex;
+    }
+
+    public void setSupervisorMailRegex(String supervisorMailRegex) {
+        this.supervisorMailRegex = supervisorMailRegex;
+    }
 }
