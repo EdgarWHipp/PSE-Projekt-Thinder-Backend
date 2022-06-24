@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity @Table(name="users")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
 
 
@@ -22,6 +23,8 @@ public class User {
     private String password;
     @Column(columnDefinition = "character varying(30) unique not null")
     private String mail;
+
+    private Boolean active;
 
     @ManyToOne
     @JoinColumn(name = "university_id", nullable = false)
@@ -85,5 +88,13 @@ public class User {
 
     public void setUniversity(University university) {
         this.university = university;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

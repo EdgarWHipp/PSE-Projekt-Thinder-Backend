@@ -18,6 +18,12 @@ public class University {
     @OneToMany(mappedBy = "university", cascade = CascadeType.REMOVE)
     private Set<User> members;
 
+    @Column(columnDefinition = "character varying(50) not null")
+    private String studentMailRegex;
+
+    @Column(columnDefinition = "character varying(50) not null")
+    private String supervisorMailRegex;
+
     protected University(){}
 
     public University(String name){
