@@ -2,6 +2,7 @@ package com.pse.thinder.backend.database.features.account;
 
 
 import com.pse.thinder.backend.database.features.Degree;
+import com.pse.thinder.backend.database.features.University;
 import com.pse.thinder.backend.database.features.thesis.ThesisRating;
 
 import javax.persistence.*;
@@ -24,8 +25,8 @@ public class Student extends User{
 
     protected Student() {}
 
-    public Student(String firstName, String lastName, String password, String mail) {
-        super(firstName, lastName, password, mail);
+    public Student(String firstName, String lastName, String password, String mail, University university) {
+        super(firstName, lastName, password, mail, university);
     }
 
     public Set<Degree> getDegrees() {

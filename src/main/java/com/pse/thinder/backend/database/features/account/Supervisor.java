@@ -3,6 +3,8 @@ package com.pse.thinder.backend.database.features.account;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+
+import com.pse.thinder.backend.database.features.University;
 import com.pse.thinder.backend.database.features.thesis.Thesis;
 
 import javax.persistence.*;
@@ -15,13 +17,13 @@ public class Supervisor extends User {
 
     private String acedemicDegree; //could this be an enum?
 
-    @Column(columnDefinition = "character varying(20) not null")
+    @Column(columnDefinition = "character varying(20)")
     private String building;
-    @Column(columnDefinition = "character varying(10) not null")
+    @Column(columnDefinition = "character varying(10)")
     private String officeNumber;
-    @Column(columnDefinition = "character varying(50) not null")
+    @Column(columnDefinition = "character varying(50)")
     private String institute;
-    @Column(columnDefinition = "character varying(15) not null unique")
+    @Column(columnDefinition = "character varying(15) unique")
     private String phoneNumber;
 
     @OneToMany(mappedBy="supervisor", cascade = CascadeType.REMOVE)
@@ -29,8 +31,8 @@ public class Supervisor extends User {
 
     protected Supervisor(){}
 
-    public Supervisor(String firstName, String lastName, String password, String mail){
-        super(firstName, lastName, password, mail);
+    public Supervisor(String firstName, String lastName, String password, String mail, University university){
+        super(firstName, lastName, password, mail, university);
     }
 
     public String getAcedemicDegree() {

@@ -34,11 +34,12 @@ public class User {
     protected User(){}
 
     public User (String firstName, String lastName, String password,
-                 String mail){
+                 String mail, University university){
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.mail = mail;
+        this.university = university;
     }
 
 
