@@ -10,4 +10,5 @@ FROM openjdk:17-alpine
 
 COPY --from=builder /Thinder/build/libs/*.jar /thinder.jar
 
-ENTRYPOINT ["java", "-Dserver.port=$PORT","-jar", "/thinder.jar"]
+EXPOSE ${PORT}
+ENTRYPOINT ["java","-jar", "/thinder.jar"]
