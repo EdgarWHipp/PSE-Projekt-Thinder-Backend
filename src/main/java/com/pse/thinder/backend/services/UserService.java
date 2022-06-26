@@ -41,6 +41,9 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public void addUser(User user) {
+        if(mailExists(user.getMail())){
+            //todo exception
+        }
         List<University> universities = universityRepository.findAll();
 
         University university = universities.stream()
@@ -48,6 +51,7 @@ public class UserService {
                 Pattern.matches(uni.getStudentMailRegex(), user.getMail()) ||
                 Pattern.matches(uni.getSupervisorMailRegex(), user.getMail()))
             .findAny().orElseThrow(() -> new RuntimeException("")); //todo exception
+
 
         User savedUser = null;
 
@@ -75,5 +79,9 @@ public class UserService {
 
     public User getUser(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
+    }
+
+    private Boolean mailExists(String mail){
+        return userRepository.findByMail(mail) != null;
     }
 }
