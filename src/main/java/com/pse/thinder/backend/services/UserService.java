@@ -27,16 +27,16 @@ public class UserService {
     private static final String USER_NOT_ADDED_EXCEPTION = "User could not be added.";
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    StudentRepository studentRepository;
+    private StudentRepository studentRepository;
 
     @Autowired
-    UniversityRepository universityRepository;
+    private UniversityRepository universityRepository;
 
     @Autowired
-    SupervisorRepository supervisorRepository;
+    private SupervisorRepository supervisorRepository;
 
     private PasswordEncoder passwordEncoder;
 
