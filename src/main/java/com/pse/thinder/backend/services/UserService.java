@@ -11,6 +11,7 @@ import com.pse.thinder.backend.repositories.UserRepository;
 import com.pse.thinder.backend.restController.errorHandler.exceptions.EntityNotAddedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +38,8 @@ public class UserService {
     @Autowired
     SupervisorRepository supervisorRepository;
 
+    private PasswordEncoder passwordEncoder;
+
     public void addUser(User user) {
         List<University> universities = universityRepository.findAll();
 
@@ -50,13 +53,13 @@ public class UserService {
 
         if (Pattern.matches(university.getStudentMailRegex(), user.getMail())) {
             Student student = new Student(user.getFirstName(), user.getLastName(),
-                user.getPassword(), user.getMail(), university);
+                    passwordEncoder.encode(user.getPassword()), user.getMail(), university);
             savedUser = studentRepository.save(student);
         }
 
         if (Pattern.matches(university.getSupervisorMailRegex(), user.getMail())) {
             Supervisor supervisor = new Supervisor(user.getFirstName(), user.getLastName(),
-                user.getPassword(), user.getMail(), university);
+                    passwordEncoder.encode(user.getPassword()), user.getMail(), university);
             savedUser = supervisorRepository.save(supervisor);
         }
 
