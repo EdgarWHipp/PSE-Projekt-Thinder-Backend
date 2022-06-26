@@ -59,15 +59,15 @@ public class Degree {
         return students;
     }
 
-    public void setStudents(Set<Student> students) {
-        this.students = students;
+    public void addStudent(Student student) {
+        this.students.add(student);
     }
 
     public Set<Thesis> getPossibleTheses() {
         return possibleTheses;
     }
 
-    public void setPossibleTheses(Set<Thesis> possibleTheses) {
-        this.possibleTheses = possibleTheses;
+    public void addPossibleThesis(Thesis thesis) {
+        this.possibleTheses.add(thesis);
     }
 }

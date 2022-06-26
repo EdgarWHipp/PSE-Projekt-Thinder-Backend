@@ -33,15 +33,15 @@ public class Student extends User{
         return degrees;
     }
 
-    public void setDegrees(Set<Degree> degrees) {
-        this.degrees = degrees;
+    public void addDegree(Degree degree) {
+        this.degrees.add(degree);
     }
 
     public Set<ThesisRating> getThesesRatings() {
         return thesesRatings;
     }
 
-    public void setThesesRatings(Set<ThesisRating> thesesRatings) {
-        this.thesesRatings = thesesRatings;
+    public void addThesesRatings(ThesisRating thesisRating) {
+        this.thesesRatings.add((thesisRating));
     }
 }

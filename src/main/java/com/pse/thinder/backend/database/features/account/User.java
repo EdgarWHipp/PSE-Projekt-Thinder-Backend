@@ -1,8 +1,10 @@
 package com.pse.thinder.backend.database.features.account;
 
+import com.pse.thinder.backend.database.features.PasswordResetToken;
 import com.pse.thinder.backend.database.features.University;
 
 import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity @Table(name="users")
@@ -30,6 +32,9 @@ public class User {
     @JoinColumn(name = "university_id", nullable = false)
     private University university;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Set<PasswordResetToken> passwordResetTokens;
+
     //this is necessary due to JPA requirements for a non arg constructor.
     protected User(){}
 
@@ -40,6 +45,7 @@ public class User {
         this.password = password;
         this.mail = mail;
         this.university = university;
+        this.active = false;
     }
 
 
@@ -91,7 +97,7 @@ public class User {
         this.university = university;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return active;
     }
 

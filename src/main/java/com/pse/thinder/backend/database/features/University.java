@@ -50,8 +50,8 @@ public class University {
         return members;
     }
 
-    public void setMembers(Set<User> members) {
-        this.members = members;
+    public void addMember(User member) {
+        this.members.add(member);
     }
 
     public String getStudentMailRegex() {

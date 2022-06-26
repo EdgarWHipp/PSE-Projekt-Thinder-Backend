@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import com.pse.thinder.backend.database.features.Image;
 import com.pse.thinder.backend.database.features.University;
 import com.pse.thinder.backend.database.features.thesis.Thesis;
 
@@ -71,8 +72,8 @@ public class Supervisor extends User {
         return theses;
     }
 
-    public void setTheses(Set<Thesis> theses) {
-        this.theses = theses;
+    public void addThesis(Thesis thesis) {
+        this.theses.add(thesis);
     }
 
     public String getOfficeNumber() {

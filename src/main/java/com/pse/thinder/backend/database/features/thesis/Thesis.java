@@ -25,15 +25,13 @@ public class Thesis {
     @Column(columnDefinition = "TEXT")
     private String questionForm;
 
-    @OneToMany(mappedBy ="thesis")
-    private Set<Image> image;
 
     @ManyToOne
     @JoinColumn(name="supervisor_id",nullable=false)
     private Supervisor supervisor;
 
     @OneToMany(mappedBy= "thesis", cascade = CascadeType.REMOVE)
-    private Set<ThesisRating> ratedByStudents;
+    private Set<ThesisRating> studentRatings;
 
     @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE)
     private Set<Image> images;
@@ -88,14 +86,6 @@ public class Thesis {
         this.questionForm = questionForm;
     }
 
-    public Set<Image> getImage() {
-        return image;
-    }
-
-    public void setImage(Set<Image> image) {
-        this.image = image;
-    }
-
     public Supervisor getSupervisor() {
         return supervisor;
     }
@@ -104,19 +94,27 @@ public class Thesis {
         this.supervisor = supervisor;
     }
 
-    public Set<ThesisRating> getRatedByStudents() {
-        return ratedByStudents;
+    public Set<Image> getImages() {
+        return images;
     }
 
-    public void setRatedByStudents(Set<ThesisRating> ratedByStudents) {
-        this.ratedByStudents = ratedByStudents;
+    public void addImage(Image image) {
+        this.images.add(image);
+    }
+
+    public Set<ThesisRating> getStudentRatings() {
+        return studentRatings;
+    }
+
+    public void addStudentRating(ThesisRating thesisRating) {
+        this.studentRatings.add(thesisRating);
     }
 
     public Set<Degree> getPossibleDegrees() {
         return possibleDegrees;
     }
 
-    public void setPossibleDegrees(Set<Degree> possibleDegrees) {
-        this.possibleDegrees = possibleDegrees;
+    public void addPossibleDegree(Degree degree) {
+        this.possibleDegrees.add(degree);
     }
 }

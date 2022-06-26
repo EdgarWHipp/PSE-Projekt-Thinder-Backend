@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+//import org.springframework.mail.SimpleMailMessage;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -72,6 +74,7 @@ public class UserService {
         }
     }
 
+
     public UUID getUserIdByMail(String mail) {
         User user = userRepository.findByMail(mail).orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + mail));
         return user.getId();
@@ -80,6 +83,8 @@ public class UserService {
     public User getUser(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
     }
+
+    //private SimpleMailMessage
 
     private Boolean mailExists(String mail){
         return userRepository.findByMail(mail) != null;
