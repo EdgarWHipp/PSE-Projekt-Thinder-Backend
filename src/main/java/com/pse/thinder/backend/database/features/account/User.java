@@ -2,6 +2,7 @@ package com.pse.thinder.backend.database.features.account;
 
 import com.pse.thinder.backend.database.features.PasswordResetToken;
 import com.pse.thinder.backend.database.features.University;
+import com.pse.thinder.backend.database.features.VerificationToken;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -34,6 +35,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<PasswordResetToken> passwordResetTokens;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Set<VerificationToken> verificationTokens;
 
     //this is necessary due to JPA requirements for a non arg constructor.
     protected User(){}
@@ -103,5 +107,21 @@ public class User {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public Set<PasswordResetToken> getPasswordResetTokens() {
+        return passwordResetTokens;
+    }
+
+    public void addPasswordResetTokens(PasswordResetToken passwordResetToken) {
+        this.passwordResetTokens.add(passwordResetToken);
+    }
+
+    public Set<VerificationToken> getVerificationTokens() {
+        return verificationTokens;
+    }
+
+    public void addVerificationTokens(VerificationToken verificationToken) {
+        this.verificationTokens.add(verificationToken);
     }
 }

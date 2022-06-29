@@ -40,6 +40,7 @@ public class UserService {
     @Autowired
     private SupervisorRepository supervisorRepository;
 
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public void addUser(User user) {
