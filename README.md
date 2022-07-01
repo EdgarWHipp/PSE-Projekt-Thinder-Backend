@@ -7,7 +7,8 @@
 1. Launch local postgres database (standard port: 5432)
 (Optional: Open pgAdmin in windows for better overview of the tables during the tests - or use linux equivalent postgres GUI)
 2. Open the backend project in Intellij and change the application.properties file in src/main/resources to the following:
-`spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/
+```
+spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/
 spring.datasource.username=postgres
 spring.datasource.password=admin
 spring.datasource.driverClassName=org.postgresql.Driver
@@ -17,7 +18,8 @@ spring.jpa.hibernate.ddl-auto=create-drop
 
 spring.datasource.hikari.maximum-pool-size=2
 spring.jpa.open-in-view=false
-spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect`
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+```
 3. Launch the Spring Boot application from intellij
 
 4. Run any specific/ all tests from the frontend project (in any IDE)
