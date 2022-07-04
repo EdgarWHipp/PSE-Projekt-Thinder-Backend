@@ -4,10 +4,14 @@ import com.pse.thinder.backend.database.features.account.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity @Table(name = "verficationTokens")
 public class VerificationToken {
+
+    private final static int EXPIRATION_DURATION_IN_HOUR = 24; //
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -16,7 +20,7 @@ public class VerificationToken {
     private String token;
 
     @Column(nullable = false)
-    private LocalDateTime expirationDate;
+    private Date expirationDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
@@ -24,9 +28,12 @@ public class VerificationToken {
 
     public VerificationToken(){}
 
-    public VerificationToken(String token, LocalDateTime expirationDate, User user) {
+    public VerificationToken(String token, User user) {
         this.token = token;
-        this.expirationDate = expirationDate;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR_OF_DAY, EXPIRATION_DURATION_IN_HOUR);
+        this.expirationDate = cal.getTime();
         this.user = user;
     }
 
@@ -42,11 +49,11 @@ public class VerificationToken {
         this.token = token;
     }
 
-    public LocalDateTime getExpirationDate() {
+    public Date getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDateTime expirationDate) {
+    public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
 

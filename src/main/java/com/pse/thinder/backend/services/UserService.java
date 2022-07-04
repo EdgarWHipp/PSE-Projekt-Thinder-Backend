@@ -1,21 +1,24 @@
 package com.pse.thinder.backend.services;
 
 import com.pse.thinder.backend.database.features.University;
+import com.pse.thinder.backend.database.features.VerificationToken;
 import com.pse.thinder.backend.database.features.account.Student;
 import com.pse.thinder.backend.database.features.account.Supervisor;
 import com.pse.thinder.backend.database.features.account.User;
-import com.pse.thinder.backend.repositories.StudentRepository;
-import com.pse.thinder.backend.repositories.SupervisorRepository;
-import com.pse.thinder.backend.repositories.UniversityRepository;
-import com.pse.thinder.backend.repositories.UserRepository;
+import com.pse.thinder.backend.repositories.*;
 import com.pse.thinder.backend.restController.errorHandler.exceptions.EntityNotAddedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 //import org.springframework.mail.SimpleMailMessage;
 
 
+import javax.naming.TimeLimitExceededException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -41,7 +44,14 @@ public class UserService {
     private SupervisorRepository supervisorRepository;
 
     @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
 
     public void addUser(User user) {
         if(mailExists(user.getMail())){
@@ -75,6 +85,39 @@ public class UserService {
         }
     }
 
+    private void sendVerificationMail(User user){
+        VerificationToken token = new VerificationToken(UUID.randomUUID().toString(), user);
+
+        SimpleMailMessage confirmationMsg = new SimpleMailMessage();
+        confirmationMsg.setFrom("");
+        confirmationMsg.setTo(user.getMail());
+        confirmationMsg.setSubject("Verifikation Ihres Benutzerkontos bei Thinder");
+        String header = "Hallo" + user.getFirstName() + ", \n";
+        String body = "vielen Dank für Ihre Registrierung bei Thinder. Geben sie diesen Code in der App ein: \n" + token.getToken()
+                + " \n um Ihre Registrierung zu vollenden.";
+        confirmationMsg.setText(header + body);
+
+        mailSender.send(confirmationMsg);
+    }
+
+    public void confirmRegistration(String token){
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token).orElseThrow(
+                () -> new IllegalArgumentException()//todo add exception
+        );
+        User user = verificationToken.getUser();
+        if(user.isActive()){
+            //todo add exception
+        }
+        Date currentDate = Calendar.getInstance().getTime();
+        Date expirationDate = verificationToken.getExpirationDate();
+        if(expirationDate.compareTo(currentDate) < 0){
+            throw new IllegalArgumentException(); //todo add exception and maybe resend verification mail
+        }
+        verificationTokenRepository.delete(verificationToken);
+        user.setActive(true);
+        userRepository.save(user);
+    }
+
 
     public UUID getUserIdByMail(String mail) {
         User user = userRepository.findByMail(mail).orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + mail));
@@ -84,8 +127,6 @@ public class UserService {
     public User getUser(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
     }
-
-    //private SimpleMailMessage
 
     private Boolean mailExists(String mail){
         return userRepository.findByMail(mail) != null;

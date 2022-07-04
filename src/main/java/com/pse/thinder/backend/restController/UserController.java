@@ -53,9 +53,9 @@ public class UserController {
         //todo
     }
 
-    @PostMapping("/users/{id}/verify")
-    public void verifyUser(@PathVariable("id") UUID id, @RequestParam String code) {
-        //todo
+    @PostMapping("/users/verify")
+    public void verifyUser(@RequestParam String token) {
+        userService.confirmRegistration(token);
     }
 
     @GetMapping("/users/{id}/swipeorder")
