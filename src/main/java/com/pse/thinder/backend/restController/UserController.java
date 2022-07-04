@@ -1,11 +1,14 @@
 package com.pse.thinder.backend.restController;
 
+import com.pse.thinder.backend.database.features.account.Student;
+import com.pse.thinder.backend.database.features.account.Supervisor;
 import com.pse.thinder.backend.database.features.account.User;
 import com.pse.thinder.backend.restController.errorHandler.exceptions.EntityNotFoundException;
 import com.pse.thinder.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +25,7 @@ public class UserController {
 
     @GetMapping("/users/resetPassword")
     public void resetPasswordUser(@PathVariable("id") UUID id) {
-        //todo send mail with code
+
     }
 
     @PostMapping("/users/resetPassword")
@@ -34,7 +37,7 @@ public class UserController {
 
 
     @PostMapping("/users")
-    public void postUser(@RequestBody User user) {
+    public void postUser(@Valid @RequestBody User user) {
         userService.addUser(user);
     }
 
@@ -43,14 +46,19 @@ public class UserController {
         return userService.getUser(id);
     }
 
-    @PutMapping("/users/{id}")
-    public void updateUser(@PathVariable("id") UUID id) {
-        //todo
+    @PutMapping("/student/{id}")
+    public void updateStudent(@PathVariable("id") UUID id, @RequestBody Student student) {
+        userService.updateStudent(id, student);
+    }
+
+    @PutMapping("/supervisor/{id}")
+    public void updateSupervisor(@PathVariable("id") UUID id, @RequestBody Supervisor supervisor) {
+        userService.updateSupervisor(id, supervisor);
     }
 
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable("id") UUID id) {
-        //todo
+        userService.deleteUser(id);
     }
 
     @PostMapping("/users/verify")
@@ -60,8 +68,7 @@ public class UserController {
 
     @GetMapping("/users/{id}/swipeorder")
     public List<UUID> getSwipeorder(@PathVariable("id") UUID id) {
-        //todo
-        return null;
+        return userService.getSwipeorder(id);
     }
 
     @GetMapping("/users/{id}/theses")

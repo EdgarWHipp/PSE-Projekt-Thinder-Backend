@@ -5,6 +5,7 @@ import com.pse.thinder.backend.database.features.University;
 import com.pse.thinder.backend.database.features.VerificationToken;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ public class User {
     @Column(columnDefinition = "character varying(30) not null")
     private String lastName;
 
+    @Size(min=8, max=20)
     @Column(columnDefinition = "character varying(50) not null")
     private String password;
     @Column(columnDefinition = "character varying(30) unique not null")

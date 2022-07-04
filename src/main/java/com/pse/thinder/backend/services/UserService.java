@@ -7,6 +7,7 @@ import com.pse.thinder.backend.database.features.account.Supervisor;
 import com.pse.thinder.backend.database.features.account.User;
 import com.pse.thinder.backend.repositories.*;
 import com.pse.thinder.backend.restController.errorHandler.exceptions.EntityNotAddedException;
+import com.pse.thinder.backend.services.swipestrategy.ThesisSelectI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -55,7 +56,7 @@ public class UserService {
 
     public void addUser(User user) {
         if(mailExists(user.getMail())){
-            //todo exception
+            //steven: todo exception... edit by felix: sollte über unique mail abgefangen werden??
         }
         List<University> universities = universityRepository.findAll();
 
@@ -71,17 +72,13 @@ public class UserService {
         if (Pattern.matches(university.getStudentMailRegex(), user.getMail())) {
             Student student = new Student(user.getFirstName(), user.getLastName(),
                     passwordEncoder.encode(user.getPassword()), user.getMail(), university);
-            savedUser = studentRepository.save(student);
+            studentRepository.save(student);
         }
 
         if (Pattern.matches(university.getSupervisorMailRegex(), user.getMail())) {
             Supervisor supervisor = new Supervisor(user.getFirstName(), user.getLastName(),
                     passwordEncoder.encode(user.getPassword()), user.getMail(), university);
-            savedUser = supervisorRepository.save(supervisor);
-        }
-
-        if (savedUser == null) {
-            throw new EntityNotAddedException("User not added!"); //todo
+            supervisorRepository.save(supervisor);
         }
     }
 
@@ -127,6 +124,38 @@ public class UserService {
     public User getUser(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
     }
+
+    public void updateStudent(UUID id, Student newStudent) {
+        Student student = studentRepository.findById(id)
+            .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
+
+        student.setFirstName(newStudent.getFirstName());
+        student.setLastName(newStudent.getLastName());
+        student.setDegree(newStudent.getDegrees());
+        studentRepository.save(student);
+    }
+
+    public void updateSupervisor(UUID id, Supervisor newSupervisor) {
+        Supervisor supervisor = supervisorRepository.findById(id)
+            .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
+    }
+
+    public void deleteUser(UUID id) {
+        userRepository.deleteById(id);
+    }
+
+    @Autowired
+    ThesisSelectI thesisSelect;
+
+    public List<UUID> getSwipeorder(UUID id) {
+        return thesisSelect.getThesisIdList(id);
+    }
+
+    public void verifyUser(UUID id, String code) {
+        //todo
+    }
+
+    //private SimpleMailMessage
 
     private Boolean mailExists(String mail){
         return userRepository.findByMail(mail) != null;

@@ -44,4 +44,8 @@ public class Student extends User{
     public void addThesesRatings(ThesisRating thesisRating) {
         this.thesesRatings.add((thesisRating));
     }
+
+    public void setDegree(Set<Degree> degrees) {
+        this.degrees = degrees;
+    }
 }
