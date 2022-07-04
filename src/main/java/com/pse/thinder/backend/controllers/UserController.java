@@ -1,9 +1,9 @@
-package com.pse.thinder.backend.restController;
+package com.pse.thinder.backend.controllers;
 
-import com.pse.thinder.backend.database.features.account.Student;
-import com.pse.thinder.backend.database.features.account.Supervisor;
-import com.pse.thinder.backend.database.features.account.User;
-import com.pse.thinder.backend.restController.errorHandler.exceptions.EntityNotFoundException;
+import com.pse.thinder.backend.databaseFeatures.account.Student;
+import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
+import com.pse.thinder.backend.databaseFeatures.account.User;
+import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
 import com.pse.thinder.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

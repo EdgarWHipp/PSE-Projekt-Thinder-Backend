@@ -1,12 +1,11 @@
 package com.pse.thinder.backend.services;
 
-import com.pse.thinder.backend.database.features.University;
-import com.pse.thinder.backend.database.features.VerificationToken;
-import com.pse.thinder.backend.database.features.account.Student;
-import com.pse.thinder.backend.database.features.account.Supervisor;
-import com.pse.thinder.backend.database.features.account.User;
+import com.pse.thinder.backend.databaseFeatures.University;
+import com.pse.thinder.backend.databaseFeatures.VerificationToken;
+import com.pse.thinder.backend.databaseFeatures.account.Student;
+import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
+import com.pse.thinder.backend.databaseFeatures.account.User;
 import com.pse.thinder.backend.repositories.*;
-import com.pse.thinder.backend.restController.errorHandler.exceptions.EntityNotAddedException;
 import com.pse.thinder.backend.services.swipestrategy.ThesisSelectI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 //import org.springframework.mail.SimpleMailMessage;
 
 
-import javax.naming.TimeLimitExceededException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;

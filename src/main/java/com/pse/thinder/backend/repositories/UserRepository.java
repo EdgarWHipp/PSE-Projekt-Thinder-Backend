@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.pse.thinder.backend.database.features.account.User;
+import com.pse.thinder.backend.databaseFeatures.account.User;
 
 public interface UserRepository extends JpaRepository<User, UUID>{
 

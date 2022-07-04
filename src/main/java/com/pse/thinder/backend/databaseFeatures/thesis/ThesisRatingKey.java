@@ -1,4 +1,4 @@
-package com.pse.thinder.backend.database.features.thesis;
+package com.pse.thinder.backend.databaseFeatures.thesis;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

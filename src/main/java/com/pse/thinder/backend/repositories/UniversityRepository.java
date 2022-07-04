@@ -1,7 +1,6 @@
 package com.pse.thinder.backend.repositories;
 
-import com.pse.thinder.backend.database.features.University;
-import com.pse.thinder.backend.services.UniversityService;
+import com.pse.thinder.backend.databaseFeatures.University;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

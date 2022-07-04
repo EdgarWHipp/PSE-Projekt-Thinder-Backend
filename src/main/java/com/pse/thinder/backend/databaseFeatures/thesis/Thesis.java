@@ -1,9 +1,9 @@
-package com.pse.thinder.backend.database.features.thesis;
+package com.pse.thinder.backend.databaseFeatures.thesis;
 
 
-import com.pse.thinder.backend.database.features.Image;
-import com.pse.thinder.backend.database.features.Degree;
-import com.pse.thinder.backend.database.features.account.Supervisor;
+import com.pse.thinder.backend.databaseFeatures.Image;
+import com.pse.thinder.backend.databaseFeatures.Degree;
+import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 
 import javax.persistence.*;
 import java.util.Set;

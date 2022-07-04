@@ -1,12 +1,11 @@
-package com.pse.thinder.backend.database.features.account;
+package com.pse.thinder.backend.databaseFeatures.account;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
-import com.pse.thinder.backend.database.features.Image;
-import com.pse.thinder.backend.database.features.University;
-import com.pse.thinder.backend.database.features.thesis.Thesis;
+import com.pse.thinder.backend.databaseFeatures.University;
+import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 
 import javax.persistence.*;
 import java.util.Set;

@@ -1,6 +1,6 @@
-package com.pse.thinder.backend.database.features;
+package com.pse.thinder.backend.databaseFeatures;
 
-import com.pse.thinder.backend.database.features.account.User;
+import com.pse.thinder.backend.databaseFeatures.account.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
 package com.pse.thinder.backend.services;
 
-import com.pse.thinder.backend.database.features.VerificationToken;
+import com.pse.thinder.backend.databaseFeatures.VerificationToken;
 import com.pse.thinder.backend.repositories.VerificationTokenRepository;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package com.pse.thinder.backend.repositories;
 
-import com.pse.thinder.backend.database.features.VerificationToken;
+import com.pse.thinder.backend.databaseFeatures.VerificationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

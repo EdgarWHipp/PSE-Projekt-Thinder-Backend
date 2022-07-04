@@ -1,7 +1,6 @@
 package com.pse.thinder.backend.services;
 
-import com.pse.thinder.backend.database.features.University;
-import com.pse.thinder.backend.database.features.account.User;
+import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.repositories.UniversityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

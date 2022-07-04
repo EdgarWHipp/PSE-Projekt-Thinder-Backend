@@ -1,4 +1,4 @@
-package com.pse.thinder.backend.restController;
+package com.pse.thinder.backend.controllers;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;

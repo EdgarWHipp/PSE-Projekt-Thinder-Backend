@@ -1,4 +1,4 @@
-package com.pse.thinder.backend.database.features;
+package com.pse.thinder.backend.databaseFeatures;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
