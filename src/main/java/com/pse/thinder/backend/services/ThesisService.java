@@ -2,10 +2,11 @@ package com.pse.thinder.backend.services;
 
 import java.util.UUID;
 
+import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.pse.thinder.backend.database.features.thesis.Thesis;
+
 import com.pse.thinder.backend.repositories.ThesisRepository;
 
 @Service

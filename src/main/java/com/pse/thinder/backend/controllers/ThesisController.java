@@ -1,7 +1,8 @@
-package com.pse.thinder.backend.restController;
+package com.pse.thinder.backend.controllers;
 
 import java.util.UUID;
 
+import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pse.thinder.backend.database.features.thesis.Thesis;
+
 import com.pse.thinder.backend.services.ThesisService;
 
 @RestController
