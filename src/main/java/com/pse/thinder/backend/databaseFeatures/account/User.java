@@ -1,8 +1,8 @@
 package com.pse.thinder.backend.databaseFeatures.account;
 
-import com.pse.thinder.backend.databaseFeatures.PasswordResetToken;
+import com.pse.thinder.backend.databaseFeatures.token.PasswordResetToken;
 import com.pse.thinder.backend.databaseFeatures.University;
-import com.pse.thinder.backend.databaseFeatures.VerificationToken;
+import com.pse.thinder.backend.databaseFeatures.token.VerificationToken;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;

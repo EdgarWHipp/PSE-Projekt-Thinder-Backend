@@ -1,7 +1,9 @@
 package com.pse.thinder.backend.services;
 
+import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
 import com.pse.thinder.backend.databaseFeatures.University;
-import com.pse.thinder.backend.databaseFeatures.VerificationToken;
+import com.pse.thinder.backend.databaseFeatures.token.PasswordResetToken;
+import com.pse.thinder.backend.databaseFeatures.token.VerificationToken;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.account.User;
@@ -13,7 +15,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-//import org.springframework.mail.SimpleMailMessage;
+import com.pse.thinder.backend.databaseFeatures.token.Token;
 
 
 import java.util.Calendar;
@@ -44,6 +46,9 @@ public class UserService {
 
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
+
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -81,7 +86,8 @@ public class UserService {
     }
 
     private void sendVerificationMail(User user){
-        VerificationToken token = new VerificationToken(UUID.randomUUID().toString(), user);
+        VerificationToken token = new VerificationToken(user, UUID.randomUUID().toString());
+        verificationTokenRepository.save(token);
 
         SimpleMailMessage confirmationMsg = new SimpleMailMessage();
         confirmationMsg.setFrom("");
@@ -95,6 +101,38 @@ public class UserService {
         mailSender.send(confirmationMsg);
     }
 
+    public void sendPasswordResetMail(UUID id){
+        User user = getUser(id);
+
+        PasswordResetToken token = new PasswordResetToken(user, UUID.randomUUID().toString());
+        passwordResetTokenRepository.save(token);
+
+        SimpleMailMessage resetMsg = new SimpleMailMessage();
+        resetMsg.setFrom("");
+        resetMsg.setTo(user.getMail());
+        resetMsg.setSubject("Zurücksetzten Ihres Passworts");
+        String header = "Hallo" + user.getFirstName() + ", \n";
+        String body = "um Ihr Passwort zurückzusetzen geben Sie folgenden Code in der App ein: \n" + token.getToken();
+        resetMsg.setText(header + body);
+
+        mailSender.send(resetMsg);
+    }
+
+    public void changePassword(String token, String newPassword){
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token).orElseThrow(
+                () -> new EntityNotFoundException("") //todo exception
+        );
+        if(isTokenExpired(resetToken)){
+            //todo exception
+        }
+        User user = resetToken.getUser();
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        passwordResetTokenRepository.delete(resetToken);
+    }
+
     public void confirmRegistration(String token){
         VerificationToken verificationToken = verificationTokenRepository.findByToken(token).orElseThrow(
                 () -> new IllegalArgumentException()//todo add exception
@@ -103,14 +141,13 @@ public class UserService {
         if(user.isActive()){
             //todo add exception
         }
-        Date currentDate = Calendar.getInstance().getTime();
-        Date expirationDate = verificationToken.getExpirationDate();
-        if(expirationDate.compareTo(currentDate) < 0){
+        if(isTokenExpired(verificationToken)){
             throw new IllegalArgumentException(); //todo add exception and maybe resend verification mail
         }
-        verificationTokenRepository.delete(verificationToken);
         user.setActive(true);
         userRepository.save(user);
+
+        verificationTokenRepository.delete(verificationToken);
     }
 
 
@@ -153,9 +190,14 @@ public class UserService {
         //todo
     }
 
-    //private SimpleMailMessage
-
     private Boolean mailExists(String mail){
         return userRepository.findByMail(mail) != null;
+    }
+
+
+    private boolean isTokenExpired(Token token){
+        Date currentDate = Calendar.getInstance().getTime();
+        Date expirationDate = token.getExpirationDate();
+        return expirationDate.before(currentDate) ? true : false;
     }
 }

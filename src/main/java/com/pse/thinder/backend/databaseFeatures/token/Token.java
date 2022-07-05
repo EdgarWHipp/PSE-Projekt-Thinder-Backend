@@ -1,33 +1,45 @@
-package com.pse.thinder.backend.databaseFeatures;
+package com.pse.thinder.backend.databaseFeatures.token;
+
 
 import com.pse.thinder.backend.databaseFeatures.account.User;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
-@Entity @Table(name="passwordResetTokens")
-public class PasswordResetToken {
+@Entity @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class Token {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private final static int EXPIRATION_DURATION_IN_HOUR = 24;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @Column(columnDefinition = "character varying(64) not null")
     private String token;
 
     @Column(nullable = false)
-    private LocalDateTime expirationDate;
+    private Date expirationDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public PasswordResetToken(){}
+    public Token(){}
 
-    public PasswordResetToken(String token, LocalDateTime expirationDate, User user) {
+    public Token(User user, String token) {
         this.token = token;
-        this.expirationDate = expirationDate;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR_OF_DAY, EXPIRATION_DURATION_IN_HOUR);
+        this.expirationDate = cal.getTime();
         this.user = user;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public String getToken() {
@@ -38,11 +50,11 @@ public class PasswordResetToken {
         this.token = token;
     }
 
-    public LocalDateTime getExpirationDate() {
+    public Date getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDateTime expirationDate) {
+    public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
 

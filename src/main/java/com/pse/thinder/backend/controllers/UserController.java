@@ -25,13 +25,13 @@ public class UserController {
 
     @GetMapping("/users/resetPassword")
     public void resetPasswordUser(@PathVariable("id") UUID id) {
-
+        userService.sendPasswordResetMail(id);
     }
 
     @PostMapping("/users/resetPassword")
     public void resetPasswordVerifyUser(UUID id, @RequestParam String code,
                                         @RequestParam String password) {
-        //todo check code and update password
+        userService.changePassword(code, password);
     }
 
 
