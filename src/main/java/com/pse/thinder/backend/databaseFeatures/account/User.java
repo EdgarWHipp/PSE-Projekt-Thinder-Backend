@@ -1,5 +1,6 @@
 package com.pse.thinder.backend.databaseFeatures.account;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.pse.thinder.backend.databaseFeatures.token.PasswordResetToken;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.token.VerificationToken;
@@ -13,7 +14,6 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User {
 
-    @Column(columnDefinition = "not null")
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -33,6 +33,10 @@ public class User {
     private String mail;
 
     private Boolean active;
+
+    public Role getRole() {
+        return role;
+    }
 
     @ManyToOne
     @JoinColumn(name = "university_id", nullable = false)
