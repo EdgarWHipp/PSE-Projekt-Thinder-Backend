@@ -13,6 +13,9 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User {
 
+    @Column(columnDefinition = "not null")
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -45,13 +48,14 @@ public class User {
     protected User(){}
 
     public User (String firstName, String lastName, String password,
-                 String mail, University university){
+                 String mail, University university, Role role){
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.mail = mail;
         this.university = university;
         this.active = false;
+        this.role = role;
     }
 
 

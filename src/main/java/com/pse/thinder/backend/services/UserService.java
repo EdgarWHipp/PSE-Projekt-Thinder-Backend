@@ -57,6 +57,10 @@ public class UserService {
     private JavaMailSender mailSender;
 
 
+    public User getUser(String mail) {
+        return userRepository.findByMail(mail).orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + mail));
+    }
+
     public void addUser(User user) {
         if(mailExists(user.getMail())){
             //steven: todo exception... edit by felix: sollte über unique mail abgefangen werden??
