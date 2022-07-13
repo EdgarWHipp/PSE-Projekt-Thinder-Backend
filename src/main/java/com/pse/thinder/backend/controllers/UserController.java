@@ -34,7 +34,10 @@ public class UserController {
         userService.changePassword(code, password);
     }
 
-
+    @GetMapping("/getRole")
+    public String getRole(@RequestParam(value = "mail") String mail) {
+        return userService.getUser(mail).getRole().getString();
+    }
 
     @PostMapping("/users")
     public void postUser(@Valid @RequestBody User user) {

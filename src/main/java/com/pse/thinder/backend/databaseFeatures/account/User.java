@@ -1,5 +1,6 @@
 package com.pse.thinder.backend.databaseFeatures.account;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.pse.thinder.backend.databaseFeatures.token.PasswordResetToken;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.token.VerificationToken;
@@ -13,6 +14,8 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User {
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -31,6 +34,10 @@ public class User {
 
     private Boolean active;
 
+    public Role getRole() {
+        return role;
+    }
+
     @ManyToOne
     @JoinColumn(name = "university_id", nullable = false)
     private University university;
@@ -45,13 +52,14 @@ public class User {
     protected User(){}
 
     public User (String firstName, String lastName, String password,
-                 String mail, University university){
+                 String mail, University university, Role role){
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.mail = mail;
         this.university = university;
         this.active = false;
+        this.role = role;
     }
 
 

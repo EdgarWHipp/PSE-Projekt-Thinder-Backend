@@ -26,7 +26,7 @@ public class Student extends User{
     protected Student() {}
 
     public Student(String firstName, String lastName, String password, String mail, University university) {
-        super(firstName, lastName, password, mail, university);
+        super(firstName, lastName, password, mail, university, Role.STUDENT);
     }
 
     public Set<Degree> getDegrees() {
