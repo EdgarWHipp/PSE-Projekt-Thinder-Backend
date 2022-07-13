@@ -123,7 +123,8 @@ public class UserService {
                 () -> new EntityNotFoundException("") //todo exception
         );
         if(isTokenExpired(resetToken)){
-            //todo exception
+            passwordResetTokenRepository.delete(resetToken);
+            //todo exception resend token?
         }
         User user = resetToken.getUser();
 
@@ -142,6 +143,7 @@ public class UserService {
             //todo add exception
         }
         if(isTokenExpired(verificationToken)){
+            verificationTokenRepository.delete(verificationToken);
             throw new IllegalArgumentException(); //todo add exception and maybe resend verification mail
         }
         user.setActive(true);

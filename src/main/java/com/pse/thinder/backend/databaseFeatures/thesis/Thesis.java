@@ -1,7 +1,6 @@
 package com.pse.thinder.backend.databaseFeatures.thesis;
 
 
-import com.pse.thinder.backend.databaseFeatures.Image;
 import com.pse.thinder.backend.databaseFeatures.Degree;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 
