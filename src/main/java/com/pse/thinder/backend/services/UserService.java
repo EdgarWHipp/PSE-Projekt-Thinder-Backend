@@ -79,14 +79,15 @@ public class UserService {
         if (Pattern.matches(university.getStudentMailRegex(), user.getMail())) {
             Student student = new Student(user.getFirstName(), user.getLastName(),
                     passwordEncoder.encode(user.getPassword()), user.getMail(), university);
-            studentRepository.save(student);
+            savedUser = studentRepository.save(student);
         }
 
         if (Pattern.matches(university.getSupervisorMailRegex(), user.getMail())) {
             Supervisor supervisor = new Supervisor(user.getFirstName(), user.getLastName(),
                     passwordEncoder.encode(user.getPassword()), user.getMail(), university);
-            supervisorRepository.save(supervisor);
+            savedUser = supervisorRepository.save(supervisor);
         }
+        sendVerificationMail(savedUser);
     }
 
     private void sendVerificationMail(User user){
@@ -94,7 +95,7 @@ public class UserService {
         verificationTokenRepository.save(token);
 
         SimpleMailMessage confirmationMsg = new SimpleMailMessage();
-        confirmationMsg.setFrom("");
+        confirmationMsg.setFrom("thesisthinder@gmail.com");
         confirmationMsg.setTo(user.getMail());
         confirmationMsg.setSubject("Verifikation Ihres Benutzerkontos bei Thinder");
         String header = "Hallo" + user.getFirstName() + ", \n";
@@ -112,10 +113,10 @@ public class UserService {
         passwordResetTokenRepository.save(token);
 
         SimpleMailMessage resetMsg = new SimpleMailMessage();
-        resetMsg.setFrom("");
+        resetMsg.setFrom("thesisthinder@gmail.com"); //todo maybe switch to value
         resetMsg.setTo(user.getMail());
         resetMsg.setSubject("Zurücksetzten Ihres Passworts");
-        String header = "Hallo" + user.getFirstName() + ", \n";
+        String header = "Hallo " + user.getFirstName() + ", \n";
         String body = "um Ihr Passwort zurückzusetzen geben Sie folgenden Code in der App ein: \n" + token.getToken();
         resetMsg.setText(header + body);
 
