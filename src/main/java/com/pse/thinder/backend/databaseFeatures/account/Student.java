@@ -1,6 +1,7 @@
 package com.pse.thinder.backend.databaseFeatures.account;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pse.thinder.backend.databaseFeatures.Degree;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Student extends User{
 
 
