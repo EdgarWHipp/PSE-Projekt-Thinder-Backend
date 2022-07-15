@@ -215,4 +215,15 @@ public class UserService {
         Date expirationDate = token.getExpirationDate();
         return expirationDate.before(currentDate) ? true : false;
     }
+
+    public String getRole(UUID id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("")); //todo
+        if (user instanceof Student) {
+            return "STUDENT";
+        }
+        if (user instanceof Supervisor) {
+            return "SUPERVISOR";
+        }
+        throw new RuntimeException(""); //todo
+    }
 }

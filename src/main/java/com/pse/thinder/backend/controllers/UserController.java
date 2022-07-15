@@ -8,7 +8,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.UUID;
 
 @RestController
 public class UserController {
@@ -18,7 +17,9 @@ public class UserController {
 
 
     /**
+     * Adds a new user.
      *
+     * Open access.
      *
      * @param user
      */
@@ -64,7 +65,7 @@ public class UserController {
     public String getRole() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
             getContext().getAuthentication().getPrincipal();
-        return details.getUser().getRole().toString();
+        return userService.getRole(details.getUser().getId());
     }
 
     /**
@@ -107,7 +108,9 @@ public class UserController {
     }
 
     /**
+     * Verifies a user which is identified through the token.
      *
+     * Open access.
      *
      * @param token
      */
