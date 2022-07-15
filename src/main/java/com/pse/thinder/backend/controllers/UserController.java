@@ -1,15 +1,13 @@
 package com.pse.thinder.backend.controllers;
 
-import com.pse.thinder.backend.databaseFeatures.account.Student;
-import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.account.User;
-import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
+import com.pse.thinder.backend.security.ThinderUserDetails;
 import com.pse.thinder.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -18,81 +16,103 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/users")
-    public UUID getUserIdByMail(@RequestParam(value = "mail") String mail) throws EntityNotFoundException {
-        return userService.getUserIdByMail(mail);
-    }
 
-    @GetMapping("/users/resetPassword")
-    public void resetPasswordUser(@PathVariable("id") UUID id) {
-        userService.sendPasswordResetMail(id);
-    }
-
-    @PostMapping("/users/resetPassword")
-    public void resetPasswordVerifyUser(UUID id, @RequestParam String code,
-                                        @RequestParam String password) {
-        userService.changePassword(code, password);
-    }
-
-    @GetMapping("/getRole")
-    public String getRole(@RequestParam(value = "mail") String mail) {
-        return userService.getUser(mail).getRole().getString();
-    }
-
+    /**
+     *
+     *
+     * @param user
+     */
     @PostMapping("/users")
     public void postUser(@Valid @RequestBody User user) {
         userService.addUser(user);
     }
 
-    @GetMapping("/users/{id}")
-    public User getUser(@PathVariable("id") UUID id) {
-        return userService.getUser(id);
+    /**
+     * Sends a password reset mail to the user with the given mail address.
+     *
+     * Open access.
+     *
+     * @param mail of the user
+     */
+    @GetMapping("/users/resetPassword")
+    public void resetPasswordUser(@PathVariable("mail") String mail) {
+        userService.sendPasswordResetMail(mail);
     }
 
-    @PutMapping("/student/{id}")
-    public void updateStudent(@PathVariable("id") UUID id, @RequestBody Student student) {
-        userService.updateStudent(id, student);
+    /**
+     * Sets a new passwort for a user. Requires a generated token which the user received via mail and the new password.
+     *
+     * Open access.
+     *
+     * @param token which the user received via mail
+     * @param password to be set
+     */
+    @PostMapping("/users/resetPassword")
+    public void resetPasswordVerifyUser(@RequestParam String token,
+                                        @RequestParam String password) {
+        userService.changePassword(token, password);
     }
 
-    @PutMapping("/supervisor/{id}")
-    public void updateSupervisor(@PathVariable("id") UUID id, @RequestBody Supervisor supervisor) {
-        userService.updateSupervisor(id, supervisor);
+    /**
+     * Returns the role of the logged-in user as string.
+     *
+     * Protected access and user specific.
+     *
+     * @return role of the logged-in user as string.
+     */
+    @GetMapping("/users/current/getRole")
+    public String getRole() {
+        ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+            getContext().getAuthentication().getPrincipal();
+        return details.getUser().getRole().toString();
     }
 
-    @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable("id") UUID id) {
-        userService.deleteUser(id);
+    /**
+     * Returns the details for the logged-in user as json.
+     *
+     * Protected access and user specific.
+     *
+     * @return json of the user details of the logged-in user.
+     */
+    @GetMapping("/users/current")
+    public User getUser() {
+        ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+            getContext().getAuthentication().getPrincipal();
+        return userService.getUser(details.getUser().getId());
     }
 
+
+    /**
+     * Updates the logged-in user using json user data.
+     *
+     * Protected access and user specific.
+     *
+     * @param user data json to be set
+     */
+    @PutMapping(value = "/users/current")
+    public void updateUser(@RequestBody User user) {
+        userService.updateUser(user);
+    }
+
+    /**
+     * Deletes the logged-in user.
+     *
+     * Protected access and user specific.
+     */
+    @DeleteMapping("/users/current")
+    public void deleteUser() {
+        ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+            getContext().getAuthentication().getPrincipal();
+        userService.deleteUser(details.getUser().getId());
+    }
+
+    /**
+     *
+     *
+     * @param token
+     */
     @PostMapping("/users/verify")
     public void verifyUser(@RequestParam String token) {
         userService.confirmRegistration(token);
-    }
-
-    @GetMapping("/users/{id}/swipeorder")
-    public List<UUID> getSwipeorder(@PathVariable("id") UUID id) {
-        return userService.getSwipeorder(id);
-    }
-
-    @GetMapping("/users/{id}/theses")
-    public void getRatedTheses(@PathVariable("id") UUID id) {
-        //todo
-    }
-
-    @PostMapping("/users/{user-id}/theses/{thesis-id}")
-    public void rateThesis(@PathVariable("user-id") UUID userId, @PathVariable("theses-id") UUID thesisId) {
-        //todo
-    }
-
-
-    @PutMapping("/users/{user-id}/theses/{thesis-id}")
-    public void undoThesisRating(@PathVariable("user-id") UUID userId, @PathVariable("theses-id") UUID thesisId) {
-        //todo
-    }
-
-
-    @PostMapping("/users/{user-id}/theses/{thesis-id}/form")
-    public void sendThesisForm(@PathVariable("user-id") UUID userId, @PathVariable("theses-id") UUID thesisId) {
-        //todo
     }
 }

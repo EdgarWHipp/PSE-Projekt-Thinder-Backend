@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 @Service
 public class UserService {
 
-
+    private static final String ERROR_NO_USER_WITH_MAIL = "There is no user with the given mail address.";
     private static final String ERROR_MSG = "User not found: ";
 
     private static final String USER_NOT_ADDED_EXCEPTION = "User could not be added.";
@@ -106,8 +106,9 @@ public class UserService {
         mailSender.send(confirmationMsg);
     }
 
-    public void sendPasswordResetMail(UUID id){
-        User user = getUser(id);
+    public void sendPasswordResetMail(String mail){
+        User user = userRepository.findByMail(mail)
+            .orElseThrow(() -> new EntityNotFoundException(ERROR_NO_USER_WITH_MAIL));
 
         PasswordResetToken token = new PasswordResetToken(user, UUID.randomUUID().toString());
         passwordResetTokenRepository.save(token);
@@ -167,19 +168,26 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
     }
 
-    public void updateStudent(UUID id, Student newStudent) {
-        Student student = studentRepository.findById(id)
-            .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
+    public void updateUser(User user) {
+        // todo... was ist wenn im frontend zb die id manipuliert wird
+        if (user instanceof Student) {
+            Student student = (Student) user;
+            UUID id = student.getId();
+            Student newStudent = studentRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
 
-        student.setFirstName(newStudent.getFirstName());
-        student.setLastName(newStudent.getLastName());
-        student.setDegree(newStudent.getDegrees());
-        studentRepository.save(student);
-    }
+            newStudent.setFirstName(student.getFirstName());
+            newStudent.setLastName(student.getLastName());
+            newStudent.setDegree(student.getDegrees());
+            studentRepository.save(newStudent);
+        }
 
-    public void updateSupervisor(UUID id, Supervisor newSupervisor) {
-        Supervisor supervisor = supervisorRepository.findById(id)
-            .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
+        if (user instanceof Supervisor) {
+            Supervisor newSupervisor = (Supervisor) user;
+            UUID id = newSupervisor.getId();
+            Supervisor supervisor = supervisorRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
+        }
     }
 
     public void deleteUser(UUID id) {

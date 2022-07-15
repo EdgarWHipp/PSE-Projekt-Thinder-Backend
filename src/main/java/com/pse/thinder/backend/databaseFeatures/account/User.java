@@ -1,5 +1,7 @@
 package com.pse.thinder.backend.databaseFeatures.account;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.pse.thinder.backend.databaseFeatures.token.PasswordResetToken;
 import com.pse.thinder.backend.databaseFeatures.University;
@@ -12,6 +14,11 @@ import java.util.UUID;
 
 @Entity @Table(name="users")
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "role", visible = true)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Student.class, name = "STUDENT"),
+    @JsonSubTypes.Type(value = Supervisor.class, name = "SUPERVISOR")
+})
 public class User {
 
     @Enumerated(EnumType.STRING)
