@@ -4,6 +4,7 @@ import com.pse.thinder.backend.databaseFeatures.account.User;
 import com.pse.thinder.backend.security.ThinderUserDetails;
 import com.pse.thinder.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class UserController {
      */
     @PostMapping("/users")
     public void postUser(@Valid @RequestBody User user) {
+        System.out.println("23");
         userService.addUser(user);
     }
 
@@ -90,7 +92,7 @@ public class UserController {
      *
      * @param user data json to be set
      */
-    @PutMapping(value = "/users/current")
+    @PutMapping("/users/current")
     public void updateUser(@RequestBody User user) {
         userService.updateUser(user);
     }
@@ -101,6 +103,7 @@ public class UserController {
      * Protected access and user specific.
      */
     @DeleteMapping("/users/current")
+    @Secured("ROLE_EDITOR")
     public void deleteUser() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
             getContext().getAuthentication().getPrincipal();

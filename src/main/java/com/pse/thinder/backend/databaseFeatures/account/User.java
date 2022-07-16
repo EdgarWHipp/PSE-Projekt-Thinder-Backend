@@ -16,7 +16,7 @@ import java.util.UUID;
 @Entity @Table(name="users")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Inheritance(strategy = InheritanceType.JOINED)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "role", visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION, include = JsonTypeInfo.As.PROPERTY, property = "role", visible = false)
 @JsonSubTypes({
     @JsonSubTypes.Type(value = Student.class, name = "STUDENT"),
     @JsonSubTypes.Type(value = Supervisor.class, name = "SUPERVISOR")
