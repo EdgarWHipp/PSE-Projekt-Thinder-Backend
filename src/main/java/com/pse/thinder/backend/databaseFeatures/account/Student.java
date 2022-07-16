@@ -1,6 +1,7 @@
 package com.pse.thinder.backend.databaseFeatures.account;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pse.thinder.backend.databaseFeatures.Degree;
 import com.pse.thinder.backend.databaseFeatures.University;
@@ -22,6 +23,7 @@ public class Student extends User{
     )
     private Set<Degree> degrees;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "student")
     private Set<ThesisRating> thesesRatings;
 

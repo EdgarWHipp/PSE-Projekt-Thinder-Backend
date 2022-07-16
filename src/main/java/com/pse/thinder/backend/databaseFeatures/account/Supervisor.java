@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
@@ -28,6 +29,7 @@ public class Supervisor extends User {
     @Column(columnDefinition = "character varying(15) unique")
     private String phoneNumber;
 
+    @JsonIgnore
     @OneToMany(mappedBy="supervisor", cascade = CascadeType.REMOVE)
     private Set<Thesis> theses;
 

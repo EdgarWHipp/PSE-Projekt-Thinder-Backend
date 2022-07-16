@@ -183,7 +183,6 @@ public class UserService {
         }
 
         if (user instanceof Supervisor) {
-            System.out.println("s");
             Supervisor supervisor = (Supervisor) user;
             UUID id = supervisor.getId();
             Supervisor newSupervisor = supervisorRepository.findById(id)
@@ -193,7 +192,6 @@ public class UserService {
             newSupervisor.setLastName(supervisor.getLastName());
             supervisorRepository.save(newSupervisor);
         }
-        System.out.println("x");
     }
 
     public void deleteUser(UUID id) {

@@ -1,5 +1,7 @@
 package com.pse.thinder.backend.databaseFeatures;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.pse.thinder.backend.databaseFeatures.account.User;
 
 import javax.persistence.*;
@@ -7,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity @Table(name="universities")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class University {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)

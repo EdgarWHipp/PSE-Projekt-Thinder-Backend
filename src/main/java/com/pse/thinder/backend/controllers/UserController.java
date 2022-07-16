@@ -26,7 +26,6 @@ public class UserController {
      */
     @PostMapping("/users")
     public void postUser(@Valid @RequestBody User user) {
-        System.out.println("23");
         userService.addUser(user);
     }
 
@@ -94,6 +93,7 @@ public class UserController {
      */
     @PutMapping("/users/current")
     public void updateUser(@RequestBody User user) {
+        // todo check if userid in body matches the verified user
         userService.updateUser(user);
     }
 
