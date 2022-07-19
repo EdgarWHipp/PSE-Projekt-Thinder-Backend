@@ -28,6 +28,7 @@ public class ThinderSecurityConfiguration {
 			.antMatchers(HttpMethod.GET, "/users/resetPassword").permitAll()
 			.antMatchers(HttpMethod.POST, "/users/resetPassword").permitAll()
 			.antMatchers(HttpMethod.POST, "/users").permitAll()
+			.antMatchers(HttpMethod.POST, "/university").permitAll() // todo remove in production
 		//All others Secured
 			.anyRequest().authenticated().and().httpBasic();
 
