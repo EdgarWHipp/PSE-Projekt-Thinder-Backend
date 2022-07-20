@@ -19,13 +19,8 @@ public class UniversityController {
         universityService.addUniversity(uni);
     }
 
-<<<<<<< HEAD
     @GetMapping("/university/{id}")
     public University getUniversityById(@PathVariable("id") UUID id) {
-=======
-    @GetMapping()
-    public University getUniversityById(@RequestParam UUID id) {
->>>>>>> e83ad3e71f6b888137085a758cf258b3f064ad27
         return universityService.getUniversityById(id);
     }
 
