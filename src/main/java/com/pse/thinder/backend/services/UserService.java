@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 @Service
 public class UserService {
 
-
+    private static final String ERROR_NO_USER_WITH_MAIL = "There is no user with the given mail address.";
     private static final String ERROR_MSG = "User not found: ";
 
     private static final String USER_NOT_ADDED_EXCEPTION = "User could not be added.";
@@ -57,6 +57,10 @@ public class UserService {
     private JavaMailSender mailSender;
 
 
+    public User getUser(String mail) {
+        return userRepository.findByMail(mail).orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + mail));
+    }
+
     public void addUser(User user) {
         if(mailExists(user.getMail())){
             //steven: todo exception... edit by felix: sollte über unique mail abgefangen werden??
@@ -75,14 +79,15 @@ public class UserService {
         if (Pattern.matches(university.getStudentMailRegex(), user.getMail())) {
             Student student = new Student(user.getFirstName(), user.getLastName(),
                     passwordEncoder.encode(user.getPassword()), user.getMail(), university);
-            studentRepository.save(student);
+            savedUser = studentRepository.save(student);
         }
 
         if (Pattern.matches(university.getSupervisorMailRegex(), user.getMail())) {
             Supervisor supervisor = new Supervisor(user.getFirstName(), user.getLastName(),
                     passwordEncoder.encode(user.getPassword()), user.getMail(), university);
-            supervisorRepository.save(supervisor);
+            savedUser = supervisorRepository.save(supervisor);
         }
+        sendVerificationMail(savedUser);
     }
 
     private void sendVerificationMail(User user){
@@ -90,7 +95,7 @@ public class UserService {
         verificationTokenRepository.save(token);
 
         SimpleMailMessage confirmationMsg = new SimpleMailMessage();
-        confirmationMsg.setFrom("");
+        confirmationMsg.setFrom("thesisthinder@gmail.com");
         confirmationMsg.setTo(user.getMail());
         confirmationMsg.setSubject("Verifikation Ihres Benutzerkontos bei Thinder");
         String header = "Hallo" + user.getFirstName() + ", \n";
@@ -101,17 +106,18 @@ public class UserService {
         mailSender.send(confirmationMsg);
     }
 
-    public void sendPasswordResetMail(UUID id){
-        User user = getUser(id);
+    public void sendPasswordResetMail(String mail){
+        User user = userRepository.findByMail(mail)
+            .orElseThrow(() -> new EntityNotFoundException(ERROR_NO_USER_WITH_MAIL));
 
         PasswordResetToken token = new PasswordResetToken(user, UUID.randomUUID().toString());
         passwordResetTokenRepository.save(token);
 
         SimpleMailMessage resetMsg = new SimpleMailMessage();
-        resetMsg.setFrom("");
+        resetMsg.setFrom("thesisthinder@gmail.com"); //todo maybe switch to value
         resetMsg.setTo(user.getMail());
         resetMsg.setSubject("Zurücksetzten Ihres Passworts");
-        String header = "Hallo" + user.getFirstName() + ", \n";
+        String header = "Hallo " + user.getFirstName() + ", \n";
         String body = "um Ihr Passwort zurückzusetzen geben Sie folgenden Code in der App ein: \n" + token.getToken();
         resetMsg.setText(header + body);
 
@@ -123,7 +129,8 @@ public class UserService {
                 () -> new EntityNotFoundException("") //todo exception
         );
         if(isTokenExpired(resetToken)){
-            //todo exception
+            passwordResetTokenRepository.delete(resetToken);
+            //todo exception resend token?
         }
         User user = resetToken.getUser();
 
@@ -142,6 +149,7 @@ public class UserService {
             //todo add exception
         }
         if(isTokenExpired(verificationToken)){
+            verificationTokenRepository.delete(verificationToken);
             throw new IllegalArgumentException(); //todo add exception and maybe resend verification mail
         }
         user.setActive(true);
@@ -160,19 +168,30 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
     }
 
-    public void updateStudent(UUID id, Student newStudent) {
-        Student student = studentRepository.findById(id)
-            .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
+    public void updateUser(User user) {
+        // todo... was ist wenn im frontend zb die id manipuliert wird
+        if (user instanceof Student) {
+            Student student = (Student) user;
+            UUID id = student.getId();
+            Student newStudent = studentRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
 
-        student.setFirstName(newStudent.getFirstName());
-        student.setLastName(newStudent.getLastName());
-        student.setDegree(newStudent.getDegrees());
-        studentRepository.save(student);
-    }
+            newStudent.setFirstName(student.getFirstName());
+            newStudent.setLastName(student.getLastName());
+            newStudent.setDegree(student.getDegrees());
+            studentRepository.save(newStudent);
+        }
 
-    public void updateSupervisor(UUID id, Supervisor newSupervisor) {
-        Supervisor supervisor = supervisorRepository.findById(id)
-            .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
+        if (user instanceof Supervisor) {
+            Supervisor supervisor = (Supervisor) user;
+            UUID id = supervisor.getId();
+            Supervisor newSupervisor = supervisorRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
+
+            newSupervisor.setFirstName(supervisor.getFirstName());
+            newSupervisor.setLastName(supervisor.getLastName());
+            supervisorRepository.save(newSupervisor);
+        }
     }
 
     public void deleteUser(UUID id) {
@@ -199,5 +218,16 @@ public class UserService {
         Date currentDate = Calendar.getInstance().getTime();
         Date expirationDate = token.getExpirationDate();
         return expirationDate.before(currentDate) ? true : false;
+    }
+
+    public String getRole(UUID id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("")); //todo
+        if (user instanceof Student) {
+            return "STUDENT";
+        }
+        if (user instanceof Supervisor) {
+            return "SUPERVISOR";
+        }
+        throw new RuntimeException(""); //todo
     }
 }

@@ -1,14 +1,15 @@
-package com.pse.thinder.backend.databaseFeatures;
+package com.pse.thinder.backend.databaseFeatures.thesis;
 
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 public class Image {
 
-    @Id @GeneratedValue
-    private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @Lob
     @Basic(fetch = FetchType.EAGER)
@@ -18,11 +19,11 @@ public class Image {
     @JoinColumn(name="thesis_id", nullable=false)
     private Thesis thesis;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

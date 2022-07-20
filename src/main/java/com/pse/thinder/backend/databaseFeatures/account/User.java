@@ -1,5 +1,7 @@
 package com.pse.thinder.backend.databaseFeatures.account;
 
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pse.thinder.backend.databaseFeatures.token.PasswordResetToken;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.token.VerificationToken;
@@ -11,8 +13,15 @@ import java.util.UUID;
 
 @Entity @Table(name="users")
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "role", visible = false)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Student.class, name = "STUDENT"),
+    @JsonSubTypes.Type(value = Supervisor.class, name = "SUPERVISOR"),
+    @JsonSubTypes.Type(value = PlainUser.class, name = "USER")
+})
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class User {
-
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -31,21 +40,26 @@ public class User {
 
     private Boolean active;
 
+
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("uni_id")
     @ManyToOne
     @JoinColumn(name = "university_id", nullable = false)
     private University university;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<PasswordResetToken> passwordResetTokens;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<VerificationToken> verificationTokens;
 
     //this is necessary due to JPA requirements for a non arg constructor.
     protected User(){}
 
-    public User (String firstName, String lastName, String password,
-                 String mail, University university){
+    public User(String firstName, String lastName, String password,
+                 String mail, University university) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
