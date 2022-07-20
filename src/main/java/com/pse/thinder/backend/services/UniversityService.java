@@ -1,5 +1,6 @@
 package com.pse.thinder.backend.services;
 
+import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.repositories.UniversityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class UniversityService {
     }
 
     public University getUniversityById(UUID id) {
-        return universityRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("")); //todo
+        return universityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("")); //todo
     }
 
 }
