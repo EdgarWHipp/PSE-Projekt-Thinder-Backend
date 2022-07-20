@@ -2,6 +2,7 @@ package com.pse.thinder.backend.controllers;
 
 import java.util.UUID;
 
+import com.pse.thinder.backend.repositories.UniversityRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,8 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -25,6 +28,7 @@ import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.services.UniversityService;
 
 @ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class UniversityControllerTests {
 
 	@Mock
@@ -32,6 +36,9 @@ class UniversityControllerTests {
 	
 	@InjectMocks
 	UniversityController universityController;
+
+	@Autowired
+	UniversityRepository universityRepository;
 	
 	MockMvc mockMvc;
 	
@@ -61,5 +68,15 @@ class UniversityControllerTests {
 		MockHttpServletResponse result = mockMvc.perform(MockMvcRequestBuilders.get("/university/"+u)).andReturn().getResponse();
 		
 		Assertions.assertThat(result.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+	}
+
+	@Test
+	void testAddUniversity() throws Exception { // todo this is a test of the inmemory db... works...
+		University newUni = new University("KIT");
+		newUni.setStudentMailRegex(".*@student.kit.edu");
+		newUni.setSupervisorMailRegex(".*@kit.edu");
+		universityRepository.save(newUni);
+
+		University uni = universityRepository.findByName("KIT").orElseThrow(() -> new EntityNotFoundException("Test"));
 	}
 }

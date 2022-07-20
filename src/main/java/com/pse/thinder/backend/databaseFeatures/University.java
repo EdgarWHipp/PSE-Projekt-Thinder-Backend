@@ -1,6 +1,7 @@
 package com.pse.thinder.backend.databaseFeatures;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.pse.thinder.backend.databaseFeatures.account.User;
 
@@ -18,6 +19,7 @@ public class University {
     @Column(columnDefinition = "character varying(50) unique not null")
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "university", cascade = CascadeType.REMOVE)
     private Set<User> members;
 
