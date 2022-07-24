@@ -53,8 +53,7 @@ public class ThinderUserDetails implements UserDetails{
 
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return true;
+		return user.isActive();
 	}
 
 	public User getUser() {
