@@ -29,19 +29,21 @@ public class ThesisService {
 	public Thesis getThesisById(UUID id) {
 		return thesisRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(THESIS_NOT_FOUND));
 	}
-	
-	public void addThesis(Thesis thesis) {
-		Thesis toSave = new Thesis(thesis.getName(), thesis.getDescription(), thesis.getQuestionForm());
-		
+
+	public void addThesis(Thesis thesis, Supervisor supervisor) {
+		Thesis toSave = new Thesis(thesis.getName(), thesis.getDescription(), thesis.getQuestionForm(), supervisor);
+		toSave.setImages(thesis.getImages());
+		toSave.setPossibleDegrees(thesis.getPossibleDegrees());
 		thesisRepository.save(toSave);
 	}
-	
+
 	public void updateThesis(Thesis thesis, UUID id) {
 		Thesis toSave = getThesisById(id);
 		toSave.setName(thesis.getName());
 		toSave.setDescription(thesis.getDescription());
 		toSave.setQuestionForm(thesis.getQuestionForm());
-		
+		toSave.setImages(thesis.getImages());
+		toSave.setPossibleDegrees(thesis.getPossibleDegrees());
 		thesisRepository.save(toSave);
 	}
 
