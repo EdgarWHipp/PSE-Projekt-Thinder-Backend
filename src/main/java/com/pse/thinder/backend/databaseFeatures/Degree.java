@@ -23,6 +23,10 @@ public class Degree {
     @ManyToMany(mappedBy = "possibleDegrees")
     private Set<Thesis> possibleTheses;
 
+    @ManyToOne
+    @JoinColumn(name = "university_id", columnDefinition = "uuid not null")
+    private University university;
+
 
     public Degree(String name, String degree){
         this.name = name;

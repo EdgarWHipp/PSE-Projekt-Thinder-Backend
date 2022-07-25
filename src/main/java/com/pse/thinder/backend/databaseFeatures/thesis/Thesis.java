@@ -6,6 +6,7 @@ import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.Stack;
 import java.util.UUID;
 
 
@@ -29,10 +30,10 @@ public class Thesis {
     @JoinColumn(name="supervisor_id",nullable=false)
     private Supervisor supervisor;
 
-    @OneToMany(mappedBy= "thesis", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy= "thesis", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ThesisRating> studentRatings;
 
-    @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Image> images;
 
 

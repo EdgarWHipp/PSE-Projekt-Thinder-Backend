@@ -1,7 +1,10 @@
 package com.pse.thinder.backend.controllers;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 
+import com.pse.thinder.backend.databaseFeatures.thesis.Image;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.pse.thinder.backend.services.ThesisService;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.Entity;
 
 @RestController
 public class ThesisController {
@@ -40,4 +46,21 @@ public class ThesisController {
 	public void deleteThesis(@PathVariable("id") UUID id) {
 		thesisService.deleteThesis(id);
 	}
+
+	@PostMapping("Supervisor/{id}/Theses") //todo you could change that to get the current id of auth. user
+	public ArrayList<Thesis> getThesesForSupervisor(@PathVariable("id") UUID id){
+		return thesisService.getThesesBySupervisor(id);
+	}
+
+	@PostMapping("Theses/{id}/images")
+	public void removeImage(@PathVariable("id") UUID id){
+		thesisService.removeImages(id);
+	}
+
+	@PostMapping("Theses/{id}/newImages")
+	public void addImages(@PathVariable("id") UUID id, @RequestBody ArrayList<MultipartFile> imageFiles) throws IOException {
+		thesisService.addImages(imageFiles, id);
+	}
+
+
 }
