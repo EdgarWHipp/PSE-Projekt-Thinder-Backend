@@ -38,7 +38,7 @@ public class UserController {
      * @param mail of the user
      */
     @GetMapping("/resetPassword")
-    public void resetPasswordUser(@PathVariable("mail") String mail) {
+    public void resetPasswordUser(@RequestParam String mail) {
         userService.sendPasswordResetMail(mail);
     }
 
