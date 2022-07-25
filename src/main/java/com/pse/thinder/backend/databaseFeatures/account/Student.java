@@ -25,7 +25,7 @@ public class Student extends User{
     private Set<Degree> degrees;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", orphanRemoval = true)
     private Stack<ThesisRating> thesesRatings;
 
     protected Student() {}

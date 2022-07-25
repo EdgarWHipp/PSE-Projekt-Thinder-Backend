@@ -2,6 +2,8 @@ package com.pse.thinder.backend.services;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
@@ -53,7 +55,7 @@ public class ThesisService {
 
 	public void addImages(ArrayList<MultipartFile> imageFiles, UUID thesisId) throws IOException {
 		Thesis thesis = getThesisById(thesisId);
-		ArrayList<Image> newImages = new ArrayList<>();
+		Set<Image> newImages = new HashSet<>();
 		for(MultipartFile imageFile : imageFiles){
 			if(imageFile.isEmpty()){
 				//todo add exception
@@ -64,7 +66,7 @@ public class ThesisService {
 			newImage.setThesis(thesis);
 			newImages.add(newImage);
 		}
-		thesis.getImages().addAll(newImages);
+		thesis.setImages(newImages);
 		thesisRepository.save(thesis);
 
 		imageRepository.saveAll(newImages);

@@ -40,11 +40,11 @@ public class Thesis {
     private Supervisor supervisor;
 
     @NotNull
-    @OneToMany(mappedBy= "thesis", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy= "thesis", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ThesisRating> studentRatings;
 
     @NotNull
-    @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Image> images;
 
     @NotEmpty
