@@ -183,10 +183,14 @@ public class UserService {
         }
 
         if (user instanceof Supervisor) {
-            Supervisor newSupervisor = (Supervisor) user;
-            UUID id = newSupervisor.getId();
-            Supervisor supervisor = supervisorRepository.findById(id)
+            Supervisor supervisor = (Supervisor) user;
+            UUID id = supervisor.getId();
+            Supervisor newSupervisor = supervisorRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
+
+            newSupervisor.setFirstName(supervisor.getFirstName());
+            newSupervisor.setLastName(supervisor.getLastName());
+            supervisorRepository.save(newSupervisor);
         }
     }
 

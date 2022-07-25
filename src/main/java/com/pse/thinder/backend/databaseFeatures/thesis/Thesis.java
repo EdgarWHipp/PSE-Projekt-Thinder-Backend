@@ -5,8 +5,13 @@ import com.pse.thinder.backend.databaseFeatures.Degree;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import java.util.HashSet;
 import java.util.Set;
-import java.util.Stack;
 import java.util.UUID;
 
 
@@ -16,27 +21,33 @@ public class Thesis {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @NotBlank
     @Column(columnDefinition = "character varying(100) not null")
     private String name;
 
+    @NotBlank
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @NotBlank
     @Column(columnDefinition = "TEXT")
     private String questionForm;
 
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name="supervisor_id",nullable=false)
     private Supervisor supervisor;
 
-    @OneToMany(mappedBy= "thesis", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @NotNull
+    @OneToMany(mappedBy= "thesis", cascade = CascadeType.REMOVE)
     private Set<ThesisRating> studentRatings;
 
-    @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @NotNull
+    @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE)
     private Set<Image> images;
 
-
+    @NotEmpty
     @ManyToMany
     @JoinTable(
             name = "theses_for_degree",
@@ -48,18 +59,20 @@ public class Thesis {
 
     protected Thesis(){}
 
-    public Thesis(String name, String description, String questionForm){
+    public Thesis(String name, String description, String questionForm, Supervisor supervisor){
         this.name = name;
         this.description = description;
         this.questionForm = questionForm;
+        
+        this.supervisor = supervisor;
+        
+        this.studentRatings = new HashSet<>();
+        this.images = new HashSet<>();
+        this.possibleDegrees = new HashSet<>();
     }
 
     public UUID getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -90,31 +103,32 @@ public class Thesis {
         return supervisor;
     }
 
-    public void setSupervisor(Supervisor supervisor) {
-        this.supervisor = supervisor;
-    }
-
     public Set<Image> getImages() {
-        return images;
+        return new HashSet<>(this.images);
     }
 
-    public void addImage(Image image) {
-        this.images.add(image);
+    public void setImages(Set<Image> images) {
+    	this.images.clear();
+        this.images.addAll(images);
     }
 
     public Set<ThesisRating> getStudentRatings() {
-        return studentRatings;
+        return new HashSet<>(this.studentRatings);
     }
 
     public void addStudentRating(ThesisRating thesisRating) {
         this.studentRatings.add(thesisRating);
     }
-
-    public Set<Degree> getPossibleDegrees() {
-        return possibleDegrees;
+    public void removeStudentRating(ThesisRating thesisRating) {
+        this.studentRatings.add(thesisRating);
     }
 
-    public void addPossibleDegree(Degree degree) {
-        this.possibleDegrees.add(degree);
+    public Set<Degree> getPossibleDegrees() {
+        return new HashSet<>(this.possibleDegrees);
+    }
+
+    public void setPossibleDegrees(Set<Degree> degrees) {
+    	this.possibleDegrees.clear();
+        this.possibleDegrees.addAll(degrees);
     }
 }

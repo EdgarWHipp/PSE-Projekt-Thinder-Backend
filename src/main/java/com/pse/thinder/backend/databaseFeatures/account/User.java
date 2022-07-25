@@ -1,9 +1,7 @@
 package com.pse.thinder.backend.databaseFeatures.account;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pse.thinder.backend.databaseFeatures.token.PasswordResetToken;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.token.VerificationToken;
@@ -14,13 +12,15 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity @Table(name="users")
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Inheritance(strategy = InheritanceType.JOINED)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "role", visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "role", visible = false)
 @JsonSubTypes({
     @JsonSubTypes.Type(value = Student.class, name = "STUDENT"),
-    @JsonSubTypes.Type(value = Supervisor.class, name = "SUPERVISOR")
+    @JsonSubTypes.Type(value = Supervisor.class, name = "SUPERVISOR"),
+    @JsonSubTypes.Type(value = PlainUser.class, name = "USER")
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,13 +41,17 @@ public class User {
     private Boolean active;
 
 
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("uni_id")
     @ManyToOne
     @JoinColumn(name = "university_id", nullable = false)
     private University university;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<PasswordResetToken> passwordResetTokens;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<VerificationToken> verificationTokens;
 

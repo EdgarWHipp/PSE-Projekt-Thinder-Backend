@@ -4,11 +4,13 @@ import com.pse.thinder.backend.databaseFeatures.account.User;
 import com.pse.thinder.backend.security.ThinderUserDetails;
 import com.pse.thinder.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@RequestMapping("/users") //todo test this
 @RestController
 public class UserController {
 
@@ -23,7 +25,7 @@ public class UserController {
      *
      * @param user
      */
-    @PostMapping("/users")
+    @PostMapping()
     public void postUser(@Valid @RequestBody User user) {
         userService.addUser(user);
     }
@@ -35,7 +37,7 @@ public class UserController {
      *
      * @param mail of the user
      */
-    @GetMapping("/users/resetPassword")
+    @GetMapping("/resetPassword")
     public void resetPasswordUser(@PathVariable("mail") String mail) {
         userService.sendPasswordResetMail(mail);
     }
@@ -48,7 +50,7 @@ public class UserController {
      * @param token which the user received via mail
      * @param password to be set
      */
-    @PostMapping("/users/resetPassword")
+    @PostMapping("/resetPassword")
     public void resetPasswordVerifyUser(@RequestParam String token,
                                         @RequestParam String password) {
         userService.changePassword(token, password);
@@ -61,7 +63,7 @@ public class UserController {
      *
      * @return role of the logged-in user as string.
      */
-    @GetMapping("/users/current/getRole")
+    @GetMapping("/current/getRole")
     public String getRole() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
             getContext().getAuthentication().getPrincipal();
@@ -75,7 +77,7 @@ public class UserController {
      *
      * @return json of the user details of the logged-in user.
      */
-    @GetMapping("/users/current")
+    @GetMapping("/current")
     public User getUser() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
             getContext().getAuthentication().getPrincipal();
@@ -90,8 +92,9 @@ public class UserController {
      *
      * @param user data json to be set
      */
-    @PutMapping(value = "/users/current")
+    @PutMapping("/current")
     public void updateUser(@RequestBody User user) {
+        // todo check if userid in body matches the verified user
         userService.updateUser(user);
     }
 
@@ -100,7 +103,8 @@ public class UserController {
      *
      * Protected access and user specific.
      */
-    @DeleteMapping("/users/current")
+    @DeleteMapping("/current")
+    @Secured("ROLE_EDITOR")
     public void deleteUser() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
             getContext().getAuthentication().getPrincipal();
@@ -114,7 +118,7 @@ public class UserController {
      *
      * @param token
      */
-    @PostMapping("/users/verify")
+    @PostMapping("/verify")
     public void verifyUser(@RequestParam String token) {
         userService.confirmRegistration(token);
     }

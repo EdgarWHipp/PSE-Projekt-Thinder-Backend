@@ -8,18 +8,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/university")
 public class UniversityController {
 
     @Autowired
     UniversityService universityService;
 
-    @PostMapping("/university") //todo only for admins
+    @PostMapping() //todo only for admins
     public void addUniversity(@RequestBody University uni) {
         universityService.addUniversity(uni);
     }
 
-    @GetMapping("/university")
-    public University getUniversityById(@RequestParam UUID id) {
+    @GetMapping("/{id}")
+    public University getUniversityById(@PathVariable("id") UUID id) {
         return universityService.getUniversityById(id);
     }
 
