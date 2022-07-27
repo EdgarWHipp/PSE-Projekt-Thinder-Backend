@@ -77,4 +77,12 @@ public class University {
     public void setSupervisorMailRegex(String supervisorMailRegex) {
         this.supervisorMailRegex = supervisorMailRegex;
     }
+
+    public Set<Degree> getDegrees() {
+        return degrees;
+    }
+
+    public void addDegree(Degree degree) {
+        this.degrees.add(degree);
+    }
 }

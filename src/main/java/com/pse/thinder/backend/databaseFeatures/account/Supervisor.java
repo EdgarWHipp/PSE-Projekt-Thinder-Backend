@@ -18,7 +18,7 @@ public class Supervisor extends User {
 
 
 
-    private String acedemicDegree; //could this be an enum?
+    private String acedemicDegree;
 
     @Column(columnDefinition = "character varying(20)")
     private String building;

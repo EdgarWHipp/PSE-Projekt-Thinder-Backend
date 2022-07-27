@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Stack;
 import java.util.UUID;
 
@@ -58,14 +59,14 @@ public class StudentService {
         return thesisRatingRepository.findByIdThesisId(thesisId);
     }
 
-    public void undoLastRating(UUID studentId){
+    public ThesisRating undoLastRating(UUID studentId){
         Student student = studentRepository.findById(studentId).orElseThrow(
                 () -> new EntityNotFoundException("The given user Id is unkown!")
         );
-        Stack<ThesisRating> ratings = student.getThesesRatings();
-        if(ratings.empty()){
+        LinkedList<ThesisRating> ratings = student.getThesesRatings();
+        if(ratings.isEmpty()){
             //todo add exception
         }
-        ratings.pop(); //does the rating get removed for the thesis?
+        return ratings.removeLast();
     }
 }
