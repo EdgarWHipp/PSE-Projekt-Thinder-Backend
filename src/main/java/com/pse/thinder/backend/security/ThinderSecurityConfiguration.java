@@ -9,10 +9,25 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * This class defines beans needed for Spring Security.
+ * These are the SecurityFilterChain which is used to apply basic security to all requests
+ * and an PasswordEncoder for used for authentification
+ *
+ */
+//Tells Spring Boot that this class is a source for Beans
 @Configuration
+//Enables the use of Annotations to secure requests endpoints at the definition
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ThinderSecurityConfiguration {
 
+	/**
+	 * This method is invoked by Spring Boot
+	 * it defines the SecurityFilterChain for Spring Security
+	 * @param http given by Spring
+	 * @return the custom SecurityFilterChain
+	 * @throws Exception
+	 */
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		//Only HTTPS requests
@@ -37,7 +52,12 @@ public class ThinderSecurityConfiguration {
 		return http.build();
 	}
 	
-	//TODO
+	//TODO Plain text passworsd only for Testing 
+	/**
+	 * This method is invoked by Spring Boot
+	 * it defines the PasswordEncoder which is used by Spring Security to authenticate Requests
+	 * @return the custom PasswordEncoder
+	 */
 	@Bean
 	public PasswordEncoder getPasswordEncoder() { return NoOpPasswordEncoder.getInstance(); };
 }
