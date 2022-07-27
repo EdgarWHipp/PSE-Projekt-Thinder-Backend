@@ -11,10 +11,7 @@ import com.pse.thinder.backend.repositories.ThesisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Stack;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class StudentService {
@@ -63,10 +60,14 @@ public class StudentService {
         Student student = studentRepository.findById(studentId).orElseThrow(
                 () -> new EntityNotFoundException("The given user Id is unkown!")
         );
-        LinkedList<ThesisRating> ratings = student.getThesesRatings();
+        List<ThesisRating> ratings = student.getThesesRatings();
         if(ratings.isEmpty()){
             //todo add exception
         }
-        return ratings.removeLast();
+        return ratings.get(ratings.size() - 1);
+    }
+
+    private void getPossibleTheses(UUID studentId){
+
     }
 }

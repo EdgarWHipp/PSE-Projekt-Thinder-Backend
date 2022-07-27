@@ -9,10 +9,7 @@ import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 //import java.util.Stack;
 //import org.hibernate.internal.util.collections.Stack;
 
@@ -31,7 +28,7 @@ public class Student extends User{
 
     @JsonIgnore
     @OneToMany(mappedBy = "student", orphanRemoval = true)
-    private LinkedList<ThesisRating> thesesRatings;
+    private List<ThesisRating> thesesRatings;
 
     protected Student() {}
 
@@ -47,12 +44,12 @@ public class Student extends User{
         this.degrees.add(degree);
     }
 
-    public LinkedList<ThesisRating> getThesesRatings() {
+    public List<ThesisRating> getThesesRatings() {
         return thesesRatings;
     }
 
     public void addThesesRatings(ThesisRating thesisRating) {
-        this.thesesRatings.addLast(thesisRating); //add the element at the end of the list to mimic a stack
+        this.thesesRatings.add(thesisRating); //add the element at the end of the list to mimic a stack
         //todo explain the problem why we didn't use a stack in the documentation, due to missing hibernate implementation
     }
 
