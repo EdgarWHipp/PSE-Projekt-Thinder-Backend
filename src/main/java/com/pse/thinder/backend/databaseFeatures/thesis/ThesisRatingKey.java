@@ -21,6 +21,13 @@ public class ThesisRatingKey implements Serializable {
     @Column(name="thesis_id")
     private UUID thesisId;
 
+    public ThesisRatingKey(){}
+
+    public ThesisRatingKey(UUID studentId, UUID thesisId){
+        this.studentId = studentId;
+        this.thesisId = thesisId;
+    }
+
     @Override
     public boolean equals(Object obj) {
     	return super.equals(obj);

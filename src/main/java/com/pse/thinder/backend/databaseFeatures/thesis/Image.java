@@ -11,6 +11,8 @@ public class Image {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    private String name;
+
     @Lob
     @Basic(fetch = FetchType.EAGER)
     private byte[] image;
@@ -41,5 +43,13 @@ public class Image {
 
     public void setThesis(Thesis thesis) {
         this.thesis = thesis;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

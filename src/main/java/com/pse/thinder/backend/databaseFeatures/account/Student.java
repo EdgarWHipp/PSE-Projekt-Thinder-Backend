@@ -9,6 +9,7 @@ import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.Stack;
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -24,8 +25,8 @@ public class Student extends User{
     private Set<Degree> degrees;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "student")
-    private Set<ThesisRating> thesesRatings;
+    @OneToMany(mappedBy = "student", orphanRemoval = true)
+    private Stack<ThesisRating> thesesRatings;
 
     protected Student() {}
 
@@ -41,7 +42,7 @@ public class Student extends User{
         this.degrees.add(degree);
     }
 
-    public Set<ThesisRating> getThesesRatings() {
+    public Stack<ThesisRating> getThesesRatings() {
         return thesesRatings;
     }
 

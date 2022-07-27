@@ -20,8 +20,15 @@ public class ThesisRating {
     @JoinColumn(name ="thesis_id", columnDefinition="uuid")
     private Thesis thesis;
 
-
     private boolean positiveRated;
+
+    public ThesisRating(){ }
+
+    public ThesisRating(ThesisRatingKey key, boolean rating){
+        this.id = key;
+        this.positiveRated = rating;
+    }
+
 
     public ThesisRatingKey getId() {
         return id;

@@ -29,6 +29,9 @@ public class University {
     @Column(columnDefinition = "character varying(50) not null")
     private String supervisorMailRegex;
 
+    @OneToMany(mappedBy = "university", cascade =  CascadeType.REMOVE)
+    private Set<Degree> degrees;
+
     protected University(){}
 
     public University(String name){
