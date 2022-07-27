@@ -7,6 +7,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.pse.thinder.backend.databaseFeatures.account.User;
 
+/**
+ * This class represents an User for the authentification by Spring Security
+ *
+ */
 public class ThinderUserDetails implements UserDetails{
 
 	/**
@@ -16,6 +20,10 @@ public class ThinderUserDetails implements UserDetails{
 
 	private final User user;
 	
+	/**
+	 * Creates a new Instance for the given User
+	 * @param user
+	 */
 	public ThinderUserDetails(User user) {
 		this.user = user;
 	}
@@ -56,6 +64,10 @@ public class ThinderUserDetails implements UserDetails{
 		return user.isActive();
 	}
 
+	/**
+	 * Returns the user for more details not needed by Spring Security
+	 * @return the user which this class represents
+	 */
 	public User getUser() {
 		return user;
 	}

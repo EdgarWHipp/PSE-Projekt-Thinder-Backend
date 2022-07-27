@@ -38,7 +38,7 @@ public class UserController {
      * @param mail of the user
      */
     @GetMapping("/resetPassword")
-    public void resetPasswordUser(@PathVariable("mail") String mail) {
+    public void resetPasswordUser(@RequestParam String mail) {
         userService.sendPasswordResetMail(mail);
     }
 
@@ -52,7 +52,7 @@ public class UserController {
      */
     @PostMapping("/resetPassword")
     public void resetPasswordVerifyUser(@RequestParam String token,
-                                        @RequestParam String password) {
+                                        @RequestBody String password) {
         userService.changePassword(token, password);
     }
 
@@ -118,7 +118,7 @@ public class UserController {
      *
      * @param token
      */
-    @PostMapping("/verify")
+    @GetMapping("/verify")
     public void verifyUser(@RequestParam String token) {
         userService.confirmRegistration(token);
     }
