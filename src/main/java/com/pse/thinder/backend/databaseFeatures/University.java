@@ -34,11 +34,15 @@ public class University {
 
     protected University(){}
 
-    public University(String name){
-        this.name = name;
-    }
+    public University(String name, String studentMailRegex, String supervisorMailRegex, Set<Degree> degrees) {
+		super();
+		this.name = name;
+		this.studentMailRegex = studentMailRegex;
+		this.supervisorMailRegex = supervisorMailRegex;
+		this.degrees = degrees;
+	}
 
-    public UUID getId() {
+	public UUID getId() {
         return id;
     }
 

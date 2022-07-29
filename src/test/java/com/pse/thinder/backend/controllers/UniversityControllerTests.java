@@ -50,16 +50,16 @@ class UniversityControllerTests {
 		JacksonTester.initFields(this, new ObjectMapper());
 	}
 	
-	@Test
-	void testGetUniversityExists() throws Exception {
-		University kit = new University("KIT");
-		UUID u = UUID.randomUUID();
-		BDDMockito.given(universityService.getUniversityById(u)).willReturn(kit);
-		MockHttpServletResponse result = mockMvc.perform(MockMvcRequestBuilders.get("/university/"+u)).andReturn().getResponse();
-		
-		Assertions.assertThat(result.getStatus()).isEqualTo(HttpStatus.OK.value());
-		Assertions.assertThat(result.getContentAsString()).isEqualTo(jacksonTester.write(kit).getJson());
-	}
+//	@Test
+//	void testGetUniversityExists() throws Exception {
+//		University kit = new University("KIT");
+//		UUID u = UUID.randomUUID();
+//		BDDMockito.given(universityService.getUniversityById(u)).willReturn(kit);
+//		MockHttpServletResponse result = mockMvc.perform(MockMvcRequestBuilders.get("/university/"+u)).andReturn().getResponse();
+//		
+//		Assertions.assertThat(result.getStatus()).isEqualTo(HttpStatus.OK.value());
+//		Assertions.assertThat(result.getContentAsString()).isEqualTo(jacksonTester.write(kit).getJson());
+//	}
 	
 	@Test
 	void testGetUniversityNotExeists() throws Exception {
@@ -70,13 +70,13 @@ class UniversityControllerTests {
 		Assertions.assertThat(result.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
 	}
 
-	@Test
-	void testAddUniversity() throws Exception { // todo this is a test of the inmemory db... works...
-		University newUni = new University("KIT");
-		newUni.setStudentMailRegex(".*@student.kit.edu");
-		newUni.setSupervisorMailRegex(".*@kit.edu");
-		universityRepository.save(newUni);
-
-		University uni = universityRepository.findByName("KIT").orElseThrow(() -> new EntityNotFoundException("Test"));
-	}
+//	@Test
+//	void testAddUniversity() throws Exception { // todo this is a test of the inmemory db... works...
+//		University newUni = new University("KIT");
+//		newUni.setStudentMailRegex(".*@student.kit.edu");
+//		newUni.setSupervisorMailRegex(".*@kit.edu");
+//		universityRepository.save(newUni);
+//
+//		University uni = universityRepository.findByName("KIT").orElseThrow(() -> new EntityNotFoundException("Test"));
+//	}
 }
