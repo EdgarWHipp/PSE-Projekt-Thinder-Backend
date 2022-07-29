@@ -39,7 +39,7 @@ public class ThinderSecurityConfiguration {
 		http.authorizeRequests()
 		//Public
 			.antMatchers(HttpMethod.GET, "/helloOpen").permitAll()
-			.antMatchers(HttpMethod.POST, "/users/verify").permitAll()
+			.antMatchers(HttpMethod.GET, "/users/verify").permitAll()
 			.antMatchers(HttpMethod.GET, "/users/resetPassword").permitAll()
 			.antMatchers(HttpMethod.POST, "/users/resetPassword").permitAll()
 			.antMatchers(HttpMethod.POST, "/users").permitAll()
