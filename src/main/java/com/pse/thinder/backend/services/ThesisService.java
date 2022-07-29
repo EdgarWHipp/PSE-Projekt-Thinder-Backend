@@ -33,17 +33,18 @@ public class ThesisService {
 	}
 
 	public void addThesis(Thesis thesis, Supervisor supervisor) {
-		Thesis toSave = new Thesis(thesis.getName(), thesis.getDescription(), thesis.getQuestionForm(), supervisor);
-		toSave.setImages(thesis.getImages());
-		toSave.setPossibleDegrees(thesis.getPossibleDegrees());
+		Thesis toSave = new Thesis(thesis.getName(), thesis.getTask(), thesis.getMotivation(), thesis.getQuestionForm(),
+				thesis.getSupervisingProfessor(), supervisor, thesis.getImages(), thesis.getPossibleDegrees());
 		thesisRepository.save(toSave);
 	}
 
 	public void updateThesis(Thesis thesis, UUID id) {
 		Thesis toSave = getThesisById(id);
 		toSave.setName(thesis.getName());
-		toSave.setDescription(thesis.getDescription());
+		toSave.setTask(thesis.getTask());
+		toSave.setMotivation(thesis.getMotivation());
 		toSave.setQuestionForm(thesis.getQuestionForm());
+		toSave.setSupervisingProfessor(thesis.getSupervisingProfessor());
 		toSave.setImages(thesis.getImages());
 		toSave.setPossibleDegrees(thesis.getPossibleDegrees());
 		thesisRepository.save(toSave);

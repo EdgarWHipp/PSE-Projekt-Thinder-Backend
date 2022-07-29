@@ -27,19 +27,24 @@ public class Thesis {
 
     @NotBlank
     @Column(columnDefinition = "TEXT")
-    private String description;
+    private String task;
+    
+    @NotBlank
+    @Column(columnDefinition = "TEXT")
+    private String motivation;
 
     @NotBlank
     @Column(columnDefinition = "TEXT")
     private String questionForm;
 
-
-    @NotNull
+    @NotBlank
+    @Column(columnDefinition = "TEXT")
+    private String supervisingProfessor;
+    
     @ManyToOne
     @JoinColumn(name="supervisor_id",nullable=false)
     private Supervisor supervisor;
 
-    @NotNull
     @OneToMany(mappedBy= "thesis", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<ThesisRating> studentRatings;
 
@@ -59,17 +64,21 @@ public class Thesis {
 
     protected Thesis(){}
 
-    public Thesis(String name, String description, String questionForm, Supervisor supervisor){
-        this.name = name;
-        this.description = description;
-        this.questionForm = questionForm;
-        
-        this.supervisor = supervisor;
-        
-        this.studentRatings = new HashSet<>();
-        this.images = new HashSet<>();
-        this.possibleDegrees = new HashSet<>();
-    }
+    
+    public Thesis(@NotBlank String name, @NotBlank String task, @NotBlank String motivation,
+			@NotBlank String questionForm, @NotBlank String supervisingProfessor, Supervisor supervisor,
+			@NotNull Set<Image> images, @NotEmpty Set<Degree> possibleDegrees) {
+		super();
+		this.name = name;
+		this.task = task;
+		this.motivation = motivation;
+		this.questionForm = questionForm;
+		this.supervisingProfessor = supervisingProfessor;
+		this.supervisor = supervisor;
+		this.studentRatings = new HashSet<>();
+		this.images = images;
+		this.possibleDegrees = possibleDegrees;
+	}
 
     public UUID getId() {
         return id;
@@ -83,15 +92,33 @@ public class Thesis {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getTask() {
+        return task;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTask(String task) {
+        this.task = task;
+    }
+    
+    public String getMotivation() {
+        return motivation;
     }
 
-    public String getQuestionForm() {
+    public void setMotivation(String motivation) {
+        this.motivation = motivation;
+    }
+
+    public String getSupervisingProfessor() {
+		return supervisingProfessor;
+	}
+
+
+	public void setSupervisingProfessor(String supervisingProfessor) {
+		this.supervisingProfessor = supervisingProfessor;
+	}
+
+
+	public String getQuestionForm() {
         return questionForm;
     }
 
