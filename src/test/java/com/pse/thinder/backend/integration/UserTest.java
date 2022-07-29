@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.HashSet;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 import org.assertj.core.api.Assertions;
 import org.json.JSONException;
@@ -74,20 +75,28 @@ class UserTest {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		
-		JSONObject t = new JSONObject();
-		t.put("id", "true");
-		t.put("role", "USER");
-		t.put("firstName", "Bob");
-		t.put("lastName", "Fischer");
-		t.put("mail", "uihoz@student.kit.edu");
-		t.put("password", "password");
+		JSONObject userJson = new JSONObject();
+		userJson.put("role", "USER");
+		userJson.put("firstName", "Bob");
+		userJson.put("lastName", "Fischer");
+		userJson.put("mail", "uihoz@student.kit.edu");
+		userJson.put("password", "password");
 		
-		HttpEntity<String> request = new HttpEntity<String>(t.toString(), headers);
+		HttpEntity<String> request = new HttpEntity<String>(userJson.toString(), headers);
 		ResponseEntity<String> userResponseEntity = testRestTemplate.postForEntity("/users", request, String.class);
 		
-//		System.out.println(mailServer.getReceivedMessages()[0].getContent());
 		
 		Assertions.assertThat(userResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+		MimeMessage[] mail = mailServer.getReceivedMessages();
+		System.err.println(mail[0].getContentType());
+		String token = mail[0].getContent().toString().split("\n")[2].trim();
+		System.err.println("-"+token+"-");
+		
+		ResponseEntity<String> verifyResponse = testRestTemplate.getForEntity("/users/verify?token={token}", String.class, token);
+		
+		Assertions.assertThat(verifyResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+		
+		System.err.println(userRepository.findAll().toString());
 	}
 	
 	@AfterEach
