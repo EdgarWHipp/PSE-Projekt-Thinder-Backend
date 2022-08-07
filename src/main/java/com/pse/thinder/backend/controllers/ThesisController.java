@@ -2,8 +2,6 @@ package com.pse.thinder.backend.controllers;
 
 import java.util.UUID;
 
-import javax.validation.Valid;
-
 import com.pse.thinder.backend.databaseFeatures.InputValidation;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
@@ -41,7 +39,7 @@ public class ThesisController {
 	
 	@PutMapping("/{id}")
 	@PreAuthorize("@thesisController.currentUserIsThesisOwner(#id)")
-	public void putThesis(@PathVariable("id") UUID id, @Valid @RequestBody Thesis thesis) {
+	public void putThesis(@PathVariable("id") UUID id, @Validated(InputValidation.class) @RequestBody Thesis thesis) {
 		thesisService.updateThesis(thesis, id);
 	}
 	

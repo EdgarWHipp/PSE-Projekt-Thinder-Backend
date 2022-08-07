@@ -59,7 +59,11 @@ public class User {
 
     @JsonIgnore
     private Boolean active;
-
+    
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Boolean isComplete;
+    
+    
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty(value = "uni_id", access = JsonProperty.Access.READ_ONLY)
     @ManyToOne

@@ -169,30 +169,24 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
     }
 
-    public void updateUser(User user) {
-        // todo... was ist wenn im frontend zb die id manipuliert wird
-        if (user instanceof Student) {
-            Student student = (Student) user;
-            UUID id = student.getId();
-            Student newStudent = studentRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
+    public void updateStudent(Student student) {
+        UUID id = student.getId();
+        Student newStudent = studentRepository.findById(id)
+            .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
 
-            newStudent.setFirstName(student.getFirstName());
-            newStudent.setLastName(student.getLastName());
-            newStudent.setDegree(student.getDegrees());
-            studentRepository.save(newStudent);
-        }
+        newStudent.setFirstName(student.getFirstName());
+        newStudent.setLastName(student.getLastName());
+        newStudent.setDegree(student.getDegrees());
+        studentRepository.save(newStudent);
+    }
+    public void updateSupervisor(Supervisor supervisor) {
+        UUID id = supervisor.getId();
+        Supervisor newSupervisor = supervisorRepository.findById(id)
+            .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
 
-        if (user instanceof Supervisor) {
-            Supervisor supervisor = (Supervisor) user;
-            UUID id = supervisor.getId();
-            Supervisor newSupervisor = supervisorRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException(ERROR_MSG + id));
-
-            newSupervisor.setFirstName(supervisor.getFirstName());
-            newSupervisor.setLastName(supervisor.getLastName());
-            supervisorRepository.save(newSupervisor);
-        }
+        newSupervisor.setFirstName(supervisor.getFirstName());
+        newSupervisor.setLastName(supervisor.getLastName());
+        supervisorRepository.save(newSupervisor);
     }
 
     public void deleteUser(UUID id) {
