@@ -7,7 +7,6 @@ import com.pse.thinder.backend.databaseFeatures.account.Student;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity @Table(name="thesisRatings")
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")

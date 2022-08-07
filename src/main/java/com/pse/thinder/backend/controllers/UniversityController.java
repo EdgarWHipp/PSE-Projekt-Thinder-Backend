@@ -14,11 +14,6 @@ public class UniversityController {
     @Autowired
     UniversityService universityService;
 
-    @PostMapping() //todo only for admins
-    public void addUniversity(@RequestBody University uni) {
-        universityService.addUniversity(uni);
-    }
-
     @GetMapping("/{id}")
     public University getUniversityById(@PathVariable("id") UUID id) {
         return universityService.getUniversityById(id);

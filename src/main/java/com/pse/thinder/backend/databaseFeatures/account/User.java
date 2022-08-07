@@ -2,6 +2,7 @@ package com.pse.thinder.backend.databaseFeatures.account;
 
 import com.fasterxml.jackson.annotation.*;
 import com.pse.thinder.backend.databaseFeatures.token.PasswordResetToken;
+import com.pse.thinder.backend.databaseFeatures.InputValidation;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.token.VerificationToken;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 
 @Entity @Table(name="users")
 @Inheritance(strategy = InheritanceType.JOINED)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "role", visible = false)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = false)
 @JsonSubTypes({
     @JsonSubTypes.Type(value = Student.class, name = "STUDENT"),
     @JsonSubTypes.Type(value = Supervisor.class, name = "SUPERVISOR"),
@@ -28,20 +29,20 @@ public class User {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @NotBlank
+    @NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(30) not null")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(30) not null")
     private String lastName;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min=8, max=50)
+    @Size(min=8, max=50, groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(50) not null")
     private String password;
 
-    @NotBlank
+    @NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(30) unique not null")
     private String mail;
 
@@ -59,9 +60,8 @@ public class User {
     @JsonIgnore
     private Boolean active;
 
-
     @JsonIdentityReference(alwaysAsId=true)
-    @JsonProperty("uni_id")
+    @JsonProperty(value = "uni_id", access = JsonProperty.Access.READ_ONLY)
     @ManyToOne
     @JoinColumn(name = "university_id", nullable = false)
     private University university;

@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.pse.thinder.backend.databaseFeatures.InputValidation;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 
@@ -17,22 +18,22 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Supervisor extends User {
 
-	@NotBlank
+	@NotBlank(groups = {InputValidation.class})
     private String acedemicDegree;
 
-	@NotBlank
+	@NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(20)")
     private String building;
 	
-	@NotBlank
+	@NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(10)")
     private String officeNumber;
 	
-	@NotBlank
+	@NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(50)")
     private String institute;
 	
-	@NotBlank
+	@NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(15) unique")
     private String phoneNumber;
 
@@ -42,8 +43,8 @@ public class Supervisor extends User {
 
     protected Supervisor(){}
 
-    public Supervisor(String firstName, String lastName, String password, String mail, University university, UserGroup role){
-        super(firstName, lastName, password, mail, university, role);
+    public Supervisor(String firstName, String lastName, String password, String mail, University university){
+        super(firstName, lastName, password, mail, university, UserGroup.GROUP_SUPERVISOR);
     }
 
     public String getAcedemicDegree() {

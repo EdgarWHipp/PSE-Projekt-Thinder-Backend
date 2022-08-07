@@ -1,15 +1,14 @@
 package com.pse.thinder.backend.controllers;
 
-import com.pse.thinder.backend.databaseFeatures.account.UserGroup;
+import com.pse.thinder.backend.databaseFeatures.InputValidation;
 import com.pse.thinder.backend.databaseFeatures.account.User;
 import com.pse.thinder.backend.security.ThinderUserDetails;
 import com.pse.thinder.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @RequestMapping("/users") //todo test this
 @RestController
@@ -27,7 +26,7 @@ public class UserController {
      * @param user
      */
     @PostMapping()
-    public void postUser(@Valid @RequestBody User user) {
+    public void postUser(@Validated(InputValidation.class) @RequestBody User user) {
         userService.addUser(user);
     }
 
@@ -55,20 +54,6 @@ public class UserController {
     public void resetPasswordVerifyUser(@RequestParam String token,
                                         @RequestBody String password) {
         userService.changePassword(token, password);
-    }
-
-    /**
-     * Returns the role of the logged-in user as string.
-     *
-     * Protected access and user specific.
-     *
-     * @return role of the logged-in user as string.
-     */
-    @GetMapping("/current/getRole")
-    public UserGroup getRole() {
-        ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
-            getContext().getAuthentication().getPrincipal();
-        return userService.getUserGroup(details.getUser().getId());
     }
 
     /**

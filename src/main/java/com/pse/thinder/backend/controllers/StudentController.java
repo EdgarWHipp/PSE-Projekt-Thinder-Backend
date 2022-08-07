@@ -1,6 +1,5 @@
 package com.pse.thinder.backend.controllers;
 
-
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 import com.pse.thinder.backend.security.ThinderUserDetails;

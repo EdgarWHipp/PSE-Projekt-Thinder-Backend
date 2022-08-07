@@ -7,7 +7,6 @@ import com.pse.thinder.backend.databaseFeatures.account.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class University {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @NotBlank
+    @NotBlank(groups = {InputValidation.class})
     @Size(min=1, max=50)
     @Column(columnDefinition = "character varying(50) unique not null")
     private String name;
@@ -32,12 +31,12 @@ public class University {
     @OneToMany(mappedBy = "university", cascade = CascadeType.REMOVE)
     private Set<User> members;
 
-    @NotBlank
+    @NotBlank(groups = {InputValidation.class})
     @Size(min=1, max=50)
     @Column(columnDefinition = "character varying(50) not null")
     private String studentMailRegex;
 
-    @NotBlank
+    @NotBlank(groups = {InputValidation.class})
     @Size(min=1, max=50)
     @Column(columnDefinition = "character varying(50) not null")
     private String supervisorMailRegex;

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.pse.thinder.backend.databaseFeatures.InputValidation;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 
 import javax.persistence.*;
@@ -23,27 +24,27 @@ public class Thesis {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @NotBlank
+    @NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(100) not null")
     private String name;
 
-    @NotBlank
+    @NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "TEXT")
     private String task;
     
-    @NotBlank
+    @NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "TEXT")
     private String motivation;
 
-    @NotBlank
+    @NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "TEXT")
     private String questionForm;
 
-    @NotBlank
+    @NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "TEXT")
     private String supervisingProfessor;
     
-    @NotNull
+    @NotNull(groups = {InputValidation.class})
     @ManyToOne
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("supervisor_id")
@@ -55,7 +56,7 @@ public class Thesis {
     private List<ThesisRating> studentRatings;
 
 
-    @NotNull
+    @NotNull(groups = {InputValidation.class})
     @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Image> images;
 

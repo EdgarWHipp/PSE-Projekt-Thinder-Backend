@@ -22,12 +22,12 @@ public class Degree {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @NotBlank
+    @NotBlank(groups = {InputValidation.class})
     @Size(min=1, max=30)
     @Column(columnDefinition = "character varying(30) not null")
     private String name;
     
-    @NotBlank
+    @NotBlank(groups = {InputValidation.class})
     @Size(min=1, max=30)
     @Column(columnDefinition = "character varying(30) not null")
     private String degree;
@@ -36,7 +36,7 @@ public class Degree {
     @ManyToMany(mappedBy = "degrees")
     private List<Student> students;
 
-    @NotNull
+    @NotNull(groups = {InputValidation.class})
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("uni_id")
     @ManyToOne

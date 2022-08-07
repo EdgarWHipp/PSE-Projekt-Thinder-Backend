@@ -79,13 +79,13 @@ public class UserService {
 
         if (Pattern.matches(university.getStudentMailRegex(), user.getMail())) {
             Student student = new Student(user.getFirstName(), user.getLastName(),
-                    passwordEncoder.encode(user.getPassword()), user.getMail(), university, UserGroup.GROUP_STUDENT);
+                    passwordEncoder.encode(user.getPassword()), user.getMail(), university);
             savedUser = studentRepository.save(student);
         }
 
         if (Pattern.matches(university.getSupervisorMailRegex(), user.getMail())) {
             Supervisor supervisor = new Supervisor(user.getFirstName(), user.getLastName(),
-                    passwordEncoder.encode(user.getPassword()), user.getMail(), university, UserGroup.GROUP_SUPERVISOR);
+                    passwordEncoder.encode(user.getPassword()), user.getMail(), university);
             savedUser = supervisorRepository.save(supervisor);
         }
         sendVerificationMail(savedUser);
@@ -101,7 +101,7 @@ public class UserService {
         confirmationMsg.setSubject("Verifikation Ihres Benutzerkontos bei Thinder");
         String header = "Hallo" + user.getFirstName() + ", \n";
         String body = "vielen Dank für Ihre Registrierung bei Thinder. Geben sie diesen Code in der App ein: \n" + token.getToken()
-                + " \n um Ihre Registrierung zu vollenden.";
+                + "\n um Ihre Registrierung zu vollenden.";
         confirmationMsg.setText(header + body);
 
         mailSender.send(confirmationMsg);
