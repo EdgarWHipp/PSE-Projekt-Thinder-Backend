@@ -48,7 +48,7 @@ public class User {
 
     @JsonIgnore
     @Enumerated(EnumType.STRING)
-    private UserGroup userGroup;
+    private Role userGroup;
     
     @JsonIgnore
     @ElementCollection(targetClass=Authorities.class)
@@ -79,7 +79,7 @@ public class User {
     protected User(){}
 
     public User(String firstName, String lastName, String password,
-                 String mail, University university, UserGroup role) {
+                 String mail, University university, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
@@ -162,11 +162,11 @@ public class User {
         this.verificationTokens.add(verificationToken);
     }
 
-    public UserGroup getUserGroup() {
+    public Role getUserGroup() {
         return userGroup;
     }
 
-    public void setUserGroup(UserGroup userGroup) {
+    public void setUserGroup(Role userGroup) {
         this.userGroup = userGroup;
     }
 

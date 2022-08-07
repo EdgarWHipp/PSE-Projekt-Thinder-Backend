@@ -2,14 +2,13 @@ package com.pse.thinder.backend.services;
 
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
 import com.pse.thinder.backend.databaseFeatures.University;
-import com.pse.thinder.backend.databaseFeatures.account.UserGroup;
+import com.pse.thinder.backend.databaseFeatures.account.Role;
 import com.pse.thinder.backend.databaseFeatures.token.PasswordResetToken;
 import com.pse.thinder.backend.databaseFeatures.token.VerificationToken;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.account.User;
 import com.pse.thinder.backend.repositories.*;
-import com.pse.thinder.backend.services.swipestrategy.ThesisSelectionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -211,7 +210,7 @@ public class UserService {
         return expirationDate.before(currentDate) ? true : false;
     }
 
-    public UserGroup getUserGroup(UUID id) {
+    public Role getUserGroup(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("")); //todo
         return user.getUserGroup();
     }

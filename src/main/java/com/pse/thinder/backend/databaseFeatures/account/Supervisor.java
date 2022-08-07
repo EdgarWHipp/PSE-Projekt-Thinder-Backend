@@ -44,7 +44,7 @@ public class Supervisor extends User {
     protected Supervisor(){}
 
     public Supervisor(String firstName, String lastName, String password, String mail, University university){
-        super(firstName, lastName, password, mail, university, UserGroup.GROUP_SUPERVISOR);
+        super(firstName, lastName, password, mail, university, Role.ROLE_SUPERVISOR);
     }
 
     public String getAcedemicDegree() {

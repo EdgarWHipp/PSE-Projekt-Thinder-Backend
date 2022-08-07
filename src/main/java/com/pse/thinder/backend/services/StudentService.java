@@ -2,6 +2,7 @@ package com.pse.thinder.backend.services;
 
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
 import com.pse.thinder.backend.databaseFeatures.Degree;
+import com.pse.thinder.backend.databaseFeatures.Pair;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesesForDegree;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
@@ -41,22 +42,29 @@ public class StudentService {
     @Autowired
     private MailSender mailSender;
 
+
+
     @Transactional
-    //todo validation thesis isn't rated already and if thesis is valid for degree
-    public void rateThesis(UUID thesisId, UUID studentId, boolean rating){
+    public void rateTheses(Collection<Pair<UUID, Boolean>> ratings, UUID studentId){
         Student student = getStudent(studentId);
 
-        Thesis thesis = thesisRepository.findById(thesisId).orElseThrow(
-                () -> new EntityNotFoundException("") //todo exception
-        );
+        ArrayList<ThesisRating> newRatings = new ArrayList<>();
 
-        ThesisRatingKey key = new ThesisRatingKey(student.getId(), thesisId);
-        ThesisRating newRating = new ThesisRating(key, rating, student, thesis);
+        for(Pair<UUID, Boolean> rating : ratings){
+            UUID thesisId = rating.getFirst();
+            boolean liked = rating.getSecond().booleanValue();
 
-        thesis.addStudentRating(newRating);
-        student.addThesesRatings(newRating);
+            Thesis thesis = thesisRepository.findById(thesisId).orElseThrow(
+                    () -> new EntityNotFoundException("") //todo exception
+            );
+            ThesisRating newRating = new ThesisRating(liked, student, thesis);
+            newRatings.add(newRating);
+            thesis.addStudentRating(newRating);
+            student.addThesesRatings(newRating);
 
-        thesisRatingRepository.save(newRating);
+        }
+        thesisRatingRepository.saveAllAndFlush(newRatings);
+
     }
 
     public void removeRatedThesis(UUID studentId, UUID thesisId){

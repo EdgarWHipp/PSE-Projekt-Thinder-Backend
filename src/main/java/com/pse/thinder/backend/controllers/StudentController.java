@@ -1,15 +1,19 @@
 package com.pse.thinder.backend.controllers;
 
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
+import com.pse.thinder.backend.databaseFeatures.Pair;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 import com.pse.thinder.backend.security.ThinderUserDetails;
 import com.pse.thinder.backend.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Tuple;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,21 +27,20 @@ public class StudentController {
     //todo error handling
 
     @GetMapping("/theses/get-swipe-theses")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     public ArrayList<Thesis> getSwipeorder() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
         return studentService.getSwipeOrder(details.getUser().getId());
     }
 
-    @GetMapping("/rated-theses/{thesis-id}")
+    @PostMapping("/rated-theses")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public void rateThesis(@PathVariable("thesis-id") UUID thesisId
-            ,@RequestParam boolean rating) {
+    public void rateTheses(@RequestBody Collection<Pair<UUID, Boolean>> ratings) {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
-
-        studentService.rateThesis(thesisId, details.getUser().getId(), rating);
-   }
+         studentService.rateTheses(ratings, details.getUser().getId());
+    }
 
    @GetMapping("/rated-theses/{thesis-id}/remove")
    @PreAuthorize("hasRole('ROLE_STUDENT')")
@@ -48,8 +51,7 @@ public class StudentController {
        studentService.removeRatedThesis(details.getUser().getId(), thesisId);
    }
 
-    @GetMapping(value = "/rated-theses", produces = "application/json")
-    //@RequestMapping(value = "/rated-theses", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = "/rated-theses")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     public List<ThesisRating> getLikedTheses() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
@@ -58,7 +60,7 @@ public class StudentController {
     }
 
     @GetMapping("/rated-theses/undo")
-    //@PreAuthorize("hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     public ThesisRating undoThesisRating() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();

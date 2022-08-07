@@ -33,8 +33,8 @@ public class ThesisRating {
 
     public ThesisRating(){ }
 
-    public ThesisRating(ThesisRatingKey key, boolean rating, Student student, Thesis thesis){
-        this.id = key;
+    public ThesisRating(boolean rating, Student student, Thesis thesis){
+        this.id = new ThesisRatingKey(student.getId(), thesis.getId());
         this.positiveRated = rating;
         this.student = student;
         this.thesis = thesis;

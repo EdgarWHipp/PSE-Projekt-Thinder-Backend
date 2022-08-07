@@ -29,7 +29,7 @@ public class Student extends User{
     protected Student() { }
 
     public Student(String firstName, String lastName, String password, String mail, University university) {
-        super(firstName, lastName, password, mail, university, UserGroup.GROUP_STUDENT);
+        super(firstName, lastName, password, mail, university, Role.ROLE_STUDENT);
         this.degrees = new ArrayList<>();
         this.thesesRatings = new ArrayList<>();
     }
