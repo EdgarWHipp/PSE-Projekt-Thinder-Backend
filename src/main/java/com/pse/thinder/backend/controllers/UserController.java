@@ -1,17 +1,21 @@
 package com.pse.thinder.backend.controllers;
 
 import com.pse.thinder.backend.databaseFeatures.InputValidation;
+import com.pse.thinder.backend.databaseFeatures.account.Student;
+import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.account.User;
+import com.pse.thinder.backend.databaseFeatures.account.UserGroup;
 import com.pse.thinder.backend.security.ThinderUserDetails;
 import com.pse.thinder.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/users") //todo test this
-@RestController
+@RestController("userController")
 public class UserController {
 
     @Autowired
@@ -79,9 +83,28 @@ public class UserController {
      * @param user data json to be set
      */
     @PutMapping("/current")
+    @PreAuthorize("@userController.isCorrectUserClass(#user)")
     public void updateUser(@RequestBody User user) {
-        // todo check if userid in body matches the verified user
-        userService.updateUser(user);
+    	ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
+    	
+    	switch(details.getUser().getUserGroup()) {
+			case GROUP_STUDENT:
+				userService.updateStudent((Student) user);
+				break;
+			case GROUP_SUPERVISOR:
+				userService.updateSupervisor((Supervisor) user);
+				break;
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + details.getUser().getUserGroup());
+    	}
+    }
+    
+    public boolean isCorrectUserClass(User user) {
+    	ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
+    	
+    	return user.getClass().equals(details.getUser().getClass());
     }
 
     /**
