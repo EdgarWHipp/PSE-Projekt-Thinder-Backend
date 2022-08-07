@@ -1,6 +1,5 @@
 package com.pse.thinder.backend.databaseFeatures.thesis;
 
-import com.pse.thinder.backend.databaseFeatures.UUIDConverter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -50,15 +49,5 @@ public class ThesisRatingKey implements Serializable {
 
     public void setThesisId(UUID thesisId) {
         this.thesisId = thesisId;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-    	return super.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-    	return super.hashCode();
     }
 }

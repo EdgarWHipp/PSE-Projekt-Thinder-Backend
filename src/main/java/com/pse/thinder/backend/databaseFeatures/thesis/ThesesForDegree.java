@@ -4,6 +4,7 @@ import com.pse.thinder.backend.databaseFeatures.Degree;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity @Table(name = "thesesForDegree")
 public class ThesesForDegree {
@@ -11,12 +12,14 @@ public class ThesesForDegree {
     @EmbeddedId
     private ThesesForDegreeKey id;
 
+    @NotNull
     @ManyToOne
     @MapsId("degreeId")
     @Convert(disableConversion = true)
     @Type(type = "pg-uuid")
     private Degree degree;
 
+    @NotNull
     @ManyToOne
     @MapsId("thesisId")
     @Convert(disableConversion = true)

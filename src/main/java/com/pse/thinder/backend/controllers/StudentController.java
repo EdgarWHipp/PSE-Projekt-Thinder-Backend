@@ -15,7 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import com.pse.thinder.backend.databaseFeatures.account.Role;
+import com.pse.thinder.backend.databaseFeatures.account.UserGroup;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;

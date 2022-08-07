@@ -34,7 +34,7 @@ public class ThinderUserDetails implements UserDetails{
 	public Collection<GrantedAuthority> getAuthorities() {
 		Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(this.user.getRole().toString());
+		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(this.user.getUserGroup().toString());
 
 		authorities.add(authority);
 		return  authorities;

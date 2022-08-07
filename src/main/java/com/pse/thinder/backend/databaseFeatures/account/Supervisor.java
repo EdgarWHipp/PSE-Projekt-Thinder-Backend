@@ -3,6 +3,7 @@ package com.pse.thinder.backend.databaseFeatures.account;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -11,22 +12,27 @@ import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Entity
-@JsonIgnoreProperties(ignoreUnknown = true) // todo added because without this jackson throws an error because of the role field in the json
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Supervisor extends User {
 
-
-
+	@NotBlank
     private String acedemicDegree;
 
+	@NotBlank
     @Column(columnDefinition = "character varying(20)")
     private String building;
+	
+	@NotBlank
     @Column(columnDefinition = "character varying(10)")
     private String officeNumber;
+	
+	@NotBlank
     @Column(columnDefinition = "character varying(50)")
     private String institute;
+	
+	@NotBlank
     @Column(columnDefinition = "character varying(15) unique")
     private String phoneNumber;
 
@@ -36,7 +42,7 @@ public class Supervisor extends User {
 
     protected Supervisor(){}
 
-    public Supervisor(String firstName, String lastName, String password, String mail, University university, Role role){
+    public Supervisor(String firstName, String lastName, String password, String mail, University university, UserGroup role){
         super(firstName, lastName, password, mail, university, role);
     }
 

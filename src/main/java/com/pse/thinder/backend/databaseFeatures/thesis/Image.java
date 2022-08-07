@@ -1,25 +1,31 @@
 package com.pse.thinder.backend.databaseFeatures.thesis;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import java.util.UUID;
 
 @Entity
-public class Image implements Serializable {
+public class Image {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @NotBlank
+    @Size(min=1, max=50)
+    @Column(columnDefinition = "character varying(50) not null")
     private String name;
 
+    @NotNull
     @Lob
     @Basic(fetch = FetchType.EAGER)
     private byte[] image;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name="thesis_id", nullable=false)
     @JsonIgnore

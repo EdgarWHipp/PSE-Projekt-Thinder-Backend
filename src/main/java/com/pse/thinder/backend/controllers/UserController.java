@@ -1,5 +1,6 @@
 package com.pse.thinder.backend.controllers;
 
+import com.pse.thinder.backend.databaseFeatures.account.UserGroup;
 import com.pse.thinder.backend.databaseFeatures.account.User;
 import com.pse.thinder.backend.security.ThinderUserDetails;
 import com.pse.thinder.backend.services.UserService;
@@ -64,10 +65,10 @@ public class UserController {
      * @return role of the logged-in user as string.
      */
     @GetMapping("/current/getRole")
-    public String getRole() {
+    public UserGroup getRole() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
             getContext().getAuthentication().getPrincipal();
-        return userService.getRole(details.getUser().getId());
+        return userService.getUserGroup(details.getUser().getId());
     }
 
     /**

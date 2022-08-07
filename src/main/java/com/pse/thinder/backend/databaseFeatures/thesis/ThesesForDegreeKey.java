@@ -29,14 +29,4 @@ public class ThesesForDegreeKey implements Serializable {
         this.degreeId = degreeId;
         this.thesisId = thesisId;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 }

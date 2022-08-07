@@ -30,9 +30,11 @@ import org.springframework.test.context.ActiveProfiles;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.pse.thinder.backend.databaseFeatures.Degree;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.account.PlainUser;
 import com.pse.thinder.backend.databaseFeatures.account.User;
+import com.pse.thinder.backend.repositories.DegreeRepository;
 import com.pse.thinder.backend.repositories.UniversityRepository;
 import com.pse.thinder.backend.repositories.UserRepository;
 
@@ -40,6 +42,9 @@ import com.pse.thinder.backend.repositories.UserRepository;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class UserTest {
 
+	@Autowired
+	DegreeRepository degreeRepository;
+	
 	@Autowired
 	UniversityRepository universityRepository;
 	
@@ -51,6 +56,7 @@ class UserTest {
 	
 	private JacksonTester<User> jacksonTester;
 	
+	Degree testDegree;
 	University testUniversity;
 	
 	@Value("${spring.mail.port}")
@@ -61,6 +67,7 @@ class UserTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		JacksonTester.initFields(this, new ObjectMapper());
+//		testDegree = new Degree(null, null, testUniversity)
 		testUniversity = new University("KIT", ".*@student.kit.edu", ".*@kit.edu");
 		universityRepository.save(testUniversity);
 		universityRepository.flush();
@@ -97,6 +104,12 @@ class UserTest {
 		Assertions.assertThat(verifyResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 		
 		System.err.println(userRepository.findAll().toString());
+		
+		//Get Role
+        ResponseEntity<String> roleResponse = testRestTemplate.withBasicAuth("uihoz@student.kit.edu", "password").getForEntity("/users/current/getRole", String.class);
+        System.err.println(roleResponse.getBody());
+        Assertions.assertThat(roleResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        Assertions.assertThat(roleResponse.getBody()).isEqualTo(""STUDENT"");
 	}
 	
 	@AfterEach

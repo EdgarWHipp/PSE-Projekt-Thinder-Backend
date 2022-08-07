@@ -1,35 +1,55 @@
 package com.pse.thinder.backend.databaseFeatures;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesesForDegree;
-import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import java.util.*;
 
 @Entity @Table(name = "degrees")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Degree {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @NotBlank
+    @Size(min=1, max=30)
     @Column(columnDefinition = "character varying(30) not null")
     private String name;
-    private String degree; //To-do: Find out whether an enum is better
+    
+    @NotBlank
+    @Size(min=1, max=30)
+    @Column(columnDefinition = "character varying(30) not null")
+    private String degree;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "degrees")
     private List<Student> students;
 
+    @NotNull
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("uni_id")
     @ManyToOne
     @JoinColumn(name = "university_id", columnDefinition = "uuid not null")
     private University university;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "degree", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<ThesesForDegree> possibleTheses;
 
 
 
-    public Degree(String name, String degree, University university){ //todo keep updated
+    public Degree(String name, String degree, University university){
         this.name = name;
         this.degree = degree;
         this.university = university;
@@ -63,19 +83,27 @@ public class Degree {
     }
 
     public List<Student> getStudents() {
-        return students;
+        return new ArrayList<>(this.students);
     }
 
     public void addStudent(Student student) {
         this.students.add(student);
     }
+    
+    public void removeStudent(Student student) {
+        this.students.remove(student);
+    }
 
     public List<ThesesForDegree> getPossibleTheses() {
-        return possibleTheses;
+        return new ArrayList<>(this.possibleTheses);
     }
 
     public void addPossibleThesis(ThesesForDegree thesisForDegree) {
         this.possibleTheses.add(thesisForDegree);
+    }
+    
+    public void removePossibleThesis(ThesesForDegree thesisForDegree) {
+        this.possibleTheses.remove(thesisForDegree);
     }
 
     public University getUniversity(){

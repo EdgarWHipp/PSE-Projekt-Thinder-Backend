@@ -1,7 +1,5 @@
 package com.pse.thinder.backend.databaseFeatures.account;
 
-
-import antlr.collections.Stack;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pse.thinder.backend.databaseFeatures.Degree;
@@ -10,8 +8,6 @@ import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 
 import javax.persistence.*;
 import java.util.*;
-//import java.util.Stack;
-//import org.hibernate.internal.util.collections.Stack;
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -32,7 +28,7 @@ public class Student extends User{
 
     protected Student() { }
 
-    public Student(String firstName, String lastName, String password, String mail, University university, Role role) {
+    public Student(String firstName, String lastName, String password, String mail, University university, UserGroup role) {
         super(firstName, lastName, password, mail, university, role);
         this.degrees = new ArrayList<>();
         this.thesesRatings = new ArrayList<>();

@@ -2,7 +2,7 @@ package com.pse.thinder.backend.services;
 
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
 import com.pse.thinder.backend.databaseFeatures.University;
-import com.pse.thinder.backend.databaseFeatures.account.Role;
+import com.pse.thinder.backend.databaseFeatures.account.UserGroup;
 import com.pse.thinder.backend.databaseFeatures.token.PasswordResetToken;
 import com.pse.thinder.backend.databaseFeatures.token.VerificationToken;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
@@ -79,13 +79,13 @@ public class UserService {
 
         if (Pattern.matches(university.getStudentMailRegex(), user.getMail())) {
             Student student = new Student(user.getFirstName(), user.getLastName(),
-                    passwordEncoder.encode(user.getPassword()), user.getMail(), university, Role.ROLE_STUDENT);
+                    passwordEncoder.encode(user.getPassword()), user.getMail(), university, UserGroup.GROUP_STUDENT);
             savedUser = studentRepository.save(student);
         }
 
         if (Pattern.matches(university.getSupervisorMailRegex(), user.getMail())) {
             Supervisor supervisor = new Supervisor(user.getFirstName(), user.getLastName(),
-                    passwordEncoder.encode(user.getPassword()), user.getMail(), university, Role.SUPERVISOR);
+                    passwordEncoder.encode(user.getPassword()), user.getMail(), university, UserGroup.GROUP_SUPERVISOR);
             savedUser = supervisorRepository.save(supervisor);
         }
         sendVerificationMail(savedUser);
@@ -211,14 +211,8 @@ public class UserService {
         return expirationDate.before(currentDate) ? true : false;
     }
 
-    public String getRole(UUID id) {
+    public UserGroup getUserGroup(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("")); //todo
-        if (user instanceof Student) {
-            return "STUDENT";
-        }
-        if (user instanceof Supervisor) {
-            return "SUPERVISOR";
-        }
-        throw new RuntimeException(""); //todo
+        return user.getUserGroup();
     }
 }

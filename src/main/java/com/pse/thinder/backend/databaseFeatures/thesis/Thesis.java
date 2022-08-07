@@ -1,15 +1,14 @@
 package com.pse.thinder.backend.databaseFeatures.thesis;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pse.thinder.backend.databaseFeatures.Degree;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -18,6 +17,7 @@ import java.util.*;
 
 
 @Entity @Table(name="theses")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Thesis {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,6 +43,7 @@ public class Thesis {
     @Column(columnDefinition = "TEXT")
     private String supervisingProfessor;
     
+    @NotNull
     @ManyToOne
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("supervisor_id")
@@ -54,13 +55,12 @@ public class Thesis {
     private List<ThesisRating> studentRatings;
 
 
+    @NotNull
     @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonIgnore
     private List<Image> images;
 
-    //@NotEmpty
-    @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE)
     @JsonIgnore
+    @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE)
     private List<ThesesForDegree> possibleDegrees;
 
 

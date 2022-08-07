@@ -1,22 +1,29 @@
 package com.pse.thinder.backend.databaseFeatures.thesis;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity @Table(name="thesisRatings")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class ThesisRating {
 
     @EmbeddedId
     private ThesisRatingKey id;
 
+    @JsonIgnore
     @ManyToOne
     @MapsId("studentId")
     @Type(type = "pg-uuid")
     @Convert(disableConversion = true)
     private Student student;
 
+    @JsonIgnore
     @ManyToOne
     @MapsId("thesisId")
     @Convert(disableConversion = true)

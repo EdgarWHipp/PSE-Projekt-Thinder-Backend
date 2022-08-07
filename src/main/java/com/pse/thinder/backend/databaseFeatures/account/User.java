@@ -1,13 +1,15 @@
 package com.pse.thinder.backend.databaseFeatures.account;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pse.thinder.backend.databaseFeatures.token.PasswordResetToken;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.token.VerificationToken;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,22 +28,35 @@ public class User {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @NotBlank
     @Column(columnDefinition = "character varying(30) not null")
     private String firstName;
 
+    @NotBlank
     @Column(columnDefinition = "character varying(30) not null")
     private String lastName;
 
-    @Size(min=8, max=20)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Size(min=8, max=50)
     @Column(columnDefinition = "character varying(50) not null")
     private String password;
 
+    @NotBlank
     @Column(columnDefinition = "character varying(30) unique not null")
     private String mail;
 
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private UserGroup userGroup;
+    
+    @JsonIgnore
+    @ElementCollection(targetClass=Authorities.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name="user_authorities")
+    @Column(name="authorities") // Column name in person_interest
+    private Collection<Authorities> authorities;
 
+    @JsonIgnore
     private Boolean active;
 
 
@@ -59,21 +74,18 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<VerificationToken> verificationTokens;
 
-    //todo important: Herausfinden wie das mit den Listen funktioniert und was
-    // passiert wenn ich den verificationToken entferne, wird dieser dann auch entfernt?
-
 
     //this is necessary due to JPA requirements for a non arg constructor.
     protected User(){}
 
     public User(String firstName, String lastName, String password,
-                 String mail, University university, Role role) {
+                 String mail, University university, UserGroup role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.mail = mail;
         this.university = university;
-        this.role = role;
+        this.userGroup = role;
         this.active = false;
     }
 
@@ -150,11 +162,19 @@ public class User {
         this.verificationTokens.add(verificationToken);
     }
 
-    public Role getRole() {
-        return role;
+    public UserGroup getUserGroup() {
+        return userGroup;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setUserGroup(UserGroup userGroup) {
+        this.userGroup = userGroup;
     }
+
+	public Collection<Authorities> getAuthorities() {
+		return authorities;
+	}
+
+	public void setAuthorities(Collection<Authorities> authorities) {
+		this.authorities = authorities;
+	}
 }
