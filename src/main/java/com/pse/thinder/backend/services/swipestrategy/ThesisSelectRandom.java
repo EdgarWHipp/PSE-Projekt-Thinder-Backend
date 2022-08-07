@@ -10,19 +10,17 @@ import java.util.*;
 @Service
 public class ThesisSelectRandom implements ThesisSelectionStrategy {
 
-    @Autowired
-    StudentRepository studentRepository;
 
-    List<Integer> testList = Arrays.asList(2,35,6,1,3,7,8,9,34,56,67);
+
 
     @Override
     public ArrayList<Thesis> getThesesForSwipe(ArrayList<Thesis> theses) {
-        List<Integer> list = testList;
-        List<Integer> newList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            Collections.shuffle(testList);
-            newList.add(testList.remove(0));
+        ArrayList<Thesis> swipeStack = new ArrayList<>();
+        int size = theses.size() < 10 ? theses.size() : 10;
+        Collections.shuffle(theses);
+        for (int i = 0; i < size; i++) {
+            swipeStack.add(theses.get(i));
         }
-        return null;
+        return swipeStack;
     }
 }

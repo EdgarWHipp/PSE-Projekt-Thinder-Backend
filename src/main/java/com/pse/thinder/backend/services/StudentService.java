@@ -59,6 +59,14 @@ public class StudentService {
         thesisRatingRepository.save(newRating);
     }
 
+    public void removeRatedThesis(UUID studentId, UUID thesisId){
+        ThesisRating toDelete = thesisRatingRepository.findById(new ThesisRatingKey(studentId, thesisId)).orElseThrow(
+                () -> new EntityNotFoundException(" ") //todo add exception
+        );
+        thesisRatingRepository.delete(toDelete);
+
+    }
+
 
     public ArrayList<ThesisRating> getLikedTheses(UUID studentId){
         return thesisRatingRepository.findByIdStudentIdAndPositiveRated(studentId, true);

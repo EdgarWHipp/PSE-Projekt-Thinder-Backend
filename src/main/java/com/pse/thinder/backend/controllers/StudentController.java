@@ -1,23 +1,15 @@
 package com.pse.thinder.backend.controllers;
 
-import com.pse.thinder.backend.databaseFeatures.thesis.ThesesForDegree;
+
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 import com.pse.thinder.backend.security.ThinderUserDetails;
 import com.pse.thinder.backend.services.StudentService;
-import com.pse.thinder.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import com.pse.thinder.backend.databaseFeatures.account.UserGroup;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -48,11 +40,19 @@ public class StudentController {
         studentService.rateThesis(thesisId, details.getUser().getId(), rating);
    }
 
+   @GetMapping("/rated-theses/{thesis-id}/remove")
+   @PreAuthorize("hasRole('ROLE_STUDENT')")
+   public void removeRatedThesis(@PathVariable("thesis-id") UUID thesisId){
+       ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+               getContext().getAuthentication().getPrincipal();
+
+       studentService.removeRatedThesis(details.getUser().getId(), thesisId);
+   }
+
     @GetMapping(value = "/rated-theses", produces = "application/json")
     //@RequestMapping(value = "/rated-theses", method = RequestMethod.GET, produces = "application/json")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
     public List<ThesisRating> getLikedTheses() {
-        System.err.println("TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
         return studentService.getLikedTheses(details.getUser().getId());
@@ -63,9 +63,7 @@ public class StudentController {
     public ThesisRating undoThesisRating() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
-        //System.err.println("TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
         ThesisRating thesis = studentService.undoLastRating(details.getUser().getId());
-        System.err.println(thesis.getPositiveRated());
         return thesis;
     }
 
