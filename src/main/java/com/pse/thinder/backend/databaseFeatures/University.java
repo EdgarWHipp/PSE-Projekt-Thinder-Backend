@@ -34,12 +34,11 @@ public class University {
 
     protected University(){}
 
-    public University(String name, String studentMailRegex, String supervisorMailRegex, Set<Degree> degrees) {
+    public University(String name, String studentMailRegex, String supervisorMailRegex) {
 		super();
 		this.name = name;
 		this.studentMailRegex = studentMailRegex;
 		this.supervisorMailRegex = supervisorMailRegex;
-		this.degrees = degrees;
 	}
 
 	public UUID getId() {

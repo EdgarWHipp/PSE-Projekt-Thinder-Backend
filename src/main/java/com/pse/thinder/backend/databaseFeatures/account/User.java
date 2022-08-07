@@ -35,8 +35,12 @@ public class User {
     @Size(min=8, max=20)
     @Column(columnDefinition = "character varying(50) not null")
     private String password;
+
     @Column(columnDefinition = "character varying(30) unique not null")
     private String mail;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     private Boolean active;
 
@@ -55,16 +59,21 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<VerificationToken> verificationTokens;
 
+    //todo important: Herausfinden wie das mit den Listen funktioniert und was
+    // passiert wenn ich den verificationToken entferne, wird dieser dann auch entfernt?
+
+
     //this is necessary due to JPA requirements for a non arg constructor.
     protected User(){}
 
     public User(String firstName, String lastName, String password,
-                 String mail, University university) {
+                 String mail, University university, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.mail = mail;
         this.university = university;
+        this.role = role;
         this.active = false;
     }
 
@@ -139,5 +148,13 @@ public class User {
 
     public void addVerificationTokens(VerificationToken verificationToken) {
         this.verificationTokens.add(verificationToken);
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

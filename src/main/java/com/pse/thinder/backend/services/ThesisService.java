@@ -34,7 +34,7 @@ public class ThesisService {
 
 	public void addThesis(Thesis thesis, Supervisor supervisor) {
 		Thesis toSave = new Thesis(thesis.getName(), thesis.getTask(), thesis.getMotivation(), thesis.getQuestionForm(),
-				thesis.getSupervisingProfessor(), supervisor, thesis.getImages(), thesis.getPossibleDegrees());
+				thesis.getSupervisingProfessor(), supervisor, thesis.getPossibleDegrees());
 		thesisRepository.save(toSave);
 	}
 
@@ -56,7 +56,7 @@ public class ThesisService {
 
 	public void addImages(ArrayList<MultipartFile> imageFiles, UUID thesisId) throws IOException {
 		Thesis thesis = getThesisById(thesisId);
-		Set<Image> newImages = new HashSet<>();
+		ArrayList<Image> newImages = new ArrayList<>();
 		for(MultipartFile imageFile : imageFiles){
 			if(imageFile.isEmpty()){
 				//todo add exception

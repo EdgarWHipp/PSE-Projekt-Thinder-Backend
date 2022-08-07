@@ -2,13 +2,14 @@ package com.pse.thinder.backend.services;
 
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
 import com.pse.thinder.backend.databaseFeatures.University;
+import com.pse.thinder.backend.databaseFeatures.account.Role;
 import com.pse.thinder.backend.databaseFeatures.token.PasswordResetToken;
 import com.pse.thinder.backend.databaseFeatures.token.VerificationToken;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.account.User;
 import com.pse.thinder.backend.repositories.*;
-import com.pse.thinder.backend.services.swipestrategy.ThesisSelectI;
+import com.pse.thinder.backend.services.swipestrategy.ThesisSelectionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -78,13 +79,13 @@ public class UserService {
 
         if (Pattern.matches(university.getStudentMailRegex(), user.getMail())) {
             Student student = new Student(user.getFirstName(), user.getLastName(),
-                    passwordEncoder.encode(user.getPassword()), user.getMail(), university);
+                    passwordEncoder.encode(user.getPassword()), user.getMail(), university, Role.ROLE_STUDENT);
             savedUser = studentRepository.save(student);
         }
 
         if (Pattern.matches(university.getSupervisorMailRegex(), user.getMail())) {
             Supervisor supervisor = new Supervisor(user.getFirstName(), user.getLastName(),
-                    passwordEncoder.encode(user.getPassword()), user.getMail(), university);
+                    passwordEncoder.encode(user.getPassword()), user.getMail(), university, Role.SUPERVISOR);
             savedUser = supervisorRepository.save(supervisor);
         }
         sendVerificationMail(savedUser);
@@ -198,16 +199,6 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    @Autowired
-    ThesisSelectI thesisSelect;
-
-    public List<UUID> getSwipeorder(UUID id) {
-        return thesisSelect.getThesisIdList(id);
-    }
-
-    public void verifyUser(UUID id, String code) {
-        //todo
-    }
 
     private Boolean mailExists(String mail){
         return userRepository.findByMail(mail) != null;

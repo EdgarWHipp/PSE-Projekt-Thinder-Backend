@@ -1,12 +1,15 @@
 package com.pse.thinder.backend.databaseFeatures.thesis;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
-public class Image {
+public class Image implements Serializable {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -19,6 +22,7 @@ public class Image {
 
     @ManyToOne
     @JoinColumn(name="thesis_id", nullable=false)
+    @JsonIgnore
     private Thesis thesis;
 
     public UUID getId() {

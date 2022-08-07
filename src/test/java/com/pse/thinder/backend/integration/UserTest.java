@@ -61,7 +61,7 @@ class UserTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		JacksonTester.initFields(this, new ObjectMapper());
-		testUniversity = new University("KIT", ".*@student.kit.edu", ".*@kit.edu", new HashSet<>());
+		testUniversity = new University("KIT", ".*@student.kit.edu", ".*@kit.edu");
 		universityRepository.save(testUniversity);
 		universityRepository.flush();
 		

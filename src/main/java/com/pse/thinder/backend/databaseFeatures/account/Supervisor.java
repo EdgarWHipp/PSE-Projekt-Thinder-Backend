@@ -10,6 +10,7 @@ import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -31,12 +32,12 @@ public class Supervisor extends User {
 
     @JsonIgnore
     @OneToMany(mappedBy="supervisor", cascade = CascadeType.REMOVE)
-    private Set<Thesis> theses;
+    private List<Thesis> theses;
 
     protected Supervisor(){}
 
-    public Supervisor(String firstName, String lastName, String password, String mail, University university){
-        super(firstName, lastName, password, mail, university);
+    public Supervisor(String firstName, String lastName, String password, String mail, University university, Role role){
+        super(firstName, lastName, password, mail, university, role);
     }
 
     public String getAcedemicDegree() {
@@ -71,7 +72,7 @@ public class Supervisor extends User {
         this.phoneNumber = phoneNumber;
     }
 
-    public Set<Thesis> getTheses() {
+    public List<Thesis> getTheses() {
         return theses;
     }
 

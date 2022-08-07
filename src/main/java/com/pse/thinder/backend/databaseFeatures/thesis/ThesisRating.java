@@ -1,6 +1,7 @@
 package com.pse.thinder.backend.databaseFeatures.thesis;
 
 import com.pse.thinder.backend.databaseFeatures.account.Student;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -12,21 +13,25 @@ public class ThesisRating {
 
     @ManyToOne
     @MapsId("studentId")
-    @JoinColumn(name ="student_id", columnDefinition="uuid")
+    @Type(type = "pg-uuid")
+    @Convert(disableConversion = true)
     private Student student;
 
     @ManyToOne
     @MapsId("thesisId")
-    @JoinColumn(name ="thesis_id", columnDefinition="uuid")
+    @Convert(disableConversion = true)
+    @Type(type = "pg-uuid")
     private Thesis thesis;
 
     private boolean positiveRated;
 
     public ThesisRating(){ }
 
-    public ThesisRating(ThesisRatingKey key, boolean rating){
+    public ThesisRating(ThesisRatingKey key, boolean rating, Student student, Thesis thesis){
         this.id = key;
         this.positiveRated = rating;
+        this.student = student;
+        this.thesis = thesis;
     }
 
 
@@ -54,7 +59,7 @@ public class ThesisRating {
         this.thesis = thesis;
     }
 
-    public boolean isPositiveRated() {
+    public boolean getPositiveRated() {
         return positiveRated;
     }
 

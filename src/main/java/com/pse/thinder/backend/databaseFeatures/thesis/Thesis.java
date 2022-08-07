@@ -1,8 +1,12 @@
 package com.pse.thinder.backend.databaseFeatures.thesis;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pse.thinder.backend.databaseFeatures.Degree;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -10,9 +14,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 @Entity @Table(name="theses")
@@ -42,32 +44,32 @@ public class Thesis {
     private String supervisingProfessor;
     
     @ManyToOne
+    @JsonIdentityReference(alwaysAsId=true)
+    @JsonProperty("supervisor_id")
     @JoinColumn(name="supervisor_id",nullable=false)
     private Supervisor supervisor;
 
     @OneToMany(mappedBy= "thesis", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<ThesisRating> studentRatings;
+    @JsonIgnore
+    private List<ThesisRating> studentRatings;
 
-    @NotNull
-    @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<Image> images;
 
-    @NotEmpty
-    @ManyToMany
-    @JoinTable(
-            name = "theses_for_degree",
-            joinColumns = @JoinColumn(name = "thesis_id"),
-            inverseJoinColumns = @JoinColumn(name = "degree_id")
-    )
-    private Set<Degree> possibleDegrees;
+    @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<Image> images;
+
+    //@NotEmpty
+    @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private List<ThesesForDegree> possibleDegrees;
 
 
     protected Thesis(){}
 
-    
-    public Thesis(@NotBlank String name, @NotBlank String task, @NotBlank String motivation,
-			@NotBlank String questionForm, @NotBlank String supervisingProfessor, Supervisor supervisor,
-			@NotNull Set<Image> images, @NotEmpty Set<Degree> possibleDegrees) {
+
+    public Thesis(@NotBlank String name,@NotBlank String task, @NotBlank String motivation,
+			 @NotBlank String questionForm,  @NotBlank String supervisingProfessor, @NotNull Supervisor supervisor
+                  , @NotEmpty List<ThesesForDegree> possibleDegrees) {
 		super();
 		this.name = name;
 		this.task = task;
@@ -75,10 +77,23 @@ public class Thesis {
 		this.questionForm = questionForm;
 		this.supervisingProfessor = supervisingProfessor;
 		this.supervisor = supervisor;
-		this.studentRatings = new HashSet<>();
-		this.images = images;
+		this.studentRatings = new ArrayList<>();
+		this.images = new ArrayList<>();
 		this.possibleDegrees = possibleDegrees;
 	}
+
+    public Thesis(@NotBlank String name, @NotBlank String task, @NotBlank String motivation,
+                  @NotBlank String questionForm, @NotBlank String supervisingProfessor, Supervisor supervisor) {
+        super();
+        this.name = name;
+        this.task = task;
+        this.motivation = motivation;
+        this.questionForm = questionForm;
+        this.supervisingProfessor = supervisingProfessor;
+        this.supervisor = supervisor;
+        this.studentRatings = new ArrayList<>();
+        this.possibleDegrees = new ArrayList<>();
+    }
 
     public UUID getId() {
         return id;
@@ -130,17 +145,17 @@ public class Thesis {
         return supervisor;
     }
 
-    public Set<Image> getImages() {
-        return new HashSet<>(this.images);
+    public List<Image> getImages() {
+        return new ArrayList<>(this.images);
     }
 
-    public void setImages(Set<Image> images) {
+    public void setImages(List<Image> images) {
     	this.images.clear();
         this.images.addAll(images);
     }
 
-    public Set<ThesisRating> getStudentRatings() {
-        return new HashSet<>(this.studentRatings);
+    public ArrayList<ThesisRating> getStudentRatings() {
+        return new ArrayList<>(this.studentRatings);
     }
 
     public void addStudentRating(ThesisRating thesisRating) {
@@ -150,12 +165,12 @@ public class Thesis {
         this.studentRatings.add(thesisRating);
     }
 
-    public Set<Degree> getPossibleDegrees() {
-        return new HashSet<>(this.possibleDegrees);
+    public List<ThesesForDegree> getPossibleDegrees() {
+        return new ArrayList<>(this.possibleDegrees);
     }
 
-    public void setPossibleDegrees(Set<Degree> degrees) {
-    	this.possibleDegrees.clear();
-        this.possibleDegrees.addAll(degrees);
+    public void setPossibleDegrees(List<ThesesForDegree> thesesForDegrees) {
+        this.possibleDegrees.clear();
+        this.possibleDegrees.addAll(thesesForDegrees);
     }
 }

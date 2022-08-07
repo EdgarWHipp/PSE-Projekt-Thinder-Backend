@@ -24,19 +24,21 @@ public class Student extends User{
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "degree_id")
     )
-    private Set<Degree> degrees;
+    private List<Degree> degrees;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "student", orphanRemoval = true)
+    @OneToMany(mappedBy = "student", orphanRemoval = true, cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<ThesisRating> thesesRatings;
 
-    protected Student() {}
+    protected Student() { }
 
-    public Student(String firstName, String lastName, String password, String mail, University university) {
-        super(firstName, lastName, password, mail, university);
+    public Student(String firstName, String lastName, String password, String mail, University university, Role role) {
+        super(firstName, lastName, password, mail, university, role);
+        this.degrees = new ArrayList<>();
+        this.thesesRatings = new ArrayList<>();
     }
 
-    public Set<Degree> getDegrees() {
+    public List<Degree> getDegrees() {
         return degrees;
     }
 
@@ -53,7 +55,7 @@ public class Student extends User{
         //todo explain the problem why we didn't use a stack in the documentation, due to missing hibernate implementation
     }
 
-    public void setDegree(Set<Degree> degrees) {
+    public void setDegree(List<Degree> degrees) {
         this.degrees = degrees;
     }
 }
