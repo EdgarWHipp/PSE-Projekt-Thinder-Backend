@@ -90,10 +90,10 @@ public class UserController {
     	
     	switch(details.getUser().getUserGroup()) {
             case ROLE_STUDENT:
-				userService.updateStudent((Student) user);
+				userService.updateStudent((Student) user, details.getUser().getId());
 				break;
             case ROLE_SUPERVISOR:
-				userService.updateSupervisor((Supervisor) user);
+				userService.updateSupervisor((Supervisor) user, details.getUser().getId());
 				break;
 			default:
 				throw new IllegalArgumentException("Unexpected value: " + details.getUser().getUserGroup());
