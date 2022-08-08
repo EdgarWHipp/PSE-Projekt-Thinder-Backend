@@ -201,4 +201,8 @@ public class User {
     public void setComplete(Boolean complete) {
         isComplete = complete;
     }
+    
+    public void updateIsComplete() {
+    	isComplete = false;
+    }
 }

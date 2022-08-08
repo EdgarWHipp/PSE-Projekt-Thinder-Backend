@@ -222,6 +222,7 @@ public class UserService {
         	if(!degrees.isEmpty())
         		newStudent.setDegrees(degrees);
         }
+        newStudent.updateIsComplete();
         studentRepository.saveAndFlush(newStudent);
     }
     
@@ -243,6 +244,8 @@ public class UserService {
         	newSupervisor.setInstitute(supervisor.getInstitute());
         if(validator.validateProperty(supervisor, "phoneNumber", InputValidation.class).isEmpty()) 
         	newSupervisor.setPhoneNumber(supervisor.getPhoneNumber());
+        
+        newSupervisor.updateIsComplete();
         supervisorRepository.saveAndFlush(newSupervisor);
     }
 

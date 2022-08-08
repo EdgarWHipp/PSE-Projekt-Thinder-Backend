@@ -62,4 +62,9 @@ public class Student extends User{
     public void setDegrees(List<Degree> degrees) {
         this.degrees = degrees;
     }
+    
+    @Override
+    public void updateIsComplete() {
+    	super.setComplete(degrees.size() > 0);
+    }
 }

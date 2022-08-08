@@ -94,4 +94,22 @@ public class Supervisor extends User {
     public void setOfficeNumber(String officeNumber) {
         this.officeNumber = officeNumber;
     }
+    
+    @Override
+    public void updateIsComplete() {
+    	boolean notNull = acedemicDegree != null &&
+    						building != null &&
+    						officeNumber != null &&
+    						institute != null &&
+    						phoneNumber != null;
+    	if(notNull) {
+    		super.setComplete(!acedemicDegree.isBlank() &&
+    							!building.isBlank() &&
+    							!officeNumber.isBlank() &&
+    							!institute.isBlank() &&
+    							!phoneNumber.isBlank());
+    	}
+    	else 
+    		super.setComplete(false);
+    }
 }
