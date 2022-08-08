@@ -3,10 +3,16 @@ package com.pse.thinder.backend.databaseFeatures.account;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pse.thinder.backend.databaseFeatures.Degree;
+import com.pse.thinder.backend.databaseFeatures.InputValidation;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import java.util.*;
 
 @Entity
@@ -14,12 +20,14 @@ import java.util.*;
 public class Student extends User{
 
 
-    @ManyToMany
+	@NotEmpty(groups = {InputValidation.class})
+	@ManyToMany
     @JoinTable(
             name="current_degrees",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "degree_id")
     )
+	@LazyCollection(LazyCollectionOption.FALSE)
     private List<Degree> degrees;
 
     @JsonIgnore
@@ -51,7 +59,7 @@ public class Student extends User{
         //todo explain the problem why we didn't use a stack in the documentation, due to missing hibernate implementation
     }
 
-    public void setDegree(List<Degree> degrees) {
+    public void setDegrees(List<Degree> degrees) {
         this.degrees = degrees;
     }
 }

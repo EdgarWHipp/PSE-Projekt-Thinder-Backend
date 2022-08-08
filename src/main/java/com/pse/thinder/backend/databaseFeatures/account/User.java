@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -71,11 +72,11 @@ public class User {
     private University university;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private Set<PasswordResetToken> passwordResetTokens;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private Set<VerificationToken> verificationTokens;
 
 
@@ -92,6 +93,8 @@ public class User {
         this.userGroup = role;
         this.active = false;
         this.isComplete = false;
+        this.passwordResetTokens = new HashSet<>();
+        this.verificationTokens = new HashSet<>();
     }
 
 
@@ -158,6 +161,10 @@ public class User {
     public void addPasswordResetTokens(PasswordResetToken passwordResetToken) {
         this.passwordResetTokens.add(passwordResetToken);
     }
+    
+    public void removePasswordResetTokens(PasswordResetToken passwordResetToken) {
+        this.passwordResetTokens.remove(passwordResetToken);
+    }
 
     public Set<VerificationToken> getVerificationTokens() {
         return verificationTokens;
@@ -165,6 +172,10 @@ public class User {
 
     public void addVerificationTokens(VerificationToken verificationToken) {
         this.verificationTokens.add(verificationToken);
+    }
+    
+    public void removeVerificationTokens(VerificationToken verificationToken) {
+        this.verificationTokens.remove(verificationToken);
     }
 
     public Role getUserGroup() {

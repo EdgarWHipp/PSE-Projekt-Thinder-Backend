@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/users") //todo test this
+@RequestMapping("/users")
 @RestController("userController")
 public class UserController {
 
