@@ -176,6 +176,7 @@ public class UserService {
         newStudent.setFirstName(student.getFirstName());
         newStudent.setLastName(student.getLastName());
         newStudent.setDegree(student.getDegrees());
+        newStudent.setComplete(true);
         studentRepository.save(newStudent);
     }
     public void updateSupervisor(Supervisor supervisor) {
@@ -185,6 +186,7 @@ public class UserService {
 
         newSupervisor.setFirstName(supervisor.getFirstName());
         newSupervisor.setLastName(supervisor.getLastName());
+        newSupervisor.setComplete(true);
         supervisorRepository.save(newSupervisor);
     }
 

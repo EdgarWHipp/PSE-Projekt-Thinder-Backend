@@ -12,7 +12,7 @@ import com.pse.thinder.backend.repositories.*;
 import com.pse.thinder.backend.services.swipestrategy.ThesisSelectRandom;
 import com.pse.thinder.backend.services.swipestrategy.ThesisSelectionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +41,7 @@ public class StudentService {
     private ThesisSelectRandom thesisSelectRandom;
 
     @Autowired
-    private MailSender mailSender;
+    private JavaMailSender mailSender;
 
 
 
@@ -136,7 +136,7 @@ public class StudentService {
         Student student = getStudent(studentId);
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("");
+        message.setFrom("thesisthinder@gmail.com");
         message.setTo(thesis.getSupervisor().getMail());
         String studentName = student.getFirstName() + " " + student.getLastName();
         message.setSubject("Antowort auf Fragebogen von " + studentName);

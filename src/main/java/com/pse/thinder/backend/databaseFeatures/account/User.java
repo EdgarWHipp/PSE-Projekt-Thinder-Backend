@@ -91,6 +91,7 @@ public class User {
         this.university = university;
         this.userGroup = role;
         this.active = false;
+        this.isComplete = false;
     }
 
 
@@ -181,4 +182,12 @@ public class User {
 	public void setAuthorities(Collection<Authorities> authorities) {
 		this.authorities = authorities;
 	}
+
+    public Boolean getComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(Boolean complete) {
+        isComplete = complete;
+    }
 }

@@ -1,5 +1,6 @@
 package com.pse.thinder.backend.controllers;
 
+import com.pse.thinder.backend.databaseFeatures.QuestionForm;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import com.pse.thinder.backend.databaseFeatures.Pair;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
@@ -68,12 +69,13 @@ public class StudentController {
         return thesis;
     }
 
-    @PostMapping("/rated-theses/{thesis-id}/form")
+    @PostMapping("/rated-theses/{theses-id}/form")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public void sendThesisForm(@PathVariable("theses-id") UUID thesisId, @RequestParam String questionForm) {
+    public void sendThesisForm(@PathVariable("theses-id") UUID thesisId, @RequestBody QuestionForm questionForm) {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
-        studentService.sendQuestionForm(details.getUser().getId(), thesisId, questionForm);
+        System.err.println("TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSSSSSSTTTTT");
+        studentService.sendQuestionForm(details.getUser().getId(), thesisId, questionForm.getQuestionForm());
     }
 
 }

@@ -1,6 +1,5 @@
 package com.pse.thinder.backend.databaseFeatures;
 
-//this class is needed because
 public class Pair<T, E> {
     private T first;
     private E second;
