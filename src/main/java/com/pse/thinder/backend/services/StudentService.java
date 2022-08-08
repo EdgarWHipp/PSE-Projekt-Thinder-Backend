@@ -9,6 +9,7 @@ import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRatingKey;
 import com.pse.thinder.backend.repositories.*;
+import com.pse.thinder.backend.services.swipestrategy.ThesisSelectRandom;
 import com.pse.thinder.backend.services.swipestrategy.ThesisSelectionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
@@ -36,8 +37,8 @@ public class StudentService {
     @Autowired
     private DegreeRepository degreeRepository;
 
-    @Autowired
-    private ThesisSelectionStrategy thesisSelectionStrategy;
+    @Autowired //todo add proper strategy
+    private ThesisSelectRandom thesisSelectRandom;
 
     @Autowired
     private MailSender mailSender;
@@ -96,27 +97,28 @@ public class StudentService {
         return ratings.remove(ratings.size() - 1);
     }
 
-    public ArrayList<Thesis> getSwipeOrder(UUID studentId){
+    @Transactional
+    public List<Thesis> getSwipeOrder(UUID studentId){
         Student student = getStudent(studentId);
 
-        ArrayList<Thesis> possibleTheses = getPossibleTheses(student);
+        List<Thesis> possibleTheses = getPossibleTheses(student);
 
-        return thesisSelectionStrategy.getThesesForSwipe(possibleTheses);
+        return thesisSelectRandom.getThesesForSwipe(new ArrayList<>(possibleTheses));
     }
 
-
-    private ArrayList<Thesis> getPossibleTheses(Student student){
+    @Transactional
+    public List<Thesis> getPossibleTheses(Student student){
 
         List<Degree> degrees = student.getDegrees();
-        ArrayList<Thesis> ratedTheses = (ArrayList<Thesis>) getRatedTheses(student.getId()).stream().
-                map(rating -> rating.getThesis()).toList();
+        ArrayList<Thesis> ratedTheses = new ArrayList<>(getRatedTheses(student.getId()).stream().
+                map(rating -> rating.getThesis()).toList());
 
         ArrayList<ThesesForDegree>  possibleTheses = thesesForDegreeRepository.findByDegreeInAndThesisNotIn(degrees, ratedTheses);
 
         if(possibleTheses.isEmpty()){
             //todo add exception
         }
-        return (ArrayList<Thesis>) possibleTheses.stream().map(thesesForDegree -> thesesForDegree.getThesis()).toList();
+        return possibleTheses.stream().map(thesesForDegree -> thesesForDegree.getThesis()).toList();
 
     }
 

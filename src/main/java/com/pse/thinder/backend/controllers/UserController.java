@@ -4,7 +4,7 @@ import com.pse.thinder.backend.databaseFeatures.InputValidation;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.account.User;
-import com.pse.thinder.backend.databaseFeatures.account.UserGroup;
+import com.pse.thinder.backend.databaseFeatures.account.Role;
 import com.pse.thinder.backend.security.ThinderUserDetails;
 import com.pse.thinder.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,10 +89,10 @@ public class UserController {
                 getContext().getAuthentication().getPrincipal();
     	
     	switch(details.getUser().getUserGroup()) {
-			case GROUP_STUDENT:
+            case ROLE_STUDENT:
 				userService.updateStudent((Student) user);
 				break;
-			case GROUP_SUPERVISOR:
+            case ROLE_SUPERVISOR:
 				userService.updateSupervisor((Supervisor) user);
 				break;
 			default:

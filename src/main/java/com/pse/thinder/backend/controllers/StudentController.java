@@ -28,7 +28,7 @@ public class StudentController {
 
     @GetMapping("/theses/get-swipe-theses")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public ArrayList<Thesis> getSwipeorder() {
+    public List<Thesis> getSwipeorder() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
         return studentService.getSwipeOrder(details.getUser().getId());
