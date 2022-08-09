@@ -48,11 +48,11 @@ public class Supervisor extends User {
     }
 
     public String getAcedemicDegree() {
-        return acedemicDegree;
+        return academicDegree;
     }
 
     public void setAcedemicDegree(String acedemicDegree) {
-        this.acedemicDegree = acedemicDegree;
+        this.academicDegree = acedemicDegree;
     }
 
     public String getBuilding() {
@@ -97,13 +97,13 @@ public class Supervisor extends User {
     
     @Override
     public void updateIsComplete() {
-    	boolean notNull = acedemicDegree != null &&
+    	boolean notNull = academicDegree != null &&
     						building != null &&
     						officeNumber != null &&
     						institute != null &&
     						phoneNumber != null;
     	if(notNull) {
-    		super.setComplete(!acedemicDegree.isBlank() &&
+    		super.setComplete(!academicDegree.isBlank() &&
     							!building.isBlank() &&
     							!officeNumber.isBlank() &&
     							!institute.isBlank() &&
