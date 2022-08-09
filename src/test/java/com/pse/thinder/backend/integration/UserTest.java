@@ -70,7 +70,6 @@ class UserTest {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	
-	private JacksonTester<User> jacksonTester;
 	@Autowired 
 	Validator validator;
 	
