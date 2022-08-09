@@ -47,7 +47,7 @@ public class Supervisor extends User {
         super(firstName, lastName, password, mail, university, Role.ROLE_SUPERVISOR);
     }
 
-    public String getAcedemicDegree() {
+    public String getAcademicDegree() {
         return academicDegree;
     }
 
