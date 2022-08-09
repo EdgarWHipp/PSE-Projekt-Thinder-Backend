@@ -19,7 +19,7 @@ import java.util.List;
 public class Supervisor extends User {
 
 	@NotBlank(groups = {InputValidation.class})
-    private String acedemicDegree;
+    private String academicDegree;
 
 	@NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(20)")
