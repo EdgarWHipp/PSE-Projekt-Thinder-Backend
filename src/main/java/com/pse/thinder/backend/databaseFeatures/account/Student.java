@@ -1,42 +1,48 @@
 package com.pse.thinder.backend.databaseFeatures.account;
 
-
-import antlr.collections.Stack;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pse.thinder.backend.databaseFeatures.Degree;
+import com.pse.thinder.backend.databaseFeatures.InputValidation;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import java.util.*;
-//import java.util.Stack;
-//import org.hibernate.internal.util.collections.Stack;
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Student extends User{
 
 
-    @ManyToMany
+	@NotEmpty(groups = {InputValidation.class})
+	@ManyToMany
     @JoinTable(
             name="current_degrees",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "degree_id")
     )
-    private Set<Degree> degrees;
+	@LazyCollection(LazyCollectionOption.FALSE)
+    private List<Degree> degrees;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "student", orphanRemoval = true)
+    @OneToMany(mappedBy = "student", orphanRemoval = true, cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<ThesisRating> thesesRatings;
 
-    protected Student() {}
+    protected Student() { }
 
     public Student(String firstName, String lastName, String password, String mail, University university) {
-        super(firstName, lastName, password, mail, university);
+        super(firstName, lastName, password, mail, university, Role.ROLE_STUDENT);
+        this.degrees = new ArrayList<>();
+        this.thesesRatings = new ArrayList<>();
     }
 
-    public Set<Degree> getDegrees() {
+    public List<Degree> getDegrees() {
         return degrees;
     }
 
@@ -53,7 +59,12 @@ public class Student extends User{
         //todo explain the problem why we didn't use a stack in the documentation, due to missing hibernate implementation
     }
 
-    public void setDegree(Set<Degree> degrees) {
+    public void setDegrees(List<Degree> degrees) {
         this.degrees = degrees;
+    }
+    
+    @Override
+    public void updateIsComplete() {
+    	super.setComplete(degrees.size() > 0);
     }
 }

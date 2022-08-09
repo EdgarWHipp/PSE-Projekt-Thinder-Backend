@@ -6,6 +6,12 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.pse.thinder.backend.databaseFeatures.account.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,6 +22,8 @@ public class University {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @NotBlank(groups = {InputValidation.class})
+    @Size(min=1, max=50)
     @Column(columnDefinition = "character varying(50) unique not null")
     private String name;
 
@@ -23,23 +31,29 @@ public class University {
     @OneToMany(mappedBy = "university", cascade = CascadeType.REMOVE)
     private Set<User> members;
 
+    @NotBlank(groups = {InputValidation.class})
+    @Size(min=1, max=50)
     @Column(columnDefinition = "character varying(50) not null")
     private String studentMailRegex;
 
+    @NotBlank(groups = {InputValidation.class})
+    @Size(min=1, max=50)
     @Column(columnDefinition = "character varying(50) not null")
     private String supervisorMailRegex;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "university", cascade =  CascadeType.REMOVE)
-    private Set<Degree> degrees;
+    private List<Degree> degrees;
 
     protected University(){}
 
-    public University(String name, String studentMailRegex, String supervisorMailRegex, Set<Degree> degrees) {
+    public University(String name, String studentMailRegex, String supervisorMailRegex) {
 		super();
 		this.name = name;
 		this.studentMailRegex = studentMailRegex;
 		this.supervisorMailRegex = supervisorMailRegex;
-		this.degrees = degrees;
+		this.members = new HashSet<>();
+		this.degrees = new ArrayList<>();
 	}
 
 	public UUID getId() {
@@ -59,11 +73,15 @@ public class University {
     }
 
     public Set<User> getMembers() {
-        return members;
+        return new HashSet<>(this.members);
     }
 
     public void addMember(User member) {
         this.members.add(member);
+    }
+    
+    public void removeMember(User member) {
+        this.members.remove(member);
     }
 
     public String getStudentMailRegex() {
@@ -82,11 +100,15 @@ public class University {
         this.supervisorMailRegex = supervisorMailRegex;
     }
 
-    public Set<Degree> getDegrees() {
-        return degrees;
+    public List<Degree> getDegrees() {
+        return new ArrayList<>(this.degrees);
     }
 
     public void addDegree(Degree degree) {
         this.degrees.add(degree);
+    }
+    
+    public void removeDegree(Degree degree) {
+        this.degrees.remove(degree);
     }
 }

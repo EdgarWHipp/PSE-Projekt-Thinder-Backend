@@ -1,8 +1,10 @@
 package com.pse.thinder.backend.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.pse.thinder.backend.databaseFeatures.account.User;
@@ -29,9 +31,13 @@ public class ThinderUserDetails implements UserDetails{
 	}
 	
 	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<GrantedAuthority> getAuthorities() {
+		Collection<GrantedAuthority> authorities = new ArrayList<>();
+
+		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(this.user.getUserGroup().toString());
+
+		authorities.add(authority);
+		return  authorities;
 	}
 
 	@Override

@@ -3,40 +3,48 @@ package com.pse.thinder.backend.databaseFeatures.account;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.pse.thinder.backend.databaseFeatures.InputValidation;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@JsonIgnoreProperties(ignoreUnknown = true) // todo added because without this jackson throws an error because of the role field in the json
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Supervisor extends User {
 
-
-
+	@NotBlank(groups = {InputValidation.class})
     private String acedemicDegree;
 
+	@NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(20)")
     private String building;
+	
+	@NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(10)")
     private String officeNumber;
+	
+	@NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(50)")
     private String institute;
+	
+	@NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(15) unique")
     private String phoneNumber;
 
     @JsonIgnore
     @OneToMany(mappedBy="supervisor", cascade = CascadeType.REMOVE)
-    private Set<Thesis> theses;
+    private List<Thesis> theses;
 
     protected Supervisor(){}
 
     public Supervisor(String firstName, String lastName, String password, String mail, University university){
-        super(firstName, lastName, password, mail, university);
+        super(firstName, lastName, password, mail, university, Role.ROLE_SUPERVISOR);
     }
 
     public String getAcedemicDegree() {
@@ -71,7 +79,7 @@ public class Supervisor extends User {
         this.phoneNumber = phoneNumber;
     }
 
-    public Set<Thesis> getTheses() {
+    public List<Thesis> getTheses() {
         return theses;
     }
 
@@ -85,5 +93,23 @@ public class Supervisor extends User {
 
     public void setOfficeNumber(String officeNumber) {
         this.officeNumber = officeNumber;
+    }
+    
+    @Override
+    public void updateIsComplete() {
+    	boolean notNull = acedemicDegree != null &&
+    						building != null &&
+    						officeNumber != null &&
+    						institute != null &&
+    						phoneNumber != null;
+    	if(notNull) {
+    		super.setComplete(!acedemicDegree.isBlank() &&
+    							!building.isBlank() &&
+    							!officeNumber.isBlank() &&
+    							!institute.isBlank() &&
+    							!phoneNumber.isBlank());
+    	}
+    	else 
+    		super.setComplete(false);
     }
 }

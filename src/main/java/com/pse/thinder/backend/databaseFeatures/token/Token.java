@@ -1,9 +1,12 @@
 package com.pse.thinder.backend.databaseFeatures.token;
 
-
 import com.pse.thinder.backend.databaseFeatures.account.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -17,12 +20,16 @@ public abstract class Token {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @NotBlank
+    @Size(min=1, max=64)
     @Column(columnDefinition = "character varying(64) not null")
     private String token;
 
+    @NotNull
     @Column(nullable = false)
     private Date expirationDate;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

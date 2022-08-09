@@ -2,8 +2,7 @@ package com.pse.thinder.backend.controllers;
 
 import java.util.UUID;
 
-import javax.validation.Valid;
-
+import com.pse.thinder.backend.databaseFeatures.InputValidation;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import com.pse.thinder.backend.security.ThinderUserDetails;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -26,7 +26,7 @@ public class ThesisController {
 	
 	@Secured("SUPERVISOR")
 	@PostMapping()
-	public void postThesis(@Valid @RequestBody Thesis thesis) {
+	public void postThesis(@Validated(InputValidation.class) @RequestBody Thesis thesis) {
 		ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
 	            getContext().getAuthentication().getPrincipal();
 		thesisService.addThesis(thesis, (Supervisor) details.getUser());
@@ -39,7 +39,7 @@ public class ThesisController {
 	
 	@PutMapping("/{id}")
 	@PreAuthorize("@thesisController.currentUserIsThesisOwner(#id)")
-	public void putThesis(@PathVariable("id") UUID id, @Valid @RequestBody Thesis thesis) {
+	public void putThesis(@PathVariable("id") UUID id, @Validated(InputValidation.class) @RequestBody Thesis thesis) {
 		thesisService.updateThesis(thesis, id);
 	}
 	
