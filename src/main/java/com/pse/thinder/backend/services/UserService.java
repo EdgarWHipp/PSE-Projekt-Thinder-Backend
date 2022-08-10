@@ -237,7 +237,7 @@ public class UserService {
         	newSupervisor.setFirstName(supervisor.getFirstName());
         if(validator.validateProperty(supervisor, "lastName", InputValidation.class).isEmpty())
         	newSupervisor.setLastName(supervisor.getLastName());
-        if(validator.validateProperty(supervisor, "acedemicDegree", InputValidation.class).isEmpty())
+        if(validator.validateProperty(supervisor, "academicDegree", InputValidation.class).isEmpty())
         	newSupervisor.setAcademicDegree(supervisor.getAcademicDegree());
         if(validator.validateProperty(supervisor, "building", InputValidation.class).isEmpty()) 
         	newSupervisor.setBuilding(supervisor.getBuilding());
