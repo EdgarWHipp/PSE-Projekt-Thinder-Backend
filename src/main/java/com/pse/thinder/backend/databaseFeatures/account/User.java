@@ -194,7 +194,7 @@ public class User {
 		this.authorities = authorities;
 	}
 
-    public Boolean getComplete() {
+    public Boolean getIsComplete() {
         return isComplete;
     }
 

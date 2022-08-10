@@ -87,7 +87,7 @@ class UserTest {
 	void setUp() throws Exception {
 		JacksonTester.initFields(this, new ObjectMapper());
 		testUniversity = new University("KIT", ".*@student.kit.edu", ".*@kit.edu");
-		testDegree = new Degree("Test", "Test", testUniversity);
+		testDegree = new Degree("Test", testUniversity);
 		universityRepository.save(testUniversity);
 		
 		degreeRepository.saveAndFlush(testDegree);

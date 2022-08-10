@@ -25,11 +25,6 @@ public class Degree {
     @NotBlank(groups = {InputValidation.class})
     @Size(min=1, max=30)
     @Column(columnDefinition = "character varying(30) not null")
-    private String name;
-    
-    @NotBlank(groups = {InputValidation.class})
-    @Size(min=1, max=30)
-    @Column(columnDefinition = "character varying(30) not null")
     private String degree;
 
     @JsonIgnore
@@ -49,8 +44,7 @@ public class Degree {
 
 
 
-    public Degree(String name, String degree, University university){
-        this.name = name;
+    public Degree(String degree, University university){
         this.degree = degree;
         this.university = university;
         this.students = new ArrayList<>();
@@ -64,14 +58,6 @@ public class Degree {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDegree() {
