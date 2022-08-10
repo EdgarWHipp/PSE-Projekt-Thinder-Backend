@@ -216,8 +216,11 @@ public class UserService {
         	newStudent.setLastName(student.getLastName());
         if(validator.validateProperty(student, "degrees", InputValidation.class).isEmpty()) {
         	List<Degree> degrees = new ArrayList<>();
-        	for(Degree sentDegree : student.getDegrees())
+        	for(Degree sentDegree : student.getDegrees()) {
+        		if(sentDegree.getId() == null)
+        			continue;
         		degreeRepository.findById(sentDegree.getId()).ifPresent(degree -> {degrees.add(degree);});
+        	}
         	
         	if(!degrees.isEmpty())
         		newStudent.setDegrees(degrees);
