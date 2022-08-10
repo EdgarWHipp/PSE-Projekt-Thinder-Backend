@@ -24,7 +24,6 @@ public class UniversityController {
 
     @GetMapping("/{id}/degrees")
     public List<Degree> getDegreesById(@PathVariable("id") UUID id){
-    	System.err.println("Test");
         return  universityService.getDegreesById(id);
     }
     

@@ -163,6 +163,10 @@ class UserTest {
 		
 		System.err.println(roleResponse.getBody());
 		
+		ResponseEntity<String> degreesResponse = testRestTemplate.withBasicAuth("uihoz@student.kit.edu", "password").getForEntity("/university/"+testUniversity.getId()+"/degrees", String.class);
+		
+		System.err.println(degreesResponse.getBody());
+		
 //		//Get Role
 //        ResponseEntity<String> roleResponse = testRestTemplate.withBasicAuth("uihoz@student.kit.edu", "password").getForEntity("/users/current/getRole", String.class);
 //        System.err.println(roleResponse.getBody());
