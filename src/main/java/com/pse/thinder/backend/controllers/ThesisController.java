@@ -3,6 +3,7 @@ package com.pse.thinder.backend.controllers;
 import java.util.UUID;
 
 import com.pse.thinder.backend.databaseFeatures.InputValidation;
+import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import com.pse.thinder.backend.security.ThinderUserDetails;
@@ -26,10 +27,10 @@ public class ThesisController {
 	
 	@Secured("SUPERVISOR")
 	@PostMapping()
-	public void postThesis(@Validated(InputValidation.class) @RequestBody Thesis thesis) {
+	public void postThesis(@Validated(InputValidation.class) @RequestBody ThesisDTO thesis) {
 		ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
 	            getContext().getAuthentication().getPrincipal();
-		thesisService.addThesis(thesis, (Supervisor) details.getUser());
+		//thesisService.addThesis(thesis, (Supervisor) details.getUser());
 	}
 	
 	@GetMapping("/{id}")
