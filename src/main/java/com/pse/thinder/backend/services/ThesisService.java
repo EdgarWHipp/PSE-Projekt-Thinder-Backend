@@ -1,21 +1,20 @@
 package com.pse.thinder.backend.services;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
+import com.pse.thinder.backend.databaseFeatures.Degree;
+import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.thesis.Image;
+import com.pse.thinder.backend.databaseFeatures.thesis.ThesesForDegree;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
-import com.pse.thinder.backend.repositories.ImageRepository;
+import com.pse.thinder.backend.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import com.pse.thinder.backend.repositories.ThesisRepository;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -27,15 +26,44 @@ public class ThesisService {
 
 	@Autowired
 	private ImageRepository imageRepository;
+
+	@Autowired
+	private DegreeRepository degreeRepository;
+
+	@Autowired
+	private ThesesForDegreeRepository thesesForDegreeRepository;
+
+
 	
 	public Thesis getThesisById(UUID id) {
 		return thesisRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(THESIS_NOT_FOUND));
 	}
 
-	public void addThesis(Thesis thesis, Supervisor supervisor) {
-		Thesis toSave = new Thesis(thesis.getName(), thesis.getTask(), thesis.getMotivation(), thesis.getQuestionForm(),
-				thesis.getSupervisingProfessor(), supervisor, thesis.getPossibleDegrees());
-		thesisRepository.save(toSave);
+	//todo user eingaben müssen besser überprüft werden, bsp. degree dürfen nicht leer
+	public void addThesis(ThesisDTO thesis, Supervisor supervisor) {
+		List<Degree> degreeList = degreeRepository.findAllById(thesis.getPossibleDegrees().stream()
+				.map(degree -> degree.getId()).toList());
+		//todo check if supervisor and degree are at the same university.
+		Thesis newThesis = new Thesis(thesis.getName(), thesis.getTask(), thesis.getMotivation(), thesis.getQuestions()
+				,thesis.getSupervisingProfessor(), supervisor);
+		List<ThesesForDegree> possibleDegrees = new ArrayList<>();
+		for(Degree degree : degreeList){
+			possibleDegrees.add(new ThesesForDegree(degree, newThesis));
+		}
+		newThesis.setPossibleDegrees(possibleDegrees);
+		thesisRepository.saveAndFlush(newThesis);
+		thesesForDegreeRepository.saveAllAndFlush(possibleDegrees);
+
+		List<Image> images = new ArrayList<>();
+
+		for(String encodedImage : thesis.getImages()){
+			byte[] image = java.util.Base64.getDecoder().decode(encodedImage);
+			images.add(new Image(image, newThesis));
+			}
+
+		if(images.size() != 0) {
+			imageRepository.saveAllAndFlush(images);
+		}
 	}
 
 	public void updateThesis(Thesis thesis, UUID id) {
@@ -62,7 +90,6 @@ public class ThesisService {
 				//todo add exception
 			}
 			Image newImage = new Image();
-			newImage.setName(imageFile.getName());
 			newImage.setImage(imageFile.getBytes());
 			newImage.setThesis(thesis);
 			newImages.add(newImage);

@@ -16,11 +16,6 @@ public class Image {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @NotBlank(groups = {InputValidation.class})
-    @Size(min=1, max=50)
-    @Column(columnDefinition = "character varying(50) not null")
-    private String name;
-
     @NotNull(groups = {InputValidation.class})
     @Lob
     @Basic(fetch = FetchType.EAGER)
@@ -31,6 +26,13 @@ public class Image {
     @JoinColumn(name="thesis_id", nullable=false)
     @JsonIgnore
     private Thesis thesis;
+
+    public Image(){}
+
+    public Image(byte[] image, Thesis thesis){
+        this.image = image;
+        this.thesis = thesis;
+    }
 
     public UUID getId() {
         return id;
@@ -56,11 +58,4 @@ public class Image {
         this.thesis = thesis;
     }
 
-    public String getName() {
-        return name;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-}

@@ -1,14 +1,14 @@
 package com.pse.thinder.backend.databaseFeatures;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 import java.util.List;
 import java.util.UUID;
 
 public class ThesisDTO {
 
+    @JsonIgnore
     private UUID id;
 
     private String name;
@@ -21,23 +21,23 @@ public class ThesisDTO {
 
     private String questions;
 
-    @JsonIdentityReference(alwaysAsId=true)
-    @JsonProperty("supervisor_id")
-    private Supervisor supervisor;
 
-    private List<Byte[]> images;
+    private UUID supervisorId;
+
+    private List<String> images;
 
     private List<Degree> possibleDegrees;
 
     public ThesisDTO(){}
 
-    public ThesisDTO(String name, String supervisingProfessor, String motivation, String task, String questions
-            , List<Byte[]> images, List<Degree> possibleDegrees){
+    public ThesisDTO(String name, String supervisingProfessor, String motivation, String task, String questions,
+            UUID supervisorId, List<String> images, List<Degree> possibleDegrees){
         this.name = name;
         this.supervisingProfessor = supervisingProfessor;
         this.motivation = motivation;
         this.task = task;
         this.questions = questions;
+        this.supervisorId = supervisorId;
         this.images = images;
         this.possibleDegrees = possibleDegrees;
     }
@@ -90,19 +90,19 @@ public class ThesisDTO {
         this.questions = questions;
     }
 
-    public Supervisor getSupervisor() {
-        return supervisor;
+    public UUID getSupervisorId() {
+        return supervisorId;
     }
 
-    public void setSupervisor(Supervisor supervisor) {
-        this.supervisor = supervisor;
+    public void setSupervisorId(UUID supervisor) {
+        this.supervisorId = supervisor;
     }
 
-    public List<Byte[]> getImages() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImages(List<Byte[]> images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 

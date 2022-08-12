@@ -25,7 +25,7 @@ public class Thesis {
     private UUID id;
 
     @NotBlank(groups = {InputValidation.class})
-    @Column(columnDefinition = "character varying(100) not null")
+    @Column(columnDefinition = "character varying(100)")
     private String name;
 
     @NotBlank(groups = {InputValidation.class})
@@ -41,7 +41,7 @@ public class Thesis {
     private String questionForm;
 
     @NotBlank(groups = {InputValidation.class})
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "character varying(30)")
     private String supervisingProfessor;
     
     @NotNull(groups = {InputValidation.class})

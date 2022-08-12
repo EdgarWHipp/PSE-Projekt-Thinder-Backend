@@ -17,6 +17,7 @@ import java.util.*;
 
 @Entity @Table(name = "degrees")
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+
 public class Degree {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,7 +34,7 @@ public class Degree {
 
     @NotNull(groups = {InputValidation.class})
     @JsonIdentityReference(alwaysAsId=true)
-    @JsonProperty("uni_id")
+    @JsonProperty("university_id")
     @ManyToOne
     @JoinColumn(name = "university_id", columnDefinition = "uuid not null")
     private University university;
@@ -50,7 +51,7 @@ public class Degree {
         this.students = new ArrayList<>();
     }
 
-    protected Degree(){}
+    public Degree(){}
 
     public UUID getId() {
         return id;
