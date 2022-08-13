@@ -9,15 +9,15 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 public interface ThesesForDegreeRepository extends JpaRepository<ThesesForDegree, ThesesForDegreeKey> {
 
 
     ArrayList<ThesesForDegree> findByDegreeInAndThesisNotIn(Collection<Degree> degree, Collection<Thesis> theses);
 
-    @Query(
-            value = "select * from ThesesForDegree as thesis where thesis.degree in degree and thesis.thesis not in theses",
-            nativeQuery = true
-    )
-    ArrayList<ThesesForDegree> getPossibleTheses();
+    ArrayList<ThesesForDegree> findByDegreeIdInAndThesisIdNotIn(Collection<UUID> degreesIds, Collection<UUID> thesesIds);
+
+    ArrayList<ThesesForDegree> findByDegreeIdIn(Collection<UUID> degreesIds);
+
 }

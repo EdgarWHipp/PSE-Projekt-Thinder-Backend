@@ -51,8 +51,10 @@ public class ThesisService {
 			possibleDegrees.add(new ThesesForDegree(degree, newThesis));
 		}
 		newThesis.setPossibleDegrees(possibleDegrees);
+		//todo set possible theses in degree
 		thesisRepository.saveAndFlush(newThesis);
 		thesesForDegreeRepository.saveAllAndFlush(possibleDegrees);
+
 
 		List<Image> images = new ArrayList<>();
 

@@ -3,6 +3,7 @@ package com.pse.thinder.backend.services;
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
 import com.pse.thinder.backend.databaseFeatures.Degree;
 import com.pse.thinder.backend.databaseFeatures.Pair;
+import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesesForDegree;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
@@ -98,22 +99,29 @@ public class StudentService {
     }
 
     @Transactional
-    public List<Thesis> getSwipeOrder(UUID studentId){
+    public List<ThesisDTO> getSwipeOrder(UUID studentId){
         Student student = getStudent(studentId);
 
         List<Thesis> possibleTheses = getPossibleTheses(student);
-
-        return thesisSelectRandom.getThesesForSwipe(new ArrayList<>(possibleTheses));
+        //todo Should the controller do the parsing?
+        return parseToDto(thesisSelectRandom.getThesesForSwipe(new ArrayList<>(possibleTheses)));
     }
+
+
 
     @Transactional
     public List<Thesis> getPossibleTheses(Student student){
 
-        List<Degree> degrees = student.getDegrees();
-        ArrayList<Thesis> ratedTheses = new ArrayList<>(getRatedTheses(student.getId()).stream().
-                map(rating -> rating.getThesis()).toList());
+        List<UUID> degrees = student.getDegrees().stream().map(degree -> degree.getId()).toList();
 
-        ArrayList<ThesesForDegree>  possibleTheses = thesesForDegreeRepository.findByDegreeInAndThesisNotIn(degrees, ratedTheses);
+        ArrayList<UUID> ratedTheses = new ArrayList<>(getRatedTheses(student.getId()).stream().
+                map(rating -> rating.getThesis().getId()).toList());
+
+        ArrayList<ThesesForDegree>  possibleTheses;
+
+        //If ratedTheses list is empty the result will always be an empty list
+        possibleTheses = ratedTheses.size() == 0 ? thesesForDegreeRepository.findByDegreeIdIn(degrees) :
+                thesesForDegreeRepository.findByDegreeIdInAndThesisIdNotIn(degrees, ratedTheses);
 
         if(possibleTheses.isEmpty()){
             //todo add exception
@@ -150,5 +158,18 @@ public class StudentService {
 
     private ArrayList<ThesisRating> getRatedTheses(UUID studentId){
         return thesisRatingRepository.findByIdStudentId(studentId);
+    }
+
+    private List<ThesisDTO> parseToDto(List<Thesis> theses){
+        return theses.stream().map(thesis -> new ThesisDTO(
+                thesis.getName(),
+                thesis.getSupervisingProfessor(),
+                thesis.getMotivation(),
+                thesis.getTask(),
+                thesis.getQuestionForm(),
+                thesis.getSupervisor().getId(),
+                thesis.getEncodedImages(),
+                thesis.getPossibleDegrees().stream().map(thesesForDegree -> thesesForDegree.getDegree()).toList()
+        )).toList();
     }
 }

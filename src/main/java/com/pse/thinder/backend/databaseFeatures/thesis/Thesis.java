@@ -57,12 +57,15 @@ public class Thesis {
 
 
     @NotNull(groups = {InputValidation.class})
+
     @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Image> images;
 
     @JsonIgnore
     @OneToMany(mappedBy = "thesis", cascade = CascadeType.REMOVE)
     private List<ThesesForDegree> possibleDegrees;
+
+
 
 
     protected Thesis(){}
@@ -173,5 +176,14 @@ public class Thesis {
     public void setPossibleDegrees(List<ThesesForDegree> thesesForDegrees) {
         this.possibleDegrees.clear();
         this.possibleDegrees.addAll(thesesForDegrees);
+    }
+
+    public List<String> getEncodedImages(){
+        List<String> encodedImages = new ArrayList<>();
+        for (Image image : images){
+            String encodedImage = java.util.Base64.getEncoder().encodeToString(image.getImage());
+            encodedImages.add(encodedImage);
+        }
+        return encodedImages;
     }
 }

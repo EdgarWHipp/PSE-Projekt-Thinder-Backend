@@ -1,6 +1,7 @@
 package com.pse.thinder.backend.controllers;
 
 import com.pse.thinder.backend.databaseFeatures.QuestionForm;
+import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import com.pse.thinder.backend.databaseFeatures.Pair;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
@@ -29,7 +30,7 @@ public class StudentController {
 
     @GetMapping("/theses/get-swipe-theses")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public List<Thesis> getSwipeorder() {
+    public List<ThesisDTO> getSwipeorder() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
         return studentService.getSwipeOrder(details.getUser().getId());
@@ -40,17 +41,17 @@ public class StudentController {
     public void rateTheses(@RequestBody Collection<Pair<UUID, Boolean>> ratings) {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
-         studentService.rateTheses(ratings, details.getUser().getId());
+        studentService.rateTheses(ratings, details.getUser().getId());
     }
 
-   @GetMapping("/rated-theses/{thesis-id}/remove")
-   @PreAuthorize("hasRole('ROLE_STUDENT')")
-   public void removeRatedThesis(@PathVariable("thesis-id") UUID thesisId){
-       ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
-               getContext().getAuthentication().getPrincipal();
+    @GetMapping("/rated-theses/{thesis-id}/remove")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    public void removeRatedThesis(@PathVariable("thesis-id") UUID thesisId) {
+        ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
 
-       studentService.removeRatedThesis(details.getUser().getId(), thesisId);
-   }
+        studentService.removeRatedThesis(details.getUser().getId(), thesisId);
+    }
 
     @GetMapping(value = "/rated-theses")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
@@ -74,7 +75,6 @@ public class StudentController {
     public void sendThesisForm(@PathVariable("theses-id") UUID thesisId, @RequestBody QuestionForm questionForm) {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
-        System.err.println("TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSSSSSSTTTTT");
         studentService.sendQuestionForm(details.getUser().getId(), thesisId, questionForm.getQuestionForm());
     }
 
