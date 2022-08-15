@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.pse.thinder.backend.controllers.TestController;
 import com.pse.thinder.backend.controllers.ThesisController;
@@ -27,9 +28,10 @@ import com.pse.thinder.backend.services.ThesisService;
 import com.pse.thinder.backend.services.UniversityService;
 import com.pse.thinder.backend.services.UserService;
 import com.pse.thinder.backend.services.VerificationTokenService;
-import com.pse.thinder.backend.services.swipestrategy.ThesisSelectI;
+import com.pse.thinder.backend.services.swipestrategy.ThesisSelectionStrategy;
 
 @SpringBootTest
+@ActiveProfiles({"test"})
 class BackendApplicationTests {
 
 	@Autowired
@@ -73,7 +75,7 @@ class BackendApplicationTests {
 	ThinderUserDetailsService userDetailsService;
 	
 	@Autowired
-	ThesisSelectI thesisSelectI;
+	ThesisSelectionStrategy thesisSelectI;
 	@Autowired
 	ThesisService thesisService;
 	@Autowired

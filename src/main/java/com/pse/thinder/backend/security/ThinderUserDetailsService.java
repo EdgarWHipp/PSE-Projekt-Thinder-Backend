@@ -11,6 +11,11 @@ import org.springframework.stereotype.Service;
 import com.pse.thinder.backend.databaseFeatures.account.User;
 import com.pse.thinder.backend.repositories.UserRepository;
 
+/**
+ * This class is used by Spring Security to get UserDetails needed to authenticate incoming requests
+ *
+ */
+//Tells Spring Boot that this class is a Bean
 @Service
 public class ThinderUserDetailsService implements UserDetailsService{
 

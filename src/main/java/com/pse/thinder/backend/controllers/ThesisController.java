@@ -1,43 +1,67 @@
 package com.pse.thinder.backend.controllers;
 
+import java.util.List;
 import java.util.UUID;
 
+import com.pse.thinder.backend.databaseFeatures.InputValidation;
+import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
+import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
+import com.pse.thinder.backend.security.ThinderUserDetails;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 
 import com.pse.thinder.backend.services.ThesisService;
 
-@RestController
+@RestController("thesisController")
+@RequestMapping("/thesis")
 public class ThesisController {
 	
 	@Autowired
 	private ThesisService thesisService;
 	
-	@PostMapping("Thesis")
-	public void postThesis(@RequestBody Thesis thesis) {
-		thesisService.addThesis(thesis);
+
+	@PostMapping()
+	@PreAuthorize("hasRole('ROLE_SUPERVISOR')")
+	public void postThesis(@RequestBody ThesisDTO thesis) {
+		ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+	            getContext().getAuthentication().getPrincipal();
+		thesisService.addThesis(thesis, (Supervisor) details.getUser());
 	}
 	
-	@GetMapping("Thesis/{id}")
-	public Thesis getThesis(@PathVariable("id") UUID id) {
+	@GetMapping("/{id}")
+	@PreAuthorize("hasRole('ROLE_SUPERVISOR')") //stimmt das?
+	public ThesisDTO getThesis(@PathVariable("id") UUID id) {
 		return thesisService.getThesisById(id);
 	}
+
+	@GetMapping
+	public List<ThesisDTO> getTheses(){
+		ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+				getContext().getAuthentication().getPrincipal();
+		return thesisService.getThesesBySupervisor(details.getUser().getId());
+	}
 	
-	@PutMapping("Thesis/{id}")
-	public void putThesis(@PathVariable("id") UUID id, @RequestBody Thesis thesis) {
+	@PutMapping("/{id}")
+	@PreAuthorize("@thesisController.currentUserIsThesisOwner(#id)")
+	public void putThesis(@PathVariable("id") UUID id, @Validated(InputValidation.class) @RequestBody Thesis thesis) {
 		thesisService.updateThesis(thesis, id);
 	}
 	
-	@DeleteMapping("Thesis/{id}")
+	@DeleteMapping("/{id}")
+	@PreAuthorize("@thesisController.currentUserIsThesisOwner(#id)")
 	public void deleteThesis(@PathVariable("id") UUID id) {
 		thesisService.deleteThesis(id);
+	}
+	
+	public boolean currentUserIsThesisOwner(UUID thesisId) {
+		ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+	            getContext().getAuthentication().getPrincipal();
+		return thesisService.getThesisById(thesisId).getSupervisorId().equals(details.getUser().getId());
 	}
 }

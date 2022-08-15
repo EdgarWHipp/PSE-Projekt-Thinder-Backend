@@ -1,26 +1,30 @@
 package com.pse.thinder.backend.controllers;
 
+import com.pse.thinder.backend.databaseFeatures.Degree;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.services.UniversityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/university")
 public class UniversityController {
 
     @Autowired
     UniversityService universityService;
 
-    @PostMapping("/university") //todo only for admins
-    public void addUniversity(@RequestBody University uni) {
-        universityService.addUniversity(uni);
-    }
-
-    @GetMapping("/university")
-    public University getUniversityById(@RequestParam UUID id) {
+    @GetMapping("/{id}")
+    public University getUniversityById(@PathVariable("id") UUID id) {
         return universityService.getUniversityById(id);
     }
 
+    @GetMapping("/{id}/degrees")
+    public List<Degree> getDegreesById(@PathVariable("id") UUID id){
+        return  universityService.getDegreesById(id);
+    }
+    
 }
