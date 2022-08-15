@@ -1,5 +1,6 @@
 package com.pse.thinder.backend.controllers;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.pse.thinder.backend.databaseFeatures.InputValidation;
@@ -34,8 +35,16 @@ public class ThesisController {
 	}
 	
 	@GetMapping("/{id}")
-	public Thesis getThesis(@PathVariable("id") UUID id) {
+	@PreAuthorize("hasRole('ROLE_SUPERVISOR')") //stimmt das?
+	public ThesisDTO getThesis(@PathVariable("id") UUID id) {
 		return thesisService.getThesisById(id);
+	}
+
+	@GetMapping
+	public List<ThesisDTO> getTheses(){
+		ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+				getContext().getAuthentication().getPrincipal();
+		return thesisService.getThesesBySupervisor(details.getUser().getId());
 	}
 	
 	@PutMapping("/{id}")
@@ -53,6 +62,6 @@ public class ThesisController {
 	public boolean currentUserIsThesisOwner(UUID thesisId) {
 		ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
 	            getContext().getAuthentication().getPrincipal();
-		return thesisService.getThesisById(thesisId).getSupervisor().getId().equals(details.getUser().getId());
+		return thesisService.getThesisById(thesisId).getSupervisorId().equals(details.getUser().getId());
 	}
 }

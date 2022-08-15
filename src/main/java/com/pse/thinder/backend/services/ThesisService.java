@@ -35,8 +35,9 @@ public class ThesisService {
 
 
 	
-	public Thesis getThesisById(UUID id) {
-		return thesisRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(THESIS_NOT_FOUND));
+	public ThesisDTO getThesisById(UUID id) {
+		Thesis thesis = thesisRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(THESIS_NOT_FOUND));
+		return parseToDto(Arrays.asList(thesis)).get(0); //id is the primary key thus, the list has only one element.
 	}
 
 	//todo user eingaben müssen besser überprüft werden, bsp. degree dürfen nicht leer
@@ -69,7 +70,7 @@ public class ThesisService {
 	}
 
 	public void updateThesis(Thesis thesis, UUID id) {
-		Thesis toSave = getThesisById(id);
+		Thesis toSave = getActualThesisById(id);
 		toSave.setName(thesis.getName());
 		toSave.setTask(thesis.getTask());
 		toSave.setMotivation(thesis.getMotivation());
@@ -80,12 +81,12 @@ public class ThesisService {
 		thesisRepository.save(toSave);
 	}
 
-	public ArrayList<Thesis> getThesesBySupervisor(UUID id){
-		return thesisRepository.findBySupervisorId(id);
+	public List<ThesisDTO> getThesesBySupervisor(UUID id){
+		return parseToDto(thesisRepository.findBySupervisorId(id));
 	}
 
 	public void addImages(ArrayList<MultipartFile> imageFiles, UUID thesisId) throws IOException {
-		Thesis thesis = getThesisById(thesisId);
+		Thesis thesis = getActualThesisById(thesisId);
 		ArrayList<Image> newImages = new ArrayList<>();
 		for(MultipartFile imageFile : imageFiles){
 			if(imageFile.isEmpty()){
@@ -103,12 +104,29 @@ public class ThesisService {
 	}
 
 	public void removeImages(UUID thesisId){
-		Thesis thesis = getThesisById(thesisId);
+		Thesis thesis = getActualThesisById(thesisId);
 		thesis.getImages().clear();
 		thesisRepository.save(thesis);
 	}
 	
 	public void deleteThesis(UUID id) {
 		thesisRepository.deleteById(id);
+	}
+
+	private List<ThesisDTO> parseToDto(List<Thesis> theses){
+		return theses.stream().map(thesis -> new ThesisDTO(
+				thesis.getName(),
+				thesis.getSupervisingProfessor(),
+				thesis.getMotivation(),
+				thesis.getTask(),
+				thesis.getQuestionForm(),
+				thesis.getSupervisor().getId(),
+				thesis.getEncodedImages(),
+				thesis.getPossibleDegrees().stream().map(thesesForDegree -> thesesForDegree.getDegree()).toList()
+		)).toList();
+	}
+
+	private Thesis getActualThesisById(UUID thesisId){
+		return thesisRepository.findById(thesisId).orElseThrow(() -> new EntityNotFoundException(THESIS_NOT_FOUND));
 	}
 }
