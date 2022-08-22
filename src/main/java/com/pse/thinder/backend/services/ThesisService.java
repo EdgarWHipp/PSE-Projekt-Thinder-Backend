@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -81,6 +82,7 @@ public class ThesisService {
 		thesisRepository.save(toSave);
 	}
 
+	@Transactional //transactional because session is needed
 	public List<ThesisDTO> getThesesBySupervisor(UUID id){
 		return parseToDto(thesisRepository.findBySupervisorId(id));
 	}
@@ -120,7 +122,7 @@ public class ThesisService {
 				thesis.getMotivation(),
 				thesis.getTask(),
 				thesis.getQuestionForm(),
-				thesis.getSupervisor().getId(),
+				thesis.getSupervisor(),
 				thesis.getEncodedImages(),
 				thesis.getPossibleDegrees().stream().map(thesesForDegree -> thesesForDegree.getDegree()).toList()
 		)).toList();

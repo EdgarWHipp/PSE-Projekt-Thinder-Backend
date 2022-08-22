@@ -62,6 +62,6 @@ public class ThesisController {
 	public boolean currentUserIsThesisOwner(UUID thesisId) {
 		ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
 	            getContext().getAuthentication().getPrincipal();
-		return thesisService.getThesisById(thesisId).getSupervisorId().equals(details.getUser().getId());
+		return thesisService.getThesisById(thesisId).getSupervisor().getId().equals(details.getUser().getId());
 	}
 }
