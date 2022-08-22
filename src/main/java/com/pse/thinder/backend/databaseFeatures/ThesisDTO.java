@@ -1,6 +1,7 @@
 package com.pse.thinder.backend.databaseFeatures;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class ThesisDTO {
     private String questions;
 
 
-    private UUID supervisorId;
+    private Supervisor supervisor;
 
     private List<String> images;
 
@@ -31,13 +32,13 @@ public class ThesisDTO {
     public ThesisDTO(){}
 
     public ThesisDTO(String name, String supervisingProfessor, String motivation, String task, String questions,
-            UUID supervisorId, List<String> images, List<Degree> possibleDegrees){
+            Supervisor supervisor, List<String> images, List<Degree> possibleDegrees){
         this.name = name;
         this.supervisingProfessor = supervisingProfessor;
         this.motivation = motivation;
         this.task = task;
         this.questions = questions;
-        this.supervisorId = supervisorId;
+        this.supervisor = supervisor;
         this.images = images;
         this.possibleDegrees = possibleDegrees;
     }
@@ -90,12 +91,12 @@ public class ThesisDTO {
         this.questions = questions;
     }
 
-    public UUID getSupervisorId() {
-        return supervisorId;
+    public Supervisor getSupervisor() {
+        return supervisor;
     }
 
-    public void setSupervisorId(UUID supervisor) {
-        this.supervisorId = supervisor;
+    public void setSupervisorId(Supervisor supervisor) {
+        this.supervisor = supervisor;
     }
 
     public List<String> getImages() {

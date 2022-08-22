@@ -122,7 +122,7 @@ public class ThesisService {
 				thesis.getMotivation(),
 				thesis.getTask(),
 				thesis.getQuestionForm(),
-				thesis.getSupervisor().getId(),
+				thesis.getSupervisor(),
 				thesis.getEncodedImages(),
 				thesis.getPossibleDegrees().stream().map(thesesForDegree -> thesesForDegree.getDegree()).toList()
 		)).toList();
