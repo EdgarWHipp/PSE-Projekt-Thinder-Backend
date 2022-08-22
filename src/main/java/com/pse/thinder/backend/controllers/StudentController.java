@@ -55,7 +55,7 @@ public class StudentController {
 
     @GetMapping(value = "/rated-theses")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public List<ThesisRating> getLikedTheses() {
+    public List<ThesisDTO> getLikedTheses() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
         return studentService.getLikedTheses(details.getUser().getId());

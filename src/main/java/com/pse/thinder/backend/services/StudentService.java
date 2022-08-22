@@ -77,9 +77,10 @@ public class StudentService {
 
     }
 
-
-    public ArrayList<ThesisRating> getLikedTheses(UUID studentId){
-        return thesisRatingRepository.findByIdStudentIdAndPositiveRated(studentId, true);
+    @Transactional
+    public List<ThesisDTO> getLikedTheses(UUID studentId){
+        return parseToDto(thesisRatingRepository.findByIdStudentIdAndPositiveRated(studentId, true)
+                .stream().map(thesisRating -> thesisRating.getThesis()).toList());
     }
 
     //todo move this in the thesis service
@@ -160,6 +161,7 @@ public class StudentService {
         return thesisRatingRepository.findByIdStudentId(studentId);
     }
 
+
     private List<ThesisDTO> parseToDto(List<Thesis> theses){
         return theses.stream().map(thesis -> new ThesisDTO(
                 thesis.getName(),
@@ -167,7 +169,7 @@ public class StudentService {
                 thesis.getMotivation(),
                 thesis.getTask(),
                 thesis.getQuestionForm(),
-                thesis.getSupervisor().getId(),
+                thesis.getSupervisor(),
                 thesis.getEncodedImages(),
                 thesis.getPossibleDegrees().stream().map(thesesForDegree -> thesesForDegree.getDegree()).toList()
         )).toList();
