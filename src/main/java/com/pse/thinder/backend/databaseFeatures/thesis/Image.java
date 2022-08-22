@@ -2,6 +2,7 @@ package com.pse.thinder.backend.databaseFeatures.thesis;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pse.thinder.backend.databaseFeatures.InputValidation;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -19,6 +20,7 @@ public class Image {
     @NotNull(groups = {InputValidation.class})
     @Lob
     @Basic(fetch = FetchType.EAGER)
+    @Type(type = "org.hibernate.type.ImageType")
     private byte[] image;
 
     @NotNull(groups = {InputValidation.class})

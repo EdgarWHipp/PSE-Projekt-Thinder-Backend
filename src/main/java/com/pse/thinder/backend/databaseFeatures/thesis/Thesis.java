@@ -170,7 +170,7 @@ public class Thesis {
     }
 
     public List<ThesesForDegree> getPossibleDegrees() {
-        return new ArrayList<>(this.possibleDegrees);
+        return this.possibleDegrees;
     }
 
     public void setPossibleDegrees(List<ThesesForDegree> thesesForDegrees) {
