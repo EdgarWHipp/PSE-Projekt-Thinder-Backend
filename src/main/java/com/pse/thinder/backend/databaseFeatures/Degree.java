@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 import java.util.*;
 
 @Entity @Table(name = "degrees")
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
+//@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 
 public class Degree {
 
