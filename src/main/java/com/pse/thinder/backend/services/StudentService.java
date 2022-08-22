@@ -164,7 +164,7 @@ public class StudentService {
 
     private List<ThesisDTO> parseToDto(List<Thesis> theses){
         return theses.stream().map(thesis -> new ThesisDTO(
-                thesis.getId();
+                thesis.getId(),
                 thesis.getName(),
                 thesis.getSupervisingProfessor(),
                 thesis.getMotivation(),
