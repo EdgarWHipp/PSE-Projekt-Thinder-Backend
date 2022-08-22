@@ -117,7 +117,6 @@ public class ThesisService {
 
 	private List<ThesisDTO> parseToDto(List<Thesis> theses){
 		return theses.stream().map(thesis -> new ThesisDTO(
-				thesis.getId(),
 				thesis.getName(),
 				thesis.getSupervisingProfessor(),
 				thesis.getMotivation(),
@@ -128,8 +127,6 @@ public class ThesisService {
 				thesis.getPossibleDegrees().stream().map(thesesForDegree -> thesesForDegree.getDegree()).toList()
 		)).toList();
 	}
-
-
 
 	private Thesis getActualThesisById(UUID thesisId){
 		return thesisRepository.findById(thesisId).orElseThrow(() -> new EntityNotFoundException(THESIS_NOT_FOUND));

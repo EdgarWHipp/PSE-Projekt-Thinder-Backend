@@ -121,7 +121,8 @@ public class UserService {
 				throw new EntityNotAddedException(USER_NOT_ADDED_EXCEPTION);
 			}
         }
-        else if (Pattern.matches(university.getSupervisorMailRegex(), user.getMail())) {
+
+        if (Pattern.matches(university.getSupervisorMailRegex(), user.getMail())) {
             Supervisor supervisor = new Supervisor(user.getFirstName(), user.getLastName(),
                     passwordEncoder.encode(user.getPassword()), user.getMail(), university);
             try {
