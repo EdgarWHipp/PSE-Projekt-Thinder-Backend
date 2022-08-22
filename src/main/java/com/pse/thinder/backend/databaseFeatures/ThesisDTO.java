@@ -9,7 +9,6 @@ import java.util.UUID;
 
 public class ThesisDTO {
 
-    @JsonIgnore
     private UUID id;
 
     private String name;
@@ -31,8 +30,9 @@ public class ThesisDTO {
 
     public ThesisDTO(){}
 
-    public ThesisDTO(String name, String supervisingProfessor, String motivation, String task, String questions,
+    public ThesisDTO(UUID thesisId, String name, String supervisingProfessor, String motivation, String task, String questions,
             Supervisor supervisor, List<String> images, List<Degree> possibleDegrees){
+        this.id = thesisId;
         this.name = name;
         this.supervisingProfessor = supervisingProfessor;
         this.motivation = motivation;

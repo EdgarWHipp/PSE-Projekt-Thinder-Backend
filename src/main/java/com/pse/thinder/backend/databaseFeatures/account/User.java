@@ -24,7 +24,7 @@ import java.util.UUID;
     @JsonSubTypes.Type(value = PlainUser.class, name = "USER")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
