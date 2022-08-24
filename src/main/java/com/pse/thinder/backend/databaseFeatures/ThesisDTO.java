@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,21 +14,28 @@ public class ThesisDTO {
     //@JsonIgnore
     private UUID id;
 
+    @NotBlank
     private String name;
 
+    @NotBlank
     private String supervisingProfessor;
 
+    @NotBlank
     private String motivation;
 
+    @NotBlank
     private String task;
 
+    @NotBlank
     private String questions;
 
 
     private Supervisor supervisor;
 
+    @NotEmpty
     private List<String> images;
 
+    @NotEmpty
     private List<Degree> possibleDegrees;
 
     public ThesisDTO(){}

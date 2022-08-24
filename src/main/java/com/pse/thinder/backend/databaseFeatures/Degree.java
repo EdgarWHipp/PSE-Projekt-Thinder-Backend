@@ -32,7 +32,7 @@ public class Degree {
     @ManyToMany(mappedBy = "degrees")
     private List<Student> students;
 
-    @NotNull(groups = {InputValidation.class})
+    //@NotNull(groups = {InputValidation.class})
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("university_id")
     @ManyToOne
@@ -99,5 +99,10 @@ public class Degree {
 
     public void setUniversity(University university){
         this.university = university;
+    }
+
+    public void setPossibleTheses(List<ThesesForDegree> possibleTheses) {
+        this.possibleTheses.clear();
+        this.possibleTheses.addAll(possibleTheses);
     }
 }

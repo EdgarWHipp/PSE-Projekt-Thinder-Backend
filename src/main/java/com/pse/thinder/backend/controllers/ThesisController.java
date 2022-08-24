@@ -49,7 +49,7 @@ public class ThesisController {
 	
 	@PutMapping("/{id}")
 	@PreAuthorize("@thesisController.currentUserIsThesisOwner(#id)")
-	public void putThesis(@PathVariable("id") UUID id, @Validated(InputValidation.class) @RequestBody Thesis thesis) {
+	public void putThesis(@PathVariable("id") UUID id, @RequestBody ThesisDTO thesis) {
 		thesisService.updateThesis(thesis, id);
 	}
 	
@@ -62,6 +62,6 @@ public class ThesisController {
 	public boolean currentUserIsThesisOwner(UUID thesisId) {
 		ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
 	            getContext().getAuthentication().getPrincipal();
-		return thesisService.getThesisById(thesisId).getSupervisor().getId().equals(details.getUser().getId());
+		return thesisService.getActualThesisById(thesisId).getSupervisor().getId().equals(details.getUser().getId());
 	}
 }
