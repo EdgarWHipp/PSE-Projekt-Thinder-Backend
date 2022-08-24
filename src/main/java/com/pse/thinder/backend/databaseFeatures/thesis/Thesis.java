@@ -154,7 +154,9 @@ public class Thesis {
     }
 
     public void setImages(List<Image> images) {
-    	this.images.clear();
+    	for(Image removedImage : this.getImages()){
+            this.getImages().remove(removedImage);
+        }
         this.images.addAll(images);
     }
 
@@ -180,7 +182,7 @@ public class Thesis {
 
     public List<String> getEncodedImages(){
         List<String> encodedImages = new ArrayList<>();
-        for (Image image : images){
+        for (Image image : this.images){
             String encodedImage = java.util.Base64.getEncoder().encodeToString(image.getImage());
             encodedImages.add(encodedImage);
         }

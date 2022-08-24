@@ -5,11 +5,14 @@ import java.util.*;
 
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
 import com.pse.thinder.backend.databaseFeatures.Degree;
+import com.pse.thinder.backend.databaseFeatures.InputValidation;
+import com.pse.thinder.backend.databaseFeatures.Pair;
 import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.thesis.Image;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesesForDegree;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
+import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 import com.pse.thinder.backend.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Validator;
 
 @Service
 public class ThesisService {
@@ -34,14 +39,19 @@ public class ThesisService {
 	@Autowired
 	private ThesesForDegreeRepository thesesForDegreeRepository;
 
+	@Autowired
+	private Validator validator;
 
-	
+
+	@Transactional
 	public ThesisDTO getThesisById(UUID id) {
 		Thesis thesis = thesisRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(THESIS_NOT_FOUND));
+		System.err.println("number of images:" + thesis.getImages().size());
 		return parseToDto(Arrays.asList(thesis)).get(0); //id is the primary key thus, the list has only one element.
 	}
 
 	//todo user eingaben müssen besser überprüft werden, bsp. degree dürfen nicht leer
+	@Transactional
 	public void addThesis(ThesisDTO thesis, Supervisor supervisor) {
 		List<Degree> degreeList = degreeRepository.findAllById(thesis.getPossibleDegrees().stream()
 				.map(degree -> degree.getId()).toList());
@@ -51,6 +61,9 @@ public class ThesisService {
 		List<ThesesForDegree> possibleDegrees = new ArrayList<>();
 		for(Degree degree : degreeList){
 			possibleDegrees.add(new ThesesForDegree(degree, newThesis));
+		}
+		for(Degree degree : degreeList){
+			degree.setPossibleTheses(possibleDegrees);
 		}
 		newThesis.setPossibleDegrees(possibleDegrees);
 		//todo set possible theses in degree
@@ -70,16 +83,80 @@ public class ThesisService {
 		}
 	}
 
-	public void updateThesis(Thesis thesis, UUID id) {
-		Thesis toSave = getActualThesisById(id);
-		toSave.setName(thesis.getName());
-		toSave.setTask(thesis.getTask());
-		toSave.setMotivation(thesis.getMotivation());
-		toSave.setQuestionForm(thesis.getQuestionForm());
-		toSave.setSupervisingProfessor(thesis.getSupervisingProfessor());
-		toSave.setImages(thesis.getImages());
-		toSave.setPossibleDegrees(thesis.getPossibleDegrees());
-		thesisRepository.save(toSave);
+	public Pair<Integer, Integer> getThesisRatings(UUID thesisId){
+		Thesis thesis = getActualThesisById(thesisId);
+		ArrayList<ThesisRating> thesisRatings = thesis.getStudentRatings();
+		int positiveRated = 0;
+		int negativeRated = 0;
+		for (ThesisRating rating : thesisRatings){
+			if(rating.getPositiveRated()){
+				positiveRated++;
+			} else {
+				negativeRated++;
+			}
+		}
+		return new Pair(Integer.valueOf(positiveRated), Integer.valueOf(negativeRated));
+
+	}
+
+	@Transactional
+	public void updateThesis(ThesisDTO newThesis, UUID thesisId)  {
+		Thesis oldThesis = getActualThesisById(thesisId);
+		if(thesisId != newThesis.getId()){
+			//todo add exception
+		}
+
+		System.err.println("TEST1");
+		if(validator.validateProperty(newThesis, "name", InputValidation.class).isEmpty()){
+			oldThesis.setName(newThesis.getName());
+		}
+		System.err.println("TEST2");
+		if(validator.validateProperty(newThesis, "task", InputValidation.class).isEmpty()){
+			oldThesis.setTask(newThesis.getTask());
+		}
+		System.err.println("TEST3");
+		if(validator.validateProperty(newThesis, "motivation", InputValidation.class).isEmpty()){
+			oldThesis.setMotivation(newThesis.getMotivation());
+		}
+		System.err.println("TEST4");
+		if(validator.validateProperty(newThesis, "questions", InputValidation.class).isEmpty()){
+			oldThesis.setQuestionForm(newThesis.getQuestions());
+		}
+		System.err.println("TEST5");
+		if(validator.validateProperty(newThesis, "supervisingProfessor", InputValidation.class).isEmpty()){
+			oldThesis.setSupervisingProfessor(newThesis.getSupervisingProfessor());
+		}
+		System.err.println("TEST6");
+		List<Image> decodedImages = new ArrayList<>();
+		if(validator.validateProperty(newThesis, "images", InputValidation.class).isEmpty()){
+			imageRepository.deleteAllById(oldThesis.getImages().stream().map(image -> image.getId()).toList());
+			//oldThesis.getImages().removeAll(oldThesis.getImages());
+			//does this workaround work?
+			List<String> encodedImages = newThesis.getImages();
+			for(String encodedImage : encodedImages){
+				byte[] decodedImage = Base64.getDecoder().decode(encodedImage);
+				decodedImages.add(new Image(decodedImage, oldThesis));
+			}
+			oldThesis.setImages(decodedImages);
+		}
+		System.err.println("TEST7" + newThesis.getPossibleDegrees().size());
+		//System.err.println(newThesis.getPossibleDegrees().get(0));
+		List<ThesesForDegree> possibleDegreess = new ArrayList<>();
+		/*try{
+			if(validator.validateProperty(newThesis, "possibleDegrees", InputValidation.class).isEmpty()){
+			System.err.println("TEST7" + newThesis.getPossibleDegrees().size());
+			for(Degree possibleDegree : newThesis.getPossibleDegrees()){
+				possibleDegreess.add(new ThesesForDegree(possibleDegree, oldThesis));
+			}
+			oldThesis.setPossibleDegrees(possibleDegreess);
+			}
+		} catch (Exception e){
+			System.err.println(e.getMessage());
+		} */
+		System.err.println("TEST1");
+		thesisRepository.saveAndFlush(oldThesis);
+		imageRepository.saveAllAndFlush(decodedImages);
+		thesesForDegreeRepository.saveAllAndFlush(possibleDegreess);
 	}
 
 	@Transactional //transactional because session is needed
@@ -115,7 +192,8 @@ public class ThesisService {
 		thesisRepository.deleteById(id);
 	}
 
-	private List<ThesisDTO> parseToDto(List<Thesis> theses){
+	@Transactional
+	public List<ThesisDTO> parseToDto(List<Thesis> theses){
 		return theses.stream().map(thesis -> new ThesisDTO(
 				thesis.getId(),
 				thesis.getName(),
@@ -130,8 +208,7 @@ public class ThesisService {
 	}
 
 
-
-	private Thesis getActualThesisById(UUID thesisId){
+	public Thesis getActualThesisById(UUID thesisId){
 		return thesisRepository.findById(thesisId).orElseThrow(() -> new EntityNotFoundException(THESIS_NOT_FOUND));
 	}
 }
