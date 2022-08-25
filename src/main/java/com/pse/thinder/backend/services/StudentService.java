@@ -117,7 +117,7 @@ public class StudentService {
         ArrayList<UUID> ratedTheses = new ArrayList<>(getRatedTheses(student.getId()).stream().
                 map(rating -> rating.getThesis().getId()).toList());
 
-        ArrayList<Thesis>  possibleTheses;
+        ArrayList<ThesesForDegreeRepository.ThesisOnly>  possibleTheses;
 
         //If ratedTheses list is empty the result will always be an empty list
         possibleTheses = ratedTheses.size() == 0 ? thesesForDegreeRepository.findDistinctThesisByDegreeIdIn(degrees) :
@@ -126,7 +126,7 @@ public class StudentService {
         if(possibleTheses.isEmpty()){
             //todo add exception
         }
-        return possibleTheses;
+        return possibleTheses.stream().map(thesesForDegree -> thesesForDegree.getThesis()).toList();
     }
 
     @Transactional //todo make private if possible
