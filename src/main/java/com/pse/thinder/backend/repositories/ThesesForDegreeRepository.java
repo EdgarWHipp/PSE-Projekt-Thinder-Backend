@@ -12,11 +12,17 @@ import java.util.UUID;
 
 public interface ThesesForDegreeRepository extends JpaRepository<ThesesForDegree, ThesesForDegreeKey> {
 
-
+    //todo this can be removed
     ArrayList<ThesesForDegree> findByDegreeInAndThesisNotIn(Collection<Degree> degree, Collection<Thesis> theses);
 
-    ArrayList<Thesis> findDistinctThesisByDegreeIdInAndThesisIdNotIn(Collection<UUID> degreesIds, Collection<UUID> thesesIds);
+    ArrayList<ThesisOnly> findDistinctThesisByDegreeIdInAndThesisIdNotIn(Collection<UUID> degreesIds, Collection<UUID> thesesIds);
 
-    ArrayList<Thesis> findDistinctThesisByDegreeIdIn(Collection<UUID> degreesIds);
+    ArrayList<ThesisOnly> findDistinctThesisByDegreeIdIn(Collection<UUID> degreesIds);
+
+    //This is a projection (https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#projections)
+    //Projections are used to retrieve a subset of the attributes
+    interface ThesisOnly {
+        Thesis getThesis();
+    }
 
 }
