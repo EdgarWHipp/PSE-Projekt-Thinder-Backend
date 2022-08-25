@@ -1,7 +1,6 @@
 package com.pse.thinder.backend.services;
 
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
-import com.pse.thinder.backend.databaseFeatures.Degree;
 import com.pse.thinder.backend.databaseFeatures.Pair;
 import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
@@ -11,7 +10,6 @@ import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRatingKey;
 import com.pse.thinder.backend.repositories.*;
 import com.pse.thinder.backend.services.swipestrategy.ThesisSelectRandom;
-import com.pse.thinder.backend.services.swipestrategy.ThesisSelectionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -69,6 +67,7 @@ public class StudentService {
 
     }
 
+    //todo Write a test for this 
     public void removeRatedThesis(UUID studentId, UUID thesisId){
         ThesisRating toDelete = thesisRatingRepository.findById(new ThesisRatingKey(studentId, thesisId)).orElseThrow(
                 () -> new EntityNotFoundException(" ") //todo add exception
@@ -118,17 +117,16 @@ public class StudentService {
         ArrayList<UUID> ratedTheses = new ArrayList<>(getRatedTheses(student.getId()).stream().
                 map(rating -> rating.getThesis().getId()).toList());
 
-        ArrayList<ThesesForDegree>  possibleTheses;
+        ArrayList<Thesis>  possibleTheses;
 
         //If ratedTheses list is empty the result will always be an empty list
-        possibleTheses = ratedTheses.size() == 0 ? thesesForDegreeRepository.findByDegreeIdIn(degrees) :
-                thesesForDegreeRepository.findByDegreeIdInAndThesisIdNotIn(degrees, ratedTheses);
+        possibleTheses = ratedTheses.size() == 0 ? thesesForDegreeRepository.findDistinctThesisByDegreeIdIn(degrees) :
+                thesesForDegreeRepository.findDistinctThesisByDegreeIdInAndThesisIdNotIn(degrees, ratedTheses);
 
         if(possibleTheses.isEmpty()){
             //todo add exception
         }
-        return possibleTheses.stream().map(thesesForDegree -> thesesForDegree.getThesis()).toList();
-
+        return possibleTheses;
     }
 
     @Transactional //todo make private if possible
