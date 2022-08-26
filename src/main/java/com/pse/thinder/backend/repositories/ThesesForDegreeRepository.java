@@ -12,6 +12,8 @@ import java.util.UUID;
 
 public interface ThesesForDegreeRepository extends JpaRepository<ThesesForDegree, ThesesForDegreeKey> {
 
+    ArrayList<ThesesForDegree> findByThesisId(UUID thesisId);
+
     //todo this can be removed
     ArrayList<ThesesForDegree> findByDegreeInAndThesisNotIn(Collection<Degree> degree, Collection<Thesis> theses);
 

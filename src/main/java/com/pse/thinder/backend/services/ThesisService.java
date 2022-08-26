@@ -46,7 +46,6 @@ public class ThesisService {
 	@Transactional
 	public ThesisDTO getThesisById(UUID id) {
 		Thesis thesis = thesisRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(THESIS_NOT_FOUND));
-		System.err.println("number of images:" + thesis.getImages().size());
 		return parseToDto(Arrays.asList(thesis)).get(0); //id is the primary key thus, the list has only one element.
 	}
 
@@ -60,16 +59,13 @@ public class ThesisService {
 				,thesis.getSupervisingProfessor(), supervisor);
 		List<ThesesForDegree> possibleDegrees = new ArrayList<>();
 		for(Degree degree : degreeList){
-			possibleDegrees.add(new ThesesForDegree(degree, newThesis));
-		}
-		for(Degree degree : degreeList){
-			degree.setPossibleTheses(possibleDegrees);
+			ThesesForDegree thesesForDegree = new ThesesForDegree(degree, newThesis);
+			degree.addPossibleThesis(thesesForDegree);
+			possibleDegrees.add(thesesForDegree);
 		}
 		newThesis.setPossibleDegrees(possibleDegrees);
-		//todo set possible theses in degree
 		thesisRepository.saveAndFlush(newThesis);
 		thesesForDegreeRepository.saveAllAndFlush(possibleDegrees);
-
 
 		List<Image> images = new ArrayList<>();
 
