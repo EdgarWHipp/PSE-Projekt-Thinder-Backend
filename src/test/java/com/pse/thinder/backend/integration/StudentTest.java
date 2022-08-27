@@ -15,6 +15,8 @@ import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 import com.pse.thinder.backend.repositories.*;
 import org.assertj.core.api.Assertions;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +33,9 @@ import org.springframework.http.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ActiveProfiles;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 import java.util.*;
 
 @ActiveProfiles("test")
@@ -187,12 +192,12 @@ public class StudentTest {
         Assert.assertTrue(newRating.getPositiveRated());
     } */
 
-    /*@Test
+    @Test
     void sendQuestionFormTest() throws JSONException, MessagingException, IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        QuestionForm form = new QuestionForm("My test answers are:");
+        Form form = new Form("Supervisor questions", "My test answers are:");
         String json = new Gson().toJson(form);
         JSONObject formJson = new JSONObject(json);
 
@@ -206,9 +211,9 @@ public class StudentTest {
         Assert.assertTrue(mail.length == 1);
         System.err.println(mail[0].getContent().toString());
 
-    } */
+    }
 
-    @Test
+    /*@Test
     public void swipeStackTest(){
         ResponseEntity<String> response = testRestTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword())
                 .getForEntity("/students/theses/get-swipe-theses"
@@ -218,7 +223,7 @@ public class StudentTest {
         Gson gson = new Gson();
         ArrayList<Thesis> swipeStack = gson.fromJson(response.getBody(), new TypeToken<List<Thesis>>(){}.getType());
         Assert.assertTrue(swipeStack.size() == 1);
-    }
+    } */
 
     /*@Test
     void anotherTest() throws JSONException {

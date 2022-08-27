@@ -1,8 +1,7 @@
 package com.pse.thinder.backend.controllers;
 
-import com.pse.thinder.backend.databaseFeatures.QuestionForm;
+import com.pse.thinder.backend.databaseFeatures.Form;
 import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
-import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import com.pse.thinder.backend.databaseFeatures.Pair;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 import com.pse.thinder.backend.security.ThinderUserDetails;
@@ -13,8 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Tuple;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -72,10 +69,10 @@ public class StudentController {
 
     @PostMapping("/rated-theses/{theses-id}/form")
     @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public void sendThesisForm(@PathVariable("theses-id") UUID thesisId, @RequestBody QuestionForm questionForm) {
+    public void sendThesisForm(@PathVariable("theses-id") UUID thesisId, @RequestBody Form questionForm) {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
-        studentService.sendQuestionForm(details.getUser().getId(), thesisId, questionForm.getQuestionForm());
+            studentService.sendQuestionForm(details.getUser().getId(), thesisId, questionForm);
     }
 
 }
