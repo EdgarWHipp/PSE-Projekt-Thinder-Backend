@@ -6,6 +6,7 @@ import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,10 +30,13 @@ public class ThesisDTO {
     @NotBlank
     private String questions;
 
+    private int numPositiveRated;
+
+    private  int numNegativeRated;
 
     private Supervisor supervisor;
 
-    @NotEmpty
+    @NotNull
     private List<String> images;
 
     @NotEmpty
@@ -40,14 +44,17 @@ public class ThesisDTO {
 
     public ThesisDTO(){}
 
-    public ThesisDTO(UUID thesisId, String name, String supervisingProfessor, String motivation, String task, String questions,
-            Supervisor supervisor, List<String> images, List<Degree> possibleDegrees){
+    public ThesisDTO(UUID thesisId, String name, String supervisingProfessor, String motivation, String task
+            , String questions, int numPositiveRated, int numNegativeRated, Supervisor supervisor
+            , List<String> images, List<Degree> possibleDegrees){
         this.id = thesisId;
         this.name = name;
         this.supervisingProfessor = supervisingProfessor;
         this.motivation = motivation;
         this.task = task;
         this.questions = questions;
+        this.numPositiveRated = numPositiveRated;
+        this.numNegativeRated = numNegativeRated;
         this.supervisor = supervisor;
         this.images = images;
         this.possibleDegrees = possibleDegrees;
@@ -67,6 +74,22 @@ public class ThesisDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getNumPositiveRated() {
+        return numPositiveRated;
+    }
+
+    public void setNumPositiveRated(int numPositiveRated) {
+        this.numPositiveRated = numPositiveRated;
+    }
+
+    public int getNumNegativeRated() {
+        return numNegativeRated;
+    }
+
+    public void setNumNegativeRated(int numNegativeRated) {
+        this.numNegativeRated = numNegativeRated;
     }
 
     public String getSupervisingProfessor() {

@@ -62,19 +62,25 @@ public class StudentService {
             newRatings.add(newRating);
             thesis.addStudentRating(newRating);
             student.addThesesRatings(newRating);
-
+            if(liked){
+                thesis.setNumPositiveRated(thesis.getNumPositiveRated() + 1);
+            } else {
+                thesis.setNumNegativeRated(thesis.getNumNegativeRated() + 1);
+            }
         }
         thesisRatingRepository.saveAllAndFlush(newRatings);
 
     }
 
-    //todo Write a test for this 
-    public void removeRatedThesis(UUID studentId, UUID thesisId){
+    //todo Write a test for this, check whether thesis is
+    public void removeLikedThesis(UUID studentId, UUID thesisId){
         ThesisRating toDelete = thesisRatingRepository.findById(new ThesisRatingKey(studentId, thesisId)).orElseThrow(
                 () -> new EntityNotFoundException(" ") //todo add exception
         );
+        Thesis associatedThesis = toDelete.getThesis();
+        associatedThesis.setNumPositiveRated(associatedThesis.getNumPositiveRated() - 1);
         thesisRatingRepository.delete(toDelete);
-
+        thesisRepository.saveAndFlush(associatedThesis);
     }
 
     @Transactional
@@ -169,6 +175,8 @@ public class StudentService {
                 thesis.getMotivation(),
                 thesis.getTask(),
                 thesis.getQuestionForm(),
+                thesis.getNumPositiveRated(),
+                thesis.getNumNegativeRated(),
                 thesis.getSupervisor(),
                 thesis.getEncodedImages(),
                 thesis.getPossibleDegrees().stream().map(thesesForDegree -> thesesForDegree.getDegree()).toList()

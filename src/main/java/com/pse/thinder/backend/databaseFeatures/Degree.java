@@ -24,8 +24,8 @@ public class Degree {
     private UUID id;
 
     @NotBlank(groups = {InputValidation.class})
-    @Size(min=1, max=30)
-    @Column(columnDefinition = "character varying(30) not null")
+    @Size(min=1, max=100)
+    @Column(columnDefinition = "character varying(100) not null")
     private String degree;
 
     @JsonIgnore

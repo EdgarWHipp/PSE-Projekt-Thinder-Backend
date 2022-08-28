@@ -14,4 +14,7 @@ public interface ThesisRatingRepository extends JpaRepository<ThesisRating, Thes
     ArrayList<ThesisRating> findByIdThesisId(UUID thesisId);
 
     ArrayList<ThesisRating> findByIdStudentIdAndPositiveRated(UUID studentId, boolean positiveRated);
+
+    ThesisRating findByIdStudentIdAndThesisId(UUID studentId,  UUID thesisId);
+
 }

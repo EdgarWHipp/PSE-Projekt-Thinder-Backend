@@ -47,7 +47,7 @@ public class StudentController {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
 
-        studentService.removeRatedThesis(details.getUser().getId(), thesisId);
+        studentService.removeLikedThesis(details.getUser().getId(), thesisId);
     }
 
     @GetMapping(value = "/rated-theses")
