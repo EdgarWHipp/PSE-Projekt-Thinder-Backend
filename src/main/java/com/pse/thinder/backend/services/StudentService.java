@@ -1,6 +1,7 @@
 package com.pse.thinder.backend.services;
 
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
+import com.pse.thinder.backend.databaseFeatures.Form;
 import com.pse.thinder.backend.databaseFeatures.Pair;
 import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
@@ -136,7 +137,7 @@ public class StudentService {
         );
     }
     //todo mail message could be done better
-    public void sendQuestionForm(UUID studentId, UUID thesisId, String questionForm){
+    public void sendQuestionForm(UUID studentId, UUID thesisId, Form questionForm){
         Thesis thesis = thesisRepository.findById(thesisId).orElseThrow(
                 () -> new EntityNotFoundException("") //todo exception
         );
@@ -148,10 +149,10 @@ public class StudentService {
         String studentName = student.getFirstName() + " " + student.getLastName();
         message.setSubject("Antowort auf Fragebogen von " + studentName);
         String header = "Hallo, \n für Ihre Abschlussarbeit " + thesis.getName() + " hat der Student " + studentName
-                + " den Fragebogen folgendermaßen ausgefüllt: \n";
+                + " den Fragebogen \n" + questionForm.getQuestions() + "\n folgendermaßen ausgefüllt: \n";
         String body = "\n Wenn Sie den Studenten kontaktieren wollen können Sie Ihm unter dieser Mailadresse "
-                + student.getMail() + " eine Mail schreiben." + "\n Thinder";
-        message.setText(header + questionForm + body);
+                + student.getMail() + " eine Mail schreiben." + "\n \n Viele Grüße \n Thinder";
+        message.setText(header + questionForm.getAnswers() + body);
         mailSender.send(message);
     }
 

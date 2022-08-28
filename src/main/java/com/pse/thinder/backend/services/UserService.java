@@ -141,9 +141,9 @@ public class UserService {
         confirmationMsg.setFrom(VERIFICATION_EMAIL);
         confirmationMsg.setTo(user.getMail());
         confirmationMsg.setSubject("Verifikation Ihres Benutzerkontos bei Thinder");
-        String header = "Hallo" + user.getFirstName() + ", \n";
-        String body = "vielen Dank f�r Ihre Registrierung bei Thinder. Geben sie diesen Code in der App ein:\n" + token.getToken()
-                + "\num Ihre Registrierung zu vollenden.";
+        String header = "Hallo " + user.getFirstName() + ", \n";
+        String body = "vielen Dank fuer Ihre Registrierung bei Thinder. Geben Sie den unten stehenden Code in der App " +
+                "ein um Ihre Registrierung zu vollenden. \n" + token.getToken();
         confirmationMsg.setText(header + body);
 
         mailSender.send(confirmationMsg);
@@ -159,7 +159,7 @@ public class UserService {
         SimpleMailMessage resetMsg = new SimpleMailMessage();
         resetMsg.setFrom(VERIFICATION_EMAIL);
         resetMsg.setTo(user.getMail());
-        resetMsg.setSubject("Zur�cksetzten Ihres Passworts");
+        resetMsg.setSubject("Zuruecksetzten Ihres Passworts");
         String header = "Hallo " + user.getFirstName() + ", \n";
         String body = "um Ihr Passwort zur�ckzusetzen geben Sie folgenden Code in der App ein:\n" + token.getToken();
         resetMsg.setText(header + body);

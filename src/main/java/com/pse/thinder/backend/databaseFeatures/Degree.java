@@ -102,7 +102,6 @@ public class Degree {
     }
 
     public void setPossibleTheses(List<ThesesForDegree> possibleTheses) {
-        this.possibleTheses.clear();
         this.possibleTheses.addAll(possibleTheses);
     }
 }
