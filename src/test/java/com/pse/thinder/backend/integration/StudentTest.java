@@ -316,6 +316,32 @@ public class StudentTest {
         Assert.assertTrue(ratedTheses.size() == 1); ///students/rated-theses returns all liked theses
     } */
 
+    @Test
+    void removeThesisRating(){
+        int sizeBeforeRemove = thesisRatingRepository.findAll().size();
+        ThesisRating rating = thesisRatingRepository.findByIdStudentIdAndThesisId(testStudent.getId(), likedThesis.getId());
+        Assert.assertNotNull(rating); //rating previously exists
+        int numPositiveRated = rating.getThesis().getNumPositiveRated();
+        ResponseEntity<String> response = testRestTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword())
+                .getForEntity("/students/rated-theses/" + likedThesis.getId() + "/remove", String.class);
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        int sizeAfterRemove = thesisRatingRepository.findAll().size();
+        Assert.assertTrue(sizeAfterRemove == sizeBeforeRemove - 1); //exactly one rating is removed
+        Assert.assertTrue(thesisRatingRepository.findByIdStudentIdAndThesisId(testStudent.getId()
+                , likedThesis.getId()) == null); //rating doesn't exist anymore
+        Thesis removedRatingThesis = thesisRepository.findById(likedThesis.getId()).get();
+        Assert.assertNotNull(removedRatingThesis);
+        Assert.assertTrue(removedRatingThesis.getNumPositiveRated() == numPositiveRated - 1); //thesis statistics work as expected
+        ResponseEntity<String> swipeStackResponse = testRestTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword())
+                .getForEntity("/students/theses/get-swipe-theses"
+                        , String.class);
+        Assertions.assertThat(swipeStackResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Gson gson = new Gson();
+        ArrayList<ThesisDTO> swipeStack = gson.fromJson(swipeStackResponse.getBody(), new TypeToken<List<ThesisDTO>>(){}.getType());
+        Assert.assertTrue(swipeStack.stream().map(dto -> dto.getId()).toList().contains(likedThesis.getId()));
+        //swipe stack contains the thesis
+    }
+
 
     @AfterEach
     void cleanUp(){
