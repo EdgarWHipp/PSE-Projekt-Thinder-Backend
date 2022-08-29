@@ -5,7 +5,6 @@ import com.pse.thinder.backend.databaseFeatures.Form;
 import com.pse.thinder.backend.databaseFeatures.Pair;
 import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
-import com.pse.thinder.backend.databaseFeatures.thesis.ThesesForDegree;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRatingKey;
@@ -74,18 +73,20 @@ public class StudentService {
 
     //todo Write a test for this, check whether thesis is
     public void removeLikedThesis(UUID studentId, UUID thesisId){
-        ThesisRating toDelete = thesisRatingRepository.findById(new ThesisRatingKey(studentId, thesisId)).orElseThrow(
+        ThesisRating inactiveRating = thesisRatingRepository.findById(new ThesisRatingKey(studentId, thesisId)).orElseThrow(
                 () -> new EntityNotFoundException(" ") //todo add exception
         );
-        Thesis associatedThesis = toDelete.getThesis();
+        Thesis associatedThesis = inactiveRating.getThesis();
         associatedThesis.setNumPositiveRated(associatedThesis.getNumPositiveRated() - 1);
-        thesisRatingRepository.delete(toDelete);
+        inactiveRating.setActiveRating(false); //This is done to prevent the thesis from being shown again
+        thesisRatingRepository.saveAndFlush(inactiveRating);
         thesisRepository.saveAndFlush(associatedThesis);
     }
 
     @Transactional
     public List<ThesisDTO> getLikedTheses(UUID studentId){
-        return parseToDto(thesisRatingRepository.findByIdStudentIdAndPositiveRated(studentId, true)
+        return parseToDto(thesisRatingRepository.findByIdStudentIdAndPositiveRatedAndActiveRating(studentId
+                        , true, true)
                 .stream().map(thesisRating -> thesisRating.getThesis()).toList());
     }
 

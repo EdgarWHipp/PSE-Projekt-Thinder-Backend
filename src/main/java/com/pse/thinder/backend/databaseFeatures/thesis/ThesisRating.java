@@ -31,6 +31,8 @@ public class ThesisRating {
 
     private boolean positiveRated;
 
+    private boolean activeRating;
+
     public ThesisRating(){ }
 
     public ThesisRating(boolean rating, Student student, Thesis thesis){
@@ -38,6 +40,7 @@ public class ThesisRating {
         this.positiveRated = rating;
         this.student = student;
         this.thesis = thesis;
+        this.activeRating = true;
     }
 
 
@@ -71,5 +74,13 @@ public class ThesisRating {
 
     public void setPositiveRated(boolean positiveRated) {
         this.positiveRated = positiveRated;
+    }
+
+    public boolean isActiveRating() {
+        return activeRating;
+    }
+
+    public void setActiveRating(boolean activeRating) {
+        this.activeRating = activeRating;
     }
 }
