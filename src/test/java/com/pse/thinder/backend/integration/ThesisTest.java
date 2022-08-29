@@ -18,9 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,16 +26,7 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -395,7 +384,6 @@ public class ThesisTest {
         JSONArray possibleDegreeJson = new JSONArray();
         possibleDegreeJson.put(newDegreeJson);
 
-
         JSONObject supervisorJson = new JSONObject();
         supervisorJson.put("firstName", supervisor.getFirstName());
         supervisorJson.put("lastName", supervisor.getLastName());
@@ -461,7 +449,6 @@ public class ThesisTest {
     @Test
     void deleteThesisTest(){
         Thesis toRemove = thesisRepository.findAll().get(0);
-
         ResponseEntity<String> deleteResponse = restTemplate.withBasicAuth(supervisor.getMail()
                 , supervisor.getPassword()).exchange("/thesis/" + toRemove.getId()
                 , HttpMethod.DELETE, null, String.class);
@@ -481,6 +468,8 @@ public class ThesisTest {
         List<ThesesForDegree> thesesForDegrees = thesesForDegreeRepository.findByThesisId(toRemove.getId());
         Assert.assertTrue(thesesForDegrees.size() == 0); //thesis won't be fetched anymore
     }
+
+
 
     @Test
     void anotherImageTest(){

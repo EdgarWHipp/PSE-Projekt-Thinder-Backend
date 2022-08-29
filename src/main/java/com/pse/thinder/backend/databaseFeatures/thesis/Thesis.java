@@ -40,6 +40,10 @@ public class Thesis {
     @Column(columnDefinition = "TEXT")
     private String questionForm;
 
+    private int numPositiveRated;
+
+    private int numNegativeRated;
+
     @NotBlank(groups = {InputValidation.class})
     @Column(columnDefinition = "character varying(30)")
     private String supervisingProfessor;
@@ -84,6 +88,8 @@ public class Thesis {
 		this.studentRatings = new ArrayList<>();
 		this.images = new ArrayList<>();
 		this.possibleDegrees = possibleDegrees;
+        this.numPositiveRated = 0;
+        this.numNegativeRated = 0;
 	}
 
     public Thesis(@NotBlank String name, @NotBlank String task, @NotBlank String motivation,
@@ -97,6 +103,8 @@ public class Thesis {
         this.supervisor = supervisor;
         this.studentRatings = new ArrayList<>();
         this.possibleDegrees = new ArrayList<>();
+        this.numPositiveRated = 0;
+        this.numNegativeRated = 0;
     }
 
     public UUID getId() {
@@ -143,6 +151,22 @@ public class Thesis {
 
     public void setQuestionForm(String questionForm) {
         this.questionForm = questionForm;
+    }
+
+    public int getNumPositiveRated() {
+        return numPositiveRated;
+    }
+
+    public void setNumPositiveRated(int numPositiveRated) {
+        this.numPositiveRated = numPositiveRated;
+    }
+
+    public int getNumNegativeRated() {
+        return numNegativeRated;
+    }
+
+    public void setNumNegativeRated(int numNegativeRated) {
+        this.numNegativeRated = numNegativeRated;
     }
 
     public Supervisor getSupervisor() {
