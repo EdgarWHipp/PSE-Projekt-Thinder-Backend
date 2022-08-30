@@ -1,6 +1,7 @@
 package com.pse.thinder.backend.controllers;
 
 import com.pse.thinder.backend.databaseFeatures.InputValidation;
+import com.pse.thinder.backend.databaseFeatures.PasswordResetDTO;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.account.User;
@@ -51,13 +52,11 @@ public class UserController {
      *
      * Open access.
      *
-     * @param token which the user received via mail
-     * @param password to be set
+     * @param resetDTO holds the information about the password reset token and the new password.
      */
     @PostMapping("/resetPassword")
-    public void resetPasswordVerifyUser(@RequestParam String token,
-                                        @RequestBody String password) {
-        userService.changePassword(token, password);
+    public void resetPasswordVerifyUser(@RequestBody PasswordResetDTO resetDTO) {
+        userService.changePassword(resetDTO.getToken(), resetDTO.getNewPassword());
     }
 
     /**
