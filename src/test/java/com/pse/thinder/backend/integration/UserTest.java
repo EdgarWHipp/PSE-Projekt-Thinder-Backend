@@ -3,15 +3,20 @@ package com.pse.thinder.backend.integration;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.validation.Validator;
 
+import com.pse.thinder.backend.databaseFeatures.account.Student;
+import com.pse.thinder.backend.databaseFeatures.token.PasswordResetToken;
+import com.pse.thinder.backend.repositories.*;
 import org.assertj.core.api.Assertions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,12 +42,6 @@ import com.pse.thinder.backend.databaseFeatures.Degree;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.token.VerificationToken;
-import com.pse.thinder.backend.repositories.DegreeRepository;
-import com.pse.thinder.backend.repositories.StudentRepository;
-import com.pse.thinder.backend.repositories.SupervisorRepository;
-import com.pse.thinder.backend.repositories.UniversityRepository;
-import com.pse.thinder.backend.repositories.UserRepository;
-import com.pse.thinder.backend.repositories.VerificationTokenRepository;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -65,6 +64,9 @@ class UserTest {
 	
 	@Autowired
 	VerificationTokenRepository verificationTokenRepository;
+
+	@Autowired
+	PasswordResetTokenRepository passwordResetTokenRepository;
 	
 	@Autowired
 	TestRestTemplate testRestTemplate;
@@ -77,6 +79,8 @@ class UserTest {
 	
 	Degree testDegree;
 	University testUniversity;
+
+	Student testStudent;
 	
 	@Value("${spring.mail.port}")
 	Integer mailPort;
@@ -91,6 +95,14 @@ class UserTest {
 		universityRepository.save(testUniversity);
 		
 		degreeRepository.saveAndFlush(testDegree);
+
+		testStudent = new Student("Steven", "Lorenz", "Password123"
+				, "uxoyb@student.kit.edu", testUniversity);
+		testStudent.setActive(true);
+		testStudent.setComplete(true);
+		testStudent.addDegree(testDegree);
+		testDegree.addStudent(testStudent);
+		studentRepository.saveAndFlush(testStudent);
 		
 		testUniversity.addDegree(testDegree);
 		universityRepository.save(testUniversity);
@@ -297,6 +309,45 @@ class UserTest {
 		userResponseEntity = testRestTemplate.postForEntity("/users", request, String.class);
 		
 		Assertions.assertThat(userResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+	}
+
+	@Test
+	void resetPasswordTest() throws MessagingException, IOException, JSONException {
+		List<Student> studentList = studentRepository.findAll()
+				.stream().filter(student -> student.getFirstName().equals("Steven")).toList();
+		Assert.assertTrue(studentList.size() == 1);
+		Student actualStudent = studentList.get(0);
+
+		ResponseEntity<String> sendMailResponse =testRestTemplate
+				.getForEntity("/users/resetPassword?mail=" + testStudent.getMail() , String.class);
+		Assertions.assertThat(sendMailResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		MimeMessage[] mail = mailServer.getReceivedMessages();
+		String token = mail[0].getContent().toString().split("\n")[2].trim();
+
+		PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token).get();
+		Assert.assertNotNull(resetToken);
+		Assert.assertTrue(resetToken.getUser().getId().compareTo(actualStudent.getId()) == 0);
+
+		String newPassword = "Test12345";
+		JSONObject resetDTO = new JSONObject();
+		resetDTO.put("token", token);
+		resetDTO.put("newPassword", newPassword);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<String> request = new HttpEntity<>(resetDTO.toString(), headers);
+
+		ResponseEntity<String> changePasswordResponse = testRestTemplate
+				.postForEntity("/users/resetPassword", request, String.class);
+		Assertions.assertThat(changePasswordResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+		Student changedStudent = studentRepository.findById(actualStudent.getId()).get();
+		Assert.assertNotNull(changedStudent);
+		Assert.assertTrue(changedStudent.getId().compareTo(actualStudent.getId()) == 0);
+		Assert.assertTrue(changedStudent.getPassword().equals(newPassword));
+		System.err.println(changedStudent.getPassword());
 	}
 	
 	@AfterEach
