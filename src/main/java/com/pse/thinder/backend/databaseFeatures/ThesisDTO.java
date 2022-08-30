@@ -1,6 +1,5 @@
 package com.pse.thinder.backend.databaseFeatures;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 
 
@@ -30,9 +29,9 @@ public class ThesisDTO {
     @NotBlank
     private String questions;
 
-    private int numPositiveRated;
+    private int positivelyRatedNum;
 
-    private  int numNegativeRated;
+    private  int negativelyRatedNum;
 
     private Supervisor supervisor;
 
@@ -45,7 +44,7 @@ public class ThesisDTO {
     public ThesisDTO(){}
 
     public ThesisDTO(UUID thesisId, String name, String supervisingProfessor, String motivation, String task
-            , String questions, int numPositiveRated, int numNegativeRated, Supervisor supervisor
+            , String questions, int positivelyRatedNum, int negativelyRatedNum, Supervisor supervisor
             , List<String> images, List<Degree> possibleDegrees){
         this.id = thesisId;
         this.name = name;
@@ -53,8 +52,8 @@ public class ThesisDTO {
         this.motivation = motivation;
         this.task = task;
         this.questions = questions;
-        this.numPositiveRated = numPositiveRated;
-        this.numNegativeRated = numNegativeRated;
+        this.positivelyRatedNum = positivelyRatedNum;
+        this.negativelyRatedNum = negativelyRatedNum;
         this.supervisor = supervisor;
         this.images = images;
         this.possibleDegrees = possibleDegrees;
@@ -76,20 +75,20 @@ public class ThesisDTO {
         this.name = name;
     }
 
-    public int getNumPositiveRated() {
-        return numPositiveRated;
+    public int getPositivelyRatedNum() {
+        return positivelyRatedNum;
     }
 
-    public void setNumPositiveRated(int numPositiveRated) {
-        this.numPositiveRated = numPositiveRated;
+    public void setPositivelyRatedNum(int positivelyRatedNum) {
+        this.positivelyRatedNum = positivelyRatedNum;
     }
 
-    public int getNumNegativeRated() {
-        return numNegativeRated;
+    public int getNegativelyRatedNum() {
+        return negativelyRatedNum;
     }
 
-    public void setNumNegativeRated(int numNegativeRated) {
-        this.numNegativeRated = numNegativeRated;
+    public void setNegativelyRatedNum(int negativelyRatedNum) {
+        this.negativelyRatedNum = negativelyRatedNum;
     }
 
     public String getSupervisingProfessor() {
