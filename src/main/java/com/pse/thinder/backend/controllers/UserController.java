@@ -5,16 +5,18 @@ import com.pse.thinder.backend.databaseFeatures.PasswordResetDTO;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.account.User;
-import com.pse.thinder.backend.databaseFeatures.account.Role;
 import com.pse.thinder.backend.security.ThinderUserDetails;
 import com.pse.thinder.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * This class contains all request mappings for creating deleting and updating user instances
+ * as well as mappings to verify users and rest passwords
+ */
 @RequestMapping("/users")
 @RestController("userController")
 public class UserController {

@@ -18,9 +18,20 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotAddedException;
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
 
+/**
+ * This class is used by Spring Boot to handle Exceptions while executing rest controller mappings for
+ * a http request. This is needed because every exception result to an 500 status code by default
+ *
+ */
 @ControllerAdvice
 public class GlobalContollerAdvice extends ResponseEntityExceptionHandler{
 
+	/**
+	 * This method handles EntityNotAddedException so that they result in a conflict status code
+	 * @param ex the exceptions
+	 * @param request the request where the exception occurred
+	 * @return the response which should be returned to the user
+	 */
 	@ExceptionHandler(EntityNotAddedException.class)
     public ResponseEntity<Object> handleEntityNotAddedException(EntityNotAddedException ex, WebRequest request) {
 
@@ -31,6 +42,12 @@ public class GlobalContollerAdvice extends ResponseEntityExceptionHandler{
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
 	
+	/**
+	 * This method handles EntityNotFoundException so that they result in a not found status code
+	 * @param ex the exceptions
+	 * @param request the request where the exception occurred
+	 * @return the response which should be returned to the user
+	 */
 	@ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
 
@@ -41,6 +58,12 @@ public class GlobalContollerAdvice extends ResponseEntityExceptionHandler{
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 	
+	/**
+	 * This method handles IllegalArgumentException so that they result in a bad request status code
+	 * @param ex the exceptions
+	 * @param request the request where the exception occurred
+	 * @return the response which should be returned to the user
+	 */
 	@ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
 
