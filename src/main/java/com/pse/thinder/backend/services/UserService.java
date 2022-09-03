@@ -218,7 +218,8 @@ public class UserService {
         	for(Degree sentDegree : student.getDegrees()) {
         		if(sentDegree.getId() == null)
         			continue;
-        		degreeRepository.findById(sentDegree.getId()).ifPresent(degree -> {degrees.add(degree);});
+        		degreeRepository.findById(sentDegree.getId()).ifPresent(degree -> {
+        			if(!degrees.contains(degree)) degrees.add(degree);});
         	}
         	
         	if(!degrees.isEmpty())

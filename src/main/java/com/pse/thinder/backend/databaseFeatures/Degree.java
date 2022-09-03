@@ -104,4 +104,12 @@ public class Degree {
     public void setPossibleTheses(List<ThesesForDegree> possibleTheses) {
         this.possibleTheses.addAll(possibleTheses);
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+    	if(obj instanceof Degree) {
+    		return ((Degree) obj).getId().equals(this.id);
+    	}
+    	return false;
+    }
 }

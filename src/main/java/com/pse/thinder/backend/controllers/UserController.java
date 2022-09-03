@@ -112,7 +112,6 @@ public class UserController {
      * Protected access and user specific.
      */
     @DeleteMapping("/current")
-    @Secured("ROLE_EDITOR")
     public void deleteUser() {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
             getContext().getAuthentication().getPrincipal();
