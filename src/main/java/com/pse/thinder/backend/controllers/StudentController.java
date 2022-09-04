@@ -4,6 +4,7 @@ import com.pse.thinder.backend.databaseFeatures.Form;
 import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.Pair;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
+import com.pse.thinder.backend.repositories.ThesisRatingRepository;
 import com.pse.thinder.backend.security.ThinderUserDetails;
 import com.pse.thinder.backend.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ import java.util.UUID;
 public class StudentController {
 
     @Autowired
+    private ThesisRatingRepository thesisRatingRepository;
+
+    @Autowired
     private StudentService studentService;
 
     //todo error handling
@@ -34,7 +38,7 @@ public class StudentController {
     }
 
     @PostMapping("/rated-theses")
-    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ROLE_STUDENT') && @studentController.thesesAreUnrated(#ratings)")
     public void rateTheses(@RequestBody Collection<Pair<UUID, Boolean>> ratings) {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
@@ -42,7 +46,7 @@ public class StudentController {
     }
 
     @GetMapping("/rated-theses/{thesis-id}/remove")
-    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ROLE_STUDENT') && @studentController.thesisIsRated(#thesis-id)")
     public void removeRatedThesis(@PathVariable("thesis-id") UUID thesisId) {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
@@ -58,21 +62,40 @@ public class StudentController {
         return studentService.getLikedTheses(details.getUser().getId());
     }
 
-    @GetMapping("/rated-theses/undo")
-    @PreAuthorize("hasRole('ROLE_STUDENT')")
-    public ThesisRating undoThesisRating() {
-        ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
-                getContext().getAuthentication().getPrincipal();
-        ThesisRating thesis = studentService.undoLastRating(details.getUser().getId());
-        return thesis;
-    }
-
     @PostMapping("/rated-theses/{theses-id}/form")
-    @PreAuthorize("hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('ROLE_STUDENT') && @studentController.thesisIsPositiveRated(#theses-id)")
     public void sendThesisForm(@PathVariable("theses-id") UUID thesisId, @RequestBody Form questionForm) {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
             studentService.sendQuestionForm(details.getUser().getId(), thesisId, questionForm);
     }
+
+    public boolean thesisIsRated(UUID thesisId){
+        ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
+        return thesisRatingRepository.findByIdStudentIdAndThesisId(details.getUser().getId(), thesisId) != null;
+    }
+
+    public boolean thesesAreUnrated(Collection<Pair<UUID, Boolean>> ratings){
+        ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
+        UUID studentId = details.getUser().getId();
+        for(Pair<UUID, Boolean> rating : ratings){
+            if (thesisRatingRepository.findByIdStudentIdAndThesisId(studentId, rating.getFirst()) != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean thesisIsPositiveRated(UUID thesisId) {
+        ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
+        if(!thesisIsRated(thesisId)){
+            return false;
+        }
+        return thesisRatingRepository.findByIdStudentIdAndThesisId(details.getUser().getId(), thesisId).getPositiveRated();
+    }
+
 
 }
