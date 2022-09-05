@@ -45,9 +45,9 @@ public class StudentController {
         studentService.rateTheses(ratings, details.getUser().getId());
     }
 
-    @GetMapping("/rated-theses/{thesis-id}/remove")
-    @PreAuthorize("hasRole('ROLE_STUDENT') && @studentController.thesisIsRated(#thesis-id)")
-    public void removeRatedThesis(@PathVariable("thesis-id") UUID thesisId) {
+    @GetMapping("/rated-theses/{thesisId}/remove")
+    @PreAuthorize("hasRole('ROLE_STUDENT') && @studentController.thesisIsRated(#thesisId)")
+    public void removeRatedThesis(@PathVariable("thesisId") UUID thesisId) {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
 
@@ -62,18 +62,19 @@ public class StudentController {
         return studentService.getLikedTheses(details.getUser().getId());
     }
 
-    @PostMapping("/rated-theses/{theses-id}/form")
-    @PreAuthorize("hasRole('ROLE_STUDENT') && @studentController.thesisIsPositiveRated(#theses-id)")
-    public void sendThesisForm(@PathVariable("theses-id") UUID thesisId, @RequestBody Form questionForm) {
+    @PostMapping("/rated-theses/{thesesId}/form")
+    @PreAuthorize("@studentController.thesisIsPositiveRated(#thesesId)")
+    public void sendThesisForm(@PathVariable("thesesId") UUID thesesId, @RequestBody Form questionForm) {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
-            studentService.sendQuestionForm(details.getUser().getId(), thesisId, questionForm);
+            studentService.sendQuestionForm(details.getUser().getId(), thesesId, questionForm);
     }
 
     public boolean thesisIsRated(UUID thesisId){
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
-        return thesisRatingRepository.findByIdStudentIdAndThesisId(details.getUser().getId(), thesisId) != null;
+        return thesisRatingRepository.findByIdStudentIdAndThesisIdAndActiveRating(details.getUser().getId(), thesisId
+                , true) != null;
     }
 
     public boolean thesesAreUnrated(Collection<Pair<UUID, Boolean>> ratings){
@@ -91,6 +92,7 @@ public class StudentController {
     public boolean thesisIsPositiveRated(UUID thesisId) {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
+        System.err.println("WHERE AM I");
         if(!thesisIsRated(thesisId)){
             return false;
         }
