@@ -15,7 +15,7 @@ public class DegreeController {
     private DegreeService degreeService;
 
     @GetMapping("/{id}")
-    public void postDegree(@PathVariable("id") UUID id){
+    public void getDegree(@PathVariable("id") UUID id){
         degreeService.getDegreeById(id);
     }
 

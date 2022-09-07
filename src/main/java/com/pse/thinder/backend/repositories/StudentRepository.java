@@ -5,5 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
+/**
+ * 
+ * Repository to access the Student table of the database
+ *
+ */
 public interface StudentRepository extends JpaRepository<Student, UUID> {
 }
