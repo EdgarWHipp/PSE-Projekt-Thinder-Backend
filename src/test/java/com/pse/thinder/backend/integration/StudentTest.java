@@ -10,6 +10,9 @@ import com.pse.thinder.backend.databaseFeatures.*;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.account.User;
+import com.pse.thinder.backend.databaseFeatures.dto.Form;
+import com.pse.thinder.backend.databaseFeatures.dto.Pair;
+import com.pse.thinder.backend.databaseFeatures.dto.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesesForDegree;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
@@ -20,6 +23,7 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,8 +75,6 @@ public class StudentTest {
     Integer mailPort;
 
     GreenMail mailServer;
-
-    private JacksonTester<User> jacksonTester;
 
     private University testUniversity;
 
@@ -171,19 +173,20 @@ public class StudentTest {
         mailServer.start();
     }
 
-
-    /*@Test
+    @Test
     void rateThesisTest(){
+        Collection<Pair<UUID, Boolean>> ratings = new ArrayList<>();
+        ratings.add(new Pair(unratedThesis.getId(), Boolean.valueOf(true)));
+        String ratingJson = new Gson().toJson(ratings);
 
-        boolean rating = true;
-        System.err.println(studentRepository.findById(testStudent.getId()).get().getId());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> request = new HttpEntity<>(ratingJson.toString(), headers);
 
-        ResponseEntity<String> response = testRestTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword())
-                .getForEntity("/students/rated-theses/" + unratedThesis.getId() + "?rating={rating}"
-                        , String.class,rating);
+        ResponseEntity<String> stackResponse = testRestTemplate.withBasicAuth(testStudent.getMail()
+                , testStudent.getPassword()).postForEntity("/students/rated-theses", request, String.class);
 
-
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(stackResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         ThesisRating newRating = thesisRatingRepository.findByIdThesisId(unratedThesis.getId()).get(0);
         Assert.assertNotNull(newRating);
@@ -192,7 +195,24 @@ public class StudentTest {
         Assert.assertTrue(ratingStudent.compareTo(testStudent.getId()) == 0);
 
         Assert.assertTrue(newRating.getPositiveRated());
-    } */
+    }
+
+    @Test
+    void swipeStackTest(){
+        System.err.println("Thesis got added" + thesisRepository.findAll().size());
+        ResponseEntity<String> response = testRestTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword())
+                .getForEntity("/students/theses/get-swipe-theses"
+                        , String.class);
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Gson gson = new Gson();
+        ArrayList<ThesisDTO> swipeStack = gson.fromJson(response.getBody(), new TypeToken<List<ThesisDTO>>(){}.getType());
+
+        Assert.assertTrue(swipeStack.size() == 1);
+        ThesisDTO swipeableThesis = swipeStack.get(0);
+        Assert.assertTrue(swipeableThesis.getId().compareTo(unratedThesis.getId()) == 0);
+        Assert.assertTrue(testDegree.getId().compareTo(swipeableThesis.getPossibleDegrees().get(0).getId()) == 0);
+        Assert.assertTrue(swipeableThesis.getSupervisor().getId().compareTo(testSupervisor.getId()) == 0);
+    }
 
     @Test
     void sendQuestionFormTest() throws JSONException, MessagingException, IOException {
@@ -211,50 +231,56 @@ public class StudentTest {
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         MimeMessage[] mail = mailServer.getReceivedMessages();
         Assert.assertTrue(mail.length == 1);
+        Assert.assertTrue(mail[0].getContent().toString().contains("Supervisor questions"));
         System.err.println(mail[0].getContent().toString());
 
     }
 
-    /*@Test
-    public void swipeStackTest(){
-        ResponseEntity<String> response = testRestTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword())
-                .getForEntity("/students/theses/get-swipe-theses"
-                        , String.class);
-        System.err.println(response.getBody());
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Gson gson = new Gson();
-        ArrayList<Thesis> swipeStack = gson.fromJson(response.getBody(), new TypeToken<List<Thesis>>(){}.getType());
-        Assert.assertTrue(swipeStack.size() == 1);
-    } */
 
-    /*@Test
-    void anotherTest() throws JSONException {
-        Pair<UUID, Boolean> rating = new Pair<>(unratedThesis.getId(), Boolean.valueOf(true));
+    @Test
+    void alreadyRatedThesisTest() throws JSONException {
         Collection<Pair<UUID, Boolean>> collection = new ArrayList<>();
+        Pair<UUID, Boolean> rating = new Pair<>(unratedThesis.getId(), Boolean.valueOf(true));
+        Pair<UUID, Boolean> unsuccessfulRating = new Pair<>(likedThesis.getId(), Boolean.valueOf(false));
         collection.add(rating);
+        collection.add(unsuccessfulRating);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String json = new Gson().toJson(collection);
-        JSONArray ratingsJson = new JSONArray(json);
+        String ratingsJson = new Gson().toJson(collection);
+
 
         HttpEntity<String> request = new HttpEntity<String>(ratingsJson.toString(), headers);
 
         ResponseEntity<String> response = testRestTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword())
                         .postForEntity("/students/rated-theses", request, String.class);
 
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
 
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 
-        ThesisRating newRating = thesisRatingRepository.findByIdThesisId(unratedThesis.getId()).get(0);
-        Assert.assertNotNull(newRating);
+    @Test
+    void duplicateRatingThesisTest() throws JSONException {
+        Collection<Pair<UUID, Boolean>> collection = new ArrayList<>();
+        Pair<UUID, Boolean> rating = new Pair<>(unratedThesis.getId(), Boolean.valueOf(true));
+        Pair<UUID, Boolean> duplicateRating = new Pair<>(unratedThesis.getId(), Boolean.valueOf(false));
+        collection.add(rating);
+        collection.add(duplicateRating);
 
-        UUID ratingStudent = newRating.getId().getStudentId();
-        Assert.assertTrue(ratingStudent.compareTo(testStudent.getId()) == 0);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Assert.assertTrue(newRating.getPositiveRated());
-    } */
+        String ratingsJson = new Gson().toJson(collection);
+
+        HttpEntity<String> request = new HttpEntity<String>(ratingsJson.toString(), headers);
+
+        ResponseEntity<String> response = testRestTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword())
+                .postForEntity("/students/rated-theses", request, String.class);
+
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+
+    }
 
 
 
@@ -268,29 +294,6 @@ public class StudentTest {
         Assert.assertTrue(likedTheses.get(0).getId().compareTo(likedThesis.getId()) == 0);
     }
 
-
-    /*@Test
-    void testing(){
-        ResponseEntity<String> response = testRestTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword())
-                .getForEntity("/thesis/" + likedThesis.getId().toString(), String.class);
-
-        System.err.println(response.getBody());
-    }  */
-
-   /* @Test
-    void getLikedThesesTest() throws JSONException {
-        //ResponseEntity<ThesisRating[]> response = testRestTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword
-        //        ()).getForEntity("/students/rated-theses", ThesisRating[].class);
-
-        ResponseEntity<String> response = testRestTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword())
-                .getForEntity("/students/rated-theses", String.class);
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        Gson gson = new Gson();
-        List<ThesisDTO> ratedTheses = gson.fromJson(response.getBody(), new TypeToken<List<ThesisDTO>>(){}.getType());
-
-        Assert.assertTrue(ratedTheses.size() == 1); ///students/rated-theses returns all liked theses
-    } */
 
     @Test
     void removeThesisRating(){

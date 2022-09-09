@@ -1,11 +1,10 @@
 package com.pse.thinder.backend.integration;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.pse.thinder.backend.databaseFeatures.Degree;
-import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
+import com.pse.thinder.backend.databaseFeatures.dto.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.University;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
@@ -58,8 +57,6 @@ public class ThesisTest {
 
     @Autowired
     TestRestTemplate restTemplate;
-
-    private JacksonTester<ThesisDTO> jacksonTester;
 
     private University university;
 
@@ -130,13 +127,9 @@ public class ThesisTest {
 
 
         JSONObject supervisorJson = new JSONObject();
-        //supervisorJson.put("id", supervisor.getId());
         supervisorJson.put("firstName", supervisor.getFirstName());
         supervisorJson.put("lastName", supervisor.getLastName());
-        //supervisorJson.put("password", supervisor.getPassword());
         supervisorJson.put("mail", supervisor.getMail());
-        //supervisorJson.put("isComplete", supervisor.getIsComplete());
-        //supervisorJson.put("academicDegree", supervisor.getAcademicDegree());
         supervisorJson.put("building", supervisor.getBuilding());
         supervisorJson.put("officeNumber", supervisor.getOfficeNumber());
         supervisorJson.put("institute", supervisor.getInstitute());
@@ -161,9 +154,6 @@ public class ThesisTest {
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
 
-        System.err.println("Thesis JSON is " + thesisJson);
-        System.err.println("Possible Degree JSon is " + possibleDegreeJson.toString());
-
         JSONArray otherPossibleDegreesJson = new JSONArray();
         otherPossibleDegreesJson.put(degreeJson);
         otherPossibleDegreesJson.put(newDegreeJson);
@@ -178,8 +168,6 @@ public class ThesisTest {
         anotherThesisJson.put("possibleDegrees", otherPossibleDegreesJson);
         anotherThesisJson.put("images", images);
 
-        System.err.println("Thesis JSON is " + anotherThesisJson);
-        System.err.println("Possible Degree JSon is " + otherPossibleDegreesJson.toString());
 
         HttpEntity<String> anotherRequest = new HttpEntity<>(anotherThesisJson.toString(), headers);
 
@@ -199,9 +187,7 @@ public class ThesisTest {
         }
         System.err.println(degrees.size());
         Assert.assertTrue(degrees.size() == 3);
-        /*ThesesForDegree thesesForDegree = degrees.get(0);
-        Assert.assertTrue(thesesForDegree.getDegree().getId().compareTo(degree.getId()) == 0);
-        Assert.assertTrue(thesesForDegree.getThesis().getId().compareTo(thesis.getId()) == 0); */
+
         List<Image> imageList = imageRepository.findAll();
         Assert.assertTrue(imageList.size() == 2);
         String fetchedImage = java.util.Base64.getEncoder().encodeToString(imageList.get(0).getImage());
@@ -210,10 +196,20 @@ public class ThesisTest {
 
     }
 
-    /*@Test @Order(10)
+    @Test
     void postThesisTest() throws JSONException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+
+        JSONObject supervisorJson = new JSONObject();
+        supervisorJson.put("firstName", supervisor.getFirstName());
+        supervisorJson.put("lastName", supervisor.getLastName());
+        supervisorJson.put("mail", supervisor.getMail());
+        supervisorJson.put("building", supervisor.getBuilding());
+        supervisorJson.put("officeNumber", supervisor.getOfficeNumber());
+        supervisorJson.put("institute", supervisor.getInstitute());
+        supervisorJson.put("phoneNumber", supervisor.getPhoneNumber());
+        supervisorJson.put("type", "SUPERVISOR");
 
         byte[] image = new byte[20];
         new Random().nextBytes(image);
@@ -234,12 +230,12 @@ public class ThesisTest {
 
 
         JSONObject thesisJson = new JSONObject();
-        thesisJson.put("name", "Thesis");
-        thesisJson.put("supervisingProfessor", "Zitterbart");
+        thesisJson.put("name", "newThesis");
+        thesisJson.put("supervisingProfessor", "Kuehnlein");
         thesisJson.put("motivation", "Motivation");
         thesisJson.put("task", "Task");
         thesisJson.put("questions", "Question");
-        thesisJson.put("supervisorId", supervisor.getId());
+        thesisJson.put("supervisor", supervisorJson);
         thesisJson.put("possibleDegrees", possibleDegreeJson);
         thesisJson.put("images", images);
 
@@ -251,24 +247,27 @@ public class ThesisTest {
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         List<Thesis> theses = thesisRepository.findAll();
-        Assert.assertTrue(theses.size() == 1);
-        Thesis thesis = theses.get(0);
-        Assert.assertTrue(thesis.getSupervisingProfessor().compareTo("Zitterbart") == 0);
+        Thesis thesis = null;
+        for(Thesis fetchedThesis : theses){
+            if(fetchedThesis.getName().equals("newThesis")){
+                thesis = fetchedThesis;
+            }
+        }
+        Assert.assertTrue(thesis != null);
+        Assert.assertTrue(thesis.getSupervisingProfessor().compareTo("Kuehnlein") == 0);
 
 
-        List<ThesesForDegree> degrees = thesesForDegreeRepository.findAll();
+        List<ThesesForDegree> degrees = thesesForDegreeRepository.findByIdThesisId(thesis.getId());
         Assert.assertTrue(degrees.size() == 1);
         ThesesForDegree thesesForDegree = degrees.get(0);
         Assert.assertTrue(thesesForDegree.getDegree().getId().compareTo(degree.getId()) == 0);
-        Assert.assertTrue(thesesForDegree.getThesis().getId().compareTo(thesis.getId()) == 0);
-        List<Image> imageList = imageRepository.findAll();
-        Assert.assertTrue(imageList.size() == 1);
-        String fetchedImage = java.util.Base64.getEncoder().encodeToString(imageList.get(0).getImage());
-        Assert.assertTrue(encodedImage.compareTo(fetchedImage) == 0);
-    } */
+
+        Image fetchedImage = imageRepository.findByThesisId(thesis.getId());
+        Assert.assertTrue(Arrays.equals(fetchedImage.getImage(), thesis.getImages().get(0).getImage()));
+    }
 
     @Test
-    void swipeStackTest(){
+    void swipeStackAfterAddingThesisTroughAPICallsTest(){
         System.err.println("Thesis got added" + thesisRepository.findAll().size());
         ResponseEntity<String> response = restTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword())
                 .getForEntity("/students/theses/get-swipe-theses"
@@ -287,7 +286,7 @@ public class ThesisTest {
         Assert.assertTrue(swipeStack.get(0).getSupervisor().getId().compareTo(supervisor.getId()) == 0);
     }
 
-   /* @Test
+    @Test
     void getThesesBySupervisorTest(){
         ResponseEntity<String> response = restTemplate.withBasicAuth(supervisor.getMail(), supervisor.getPassword())
                 .getForEntity("/thesis", String.class);
@@ -305,7 +304,7 @@ public class ThesisTest {
 
 
     @Test
-    void uploadingImageTest() throws IOException, JSONException {
+    void updateThesisTest() throws IOException, JSONException {
         URL imageUrl = ThesisTest.class.getClassLoader().getResource("Logo.png");
         byte[] image = imageUrl.openStream().readAllBytes();
         String encodedImage = Base64.getEncoder().encodeToString(image);
@@ -331,22 +330,25 @@ public class ThesisTest {
         JSONArray possibleDegreeJson = new JSONArray();
         possibleDegreeJson.put(newDegreeJson);
 
+        Thesis changedThesis = thesisRepository.findAll().get(0);
+
         JSONObject thesisJson = new JSONObject();
         thesisJson.put("name", "Thesis");
-        thesisJson.put("supervisingProfessor", "Zitterbart");
-        thesisJson.put("motivation", "Motivation");
-        thesisJson.put("task", "Task");
+        thesisJson.put("supervisingProfessor", "new Professor");
+        thesisJson.put("motivation", "new Motivation");
+        thesisJson.put("task", " new Task");
         thesisJson.put("questions", "Question");
+        thesisJson.put("positivelyRatedNum", changedThesis.getNumPositiveRated());
+        thesisJson.put("negativelyRatedNum", changedThesis.getNumNegativeRated());
         thesisJson.put("supervisor", supervisorJson);
         thesisJson.put("possibleDegrees", possibleDegreeJson);
         thesisJson.put("images", imageJson);
 
-        UUID updateThesisId = thesisRepository.findAll().get(0).getId();
+        UUID updateThesisId = changedThesis.getId();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity<>(thesisJson.toString(), headers);
-
         ResponseEntity<String> updateResponse = restTemplate.withBasicAuth(supervisor.getMail(), supervisor.getPassword())
                 .exchange("/thesis/" + updateThesisId, HttpMethod.PUT, request, String.class);
         Assertions.assertThat(updateResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -354,27 +356,27 @@ public class ThesisTest {
         ResponseEntity<String> getResponse = restTemplate.withBasicAuth(supervisor.getMail(), supervisor.getPassword())
                 .getForEntity("/thesis/" + updateThesisId, String.class);
         Gson gson = new Gson();
-        System.err.println(getResponse.getBody());
         ThesisDTO updatedThesis = gson.fromJson(getResponse.getBody(), ThesisDTO.class);
 
+
         Assert.assertTrue(updatedThesis.getId().compareTo(updateThesisId) == 0);
+        Assert.assertTrue(updatedThesis.getMotivation().equals("new Motivation"));
 
         Assert.assertTrue(updatedThesis.getImages().size() == 1);
-
         Assert.assertTrue(updatedThesis.getImages().get(0).equals(encodedImage));
 
         byte[] returnedImage = Base64.getDecoder().decode(updatedThesis.getImages().get(0));
-
         Assert.assertTrue(Arrays.equals(returnedImage, image));
 
         List<Degree> possibleDegrees = updatedThesis.getPossibleDegrees();
-
         Assert.assertTrue(possibleDegrees.size() == 1);
+        Assert.assertTrue(possibleDegrees.get(0).getId().compareTo(newDegree.getId()) == 0);
+        Assert.assertTrue(possibleDegrees.get(0).getDegree().equals(newDegree.getDegree()));
+
     }
- */
 
     @Test
-    void addThesisTest() throws JSONException, IOException {
+    void addThesisRoundaboutTest() throws JSONException, IOException {
         addThesis = new Thesis("Upload", "newThesis", "Motivation"
                 , "Question", "Zitterbart", supervisor);
         JSONObject newDegreeJson = new JSONObject();
@@ -465,27 +467,8 @@ public class ThesisTest {
         List<Image> foundImages = imageRepository.findAllById(toRemove.getImages().stream().map(image -> image.getId()).toList());
         Assert.assertTrue(foundImages.size() == 0);
 
-        List<ThesesForDegree> thesesForDegrees = thesesForDegreeRepository.findByThesisId(toRemove.getId());
+        List<ThesesForDegree> thesesForDegrees = thesesForDegreeRepository.findByIdThesisId(toRemove.getId());
         Assert.assertTrue(thesesForDegrees.size() == 0); //thesis won't be fetched anymore
     }
-
-
-
-    @Test
-    void anotherImageTest(){
-        String json = "{\"name\":\"j\",\"motivation\":\"k\",\"task\":\"j\",\"questions\":\"n\",\"images\":[\"jo6O\\/2xsbP88PDz\\/Ghoa\\/xoaGv88PDz\\/bGxs\\/46Ojv\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/4uLi\\/9vb2\\/\\/RkZG\\/yoqKv8qKir\\/RkZG\\/29vb\\/+Li4v\\/8PDw\\/\\/Dw8P+IiIj\\/dXV1\\/1lZWf9GRkb\\/RkZG\\/1lZWf91dXX\\/iIiI\\/8vLy\\/\\/Ly8v\\/g4OD\\/3x8fP9ycnL\\/bGxs\\/2xsbP9ycnL\\/fHx8\\/4ODg\\/+ampr\\/mpqa\\/319ff+EhIT\\/jo6O\\/5SUlP+UlJT\\/jo6O\\/4SEhP99fX3\\/ZmZm\\/2ZmZv94eHj\\/i4uL\\/6enp\\/+6urr\\/urq6\\/6enp\\/+Li4v\\/eHh4\\/zU1Nf81NTX\\/dXV1\\/5GRkf+6urr\\/1tbW\\/9bW1v+6urr\\/kZGR\\/3V1df8QEBD\\/EBAQ\\/w==\"],\"possibleDegrees\":[{\"id\":\"7f5c2772-2530-11ed-861d-0242ac120002\",\"degree\":\"B.Sc. Informatik\"}],\"supervisor\":{\"id\":\"46c3c143-de28-41a1-8ba1-09ba30220d82\",\"type\":\"SUPERVISOR\"},\"supervisingProfessor\":\"uu\"}";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> request = new HttpEntity<>(json.toString(), headers);
-        imageRepository.deleteAll();
-        ResponseEntity<String> response = restTemplate.withBasicAuth(supervisor.getMail(), supervisor.getPassword())
-                .postForEntity("/thesis", request, String.class);
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        List<Image> images = imageRepository.findAll();
-
-        Assert.assertTrue(images.size() == 1);
-    }
-
 
 }
