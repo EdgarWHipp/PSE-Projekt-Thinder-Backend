@@ -14,6 +14,9 @@ import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * This class holds all necessary data for supervisors.
+ */
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Supervisor extends User {
@@ -41,8 +44,19 @@ public class Supervisor extends User {
     @OneToMany(mappedBy="supervisor", cascade = CascadeType.REMOVE)
     private List<Thesis> theses;
 
+    /**
+     * Spring boot requires a no args constructor and uses setters to set the properties.
+     */
     protected Supervisor(){}
 
+    /**
+     *
+     * @param firstName the first name of the supervisor.
+     * @param lastName the last name of the supervisor.
+     * @param password the password of the supervisor.
+     * @param mail the mail of the supervisor.
+     * @param university the {@link University} the supervisor is a member of.
+     */
     public Supervisor(String firstName, String lastName, String password, String mail, University university){
         super(firstName, lastName, password, mail, university, Role.ROLE_SUPERVISOR);
     }
