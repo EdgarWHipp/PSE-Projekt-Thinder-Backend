@@ -8,15 +8,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.pse.thinder.backend.databaseFeatures.InputValidation;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
+import com.pse.thinder.backend.databaseFeatures.dto.ThesisDTO;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import java.util.*;
 
-
+/**
+ * This entity stores all information about a Thesis
+ */
 @Entity @Table(name="theses")
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Thesis {
@@ -71,13 +73,22 @@ public class Thesis {
 
 
 
+    /**
+     * Spring boot requires a no args constructor and uses setters to set the properties.
+     */
+    public Thesis(){}
 
-    protected Thesis(){}
-
-
+    /**
+     *
+     * @param name the name of the thesis.
+     * @param task what the thesis will be about.
+     * @param motivation the motivation of the thesis.
+     * @param questionForm questions from the supervisor, the students can answer to.
+     * @param supervisingProfessor the professor which will supervise the thesis.
+     * @param supervisor the {@link Supervisor} of the thesis
+     */
     public Thesis(@NotBlank String name,@NotBlank String task, @NotBlank String motivation,
-			 @NotBlank String questionForm,  @NotBlank String supervisingProfessor, @NotNull Supervisor supervisor
-                  , @NotEmpty List<ThesesForDegree> possibleDegrees) {
+			 @NotBlank String questionForm,  @NotBlank String supervisingProfessor, @NotNull Supervisor supervisor) {
 		super();
 		this.name = name;
 		this.task = task;
@@ -87,25 +98,10 @@ public class Thesis {
 		this.supervisor = supervisor;
 		this.studentRatings = new ArrayList<>();
 		this.images = new ArrayList<>();
-		this.possibleDegrees = possibleDegrees;
+		this.possibleDegrees = new ArrayList<>();
         this.numPositiveRated = 0;
         this.numNegativeRated = 0;
 	}
-
-    public Thesis(@NotBlank String name, @NotBlank String task, @NotBlank String motivation,
-                  @NotBlank String questionForm, @NotBlank String supervisingProfessor, Supervisor supervisor) {
-        super();
-        this.name = name;
-        this.task = task;
-        this.motivation = motivation;
-        this.questionForm = questionForm;
-        this.supervisingProfessor = supervisingProfessor;
-        this.supervisor = supervisor;
-        this.studentRatings = new ArrayList<>();
-        this.possibleDegrees = new ArrayList<>();
-        this.numPositiveRated = 0;
-        this.numNegativeRated = 0;
-    }
 
     public UUID getId() {
         return id;
@@ -178,9 +174,7 @@ public class Thesis {
     }
 
     public void setImages(List<Image> images) {
-    	for(Image removedImage : this.getImages()){
-            this.getImages().remove(removedImage);
-        }
+    	this.images.clear();
         this.images.addAll(images);
     }
 
@@ -204,6 +198,10 @@ public class Thesis {
         this.possibleDegrees.addAll(thesesForDegrees);
     }
 
+    /**
+     * This method is used to retrieve the encoded images for the {@link ThesisDTO}.
+     * @return Every image of the entity as encoded Base64 String.
+     */
     public List<String> getEncodedImages(){
         List<String> encodedImages = new ArrayList<>();
         for (Image image : this.images){

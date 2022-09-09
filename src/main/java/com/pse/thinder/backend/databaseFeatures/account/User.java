@@ -24,7 +24,9 @@ import java.util.UUID;
     @JsonSubTypes.Type(value = PlainUser.class, name = "USER")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+/**
+ * This class represents the base user. Holds all necessary data every kind of user has.
+ */
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -80,9 +82,20 @@ public class User {
     private Set<VerificationToken> verificationTokens;
 
 
-    //this is necessary due to JPA requirements for a non arg constructor.
+    /**
+     * Spring boot requires a no args constructor and uses setters to set the properties.
+     */
     protected User(){}
 
+    /**
+     *
+     * @param firstName the first name of the user.
+     * @param lastName the last name of the user.
+     * @param password the password of the user.
+     * @param mail the mail of the user.
+     * @param university the {@link University} the user is currently at.
+     * @param role the {@link Role} of the user.
+     */
     public User(String firstName, String lastName, String password,
                  String mail, University university, Role role) {
         this.firstName = firstName;

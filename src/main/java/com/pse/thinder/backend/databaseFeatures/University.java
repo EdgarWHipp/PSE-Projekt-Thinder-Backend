@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * This class hold all necessary data for a university.
+ */
 @Entity @Table(name="universities")
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class University {
@@ -45,8 +48,19 @@ public class University {
     @OneToMany(mappedBy = "university", cascade =  CascadeType.REMOVE)
     private List<Degree> degrees;
 
+    /**
+     * Spring boot requires a no args constructor and uses setters to set the properties.
+     */
     protected University(){}
 
+    /**
+     *
+     * @param name the name of the university.
+     * @param studentMailRegex a regex expression accepting email addresses from
+     * {@link com.pse.thinder.backend.databaseFeatures.account.Student} at this university.
+     * @param supervisorMailRegex a regex expression accepting email addresses from
+     * {@link com.pse.thinder.backend.databaseFeatures.account.Supervisor} at this university.
+     */
     public University(String name, String studentMailRegex, String supervisorMailRegex) {
 		super();
 		this.name = name;

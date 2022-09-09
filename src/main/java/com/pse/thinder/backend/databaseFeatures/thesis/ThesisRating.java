@@ -8,6 +8,9 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
+/**
+ * This entity represents a rating of a {@link Thesis} by a {@link Student}.
+ */
 @Entity @Table(name="thesisRatings")
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class ThesisRating {
@@ -31,10 +34,23 @@ public class ThesisRating {
 
     private boolean positiveRated;
 
+    /**
+     * This flag determines if the student has revoked his positive rating of the thesis.
+     * Only false if the student has revoked his positive rating.
+     */
     private boolean activeRating;
 
+    /**
+     * Spring boot requires a no args constructor and uses setters to set the properties.
+     */
     public ThesisRating(){ }
 
+    /**
+     *
+     * @param rating true == positive rated, negative otherwise.
+     * @param student which rated the thesis
+     * @param thesis which is rated by the student
+     */
     public ThesisRating(boolean rating, Student student, Thesis thesis){
         this.id = new ThesisRatingKey(student.getId(), thesis.getId());
         this.positiveRated = rating;

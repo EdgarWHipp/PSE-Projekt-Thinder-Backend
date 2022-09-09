@@ -11,6 +11,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * This token is the blueprint for every type of token thinder has.
+ */
 @Entity @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Token {
 
@@ -22,7 +25,7 @@ public abstract class Token {
 
     @NotBlank
     @Size(min=1, max=64)
-    @Column(columnDefinition = "character varying(64) not null")
+    @Column(columnDefinition = "character varying(64) not null", unique = true)
     private String token;
 
     @NotNull
@@ -34,8 +37,16 @@ public abstract class Token {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    /**
+     * Spring boot requires a no args constructor and uses setters to set the properties.
+     */
     public Token(){}
 
+    /**
+     *
+     * @param user the user the token is designated for
+     * @param token the actual token.
+     */
     public Token(User user, String token) {
         this.token = token;
         Calendar cal = Calendar.getInstance();

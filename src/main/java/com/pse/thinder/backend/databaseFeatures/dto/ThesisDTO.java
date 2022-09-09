@@ -1,5 +1,6 @@
-package com.pse.thinder.backend.databaseFeatures;
+package com.pse.thinder.backend.databaseFeatures.dto;
 
+import com.pse.thinder.backend.databaseFeatures.Degree;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 
 
@@ -9,9 +10,12 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * This class is used to send/receive {@link com.pse.thinder.backend.databaseFeatures.thesis.Thesis} to/from the frontend.
+ * It holds all necessary data for theses.
+ */
 public class ThesisDTO {
 
-    //@JsonIgnore
     private UUID id;
 
     @NotBlank
@@ -41,8 +45,25 @@ public class ThesisDTO {
     @NotEmpty
     private List<Degree> possibleDegrees;
 
+    /**
+     * Spring boot requires a no args constructor and uses setters to set the properties.
+     */
     public ThesisDTO(){}
 
+    /**
+     *
+     * @param thesisId the id of the original {@link com.pse.thinder.backend.databaseFeatures.thesis.Thesis}
+     * @param name the name of the Thesis.
+     * @param supervisingProfessor the supervising professor of the thesis.
+     * @param motivation the motivation behind the thesis.
+     * @param task the task of the thesis.
+     * @param questions the questions from the supervisor of the thesis.
+     * @param positivelyRatedNum the number of positive {@link com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating}
+     * @param negativelyRatedNum the number of negative {@link com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating}
+     * @param supervisor the supervisor of the thesis.
+     * @param images the images of the thesis, encoded as Base64 string.
+     * @param possibleDegrees the feasible degrees for the thesis.
+     */
     public ThesisDTO(UUID thesisId, String name, String supervisingProfessor, String motivation, String task
             , String questions, int positivelyRatedNum, int negativelyRatedNum, Supervisor supervisor
             , List<String> images, List<Degree> possibleDegrees){

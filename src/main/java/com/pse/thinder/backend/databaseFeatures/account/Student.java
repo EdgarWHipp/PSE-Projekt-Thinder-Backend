@@ -15,6 +15,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import java.util.*;
 
+/**
+ * This class holds all necessary data for students.
+ */
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Student extends User{
@@ -34,8 +37,19 @@ public class Student extends User{
     @OneToMany(mappedBy = "student", orphanRemoval = true, cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<ThesisRating> thesesRatings;
 
+    /**
+     * Spring boot requires a no args constructor and uses setters to set the properties.
+     */
     protected Student() { }
 
+    /**
+     *
+     * @param firstName the first name of the student.
+     * @param lastName the last name of the student.
+     * @param password the password of the account.
+     * @param mail the mail of the student.
+     * @param university the {@link University} the student is studying at.
+     */
     public Student(String firstName, String lastName, String password, String mail, University university) {
         super(firstName, lastName, password, mail, university, Role.ROLE_STUDENT);
         this.degrees = new ArrayList<>();
@@ -55,8 +69,7 @@ public class Student extends User{
     }
 
     public void addThesesRatings(ThesisRating thesisRating) {
-        this.thesesRatings.add(thesisRating); //add the element at the end of the list to mimic a stack
-        //todo explain the problem why we didn't use a stack in the documentation, due to missing hibernate implementation
+        this.thesesRatings.add(thesisRating);
     }
 
     public void setDegrees(List<Degree> degrees) {

@@ -11,6 +11,9 @@ import javax.validation.constraints.Size;
 
 import java.util.UUID;
 
+/**
+ * This entity stores the data of an image of a {@link Thesis}
+ */
 @Entity
 public class Image {
 
@@ -23,14 +26,26 @@ public class Image {
     @Type(type = "org.hibernate.type.ImageType")
     private byte[] image;
 
+    /**
+     * The thesis the image belongs to.
+     *
+     */
     @NotNull(groups = {InputValidation.class})
     @ManyToOne
     @JoinColumn(name="thesis_id", nullable=false)
     @JsonIgnore
     private Thesis thesis;
 
+    /**
+     * Spring boot requires a no args constructor and uses setters to set the properties.
+     */
     public Image(){}
 
+    /**
+     *
+     * @param image the actual image as byte array.
+     * @param thesis the associated thesis of the image.
+     */
     public Image(byte[] image, Thesis thesis){
         this.image = image;
         this.thesis = thesis;

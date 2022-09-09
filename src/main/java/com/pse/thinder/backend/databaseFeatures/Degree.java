@@ -15,9 +15,10 @@ import javax.validation.constraints.Size;
 
 import java.util.*;
 
+/**
+ * This entity stores all information about a degree of a {@link University}.
+ */
 @Entity @Table(name = "degrees")
-///@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-
 public class Degree {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,7 +33,6 @@ public class Degree {
     @ManyToMany(mappedBy = "degrees")
     private List<Student> students;
 
-    //@NotNull(groups = {InputValidation.class})
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("university_id")
     @ManyToOne
@@ -44,7 +44,11 @@ public class Degree {
     private List<ThesesForDegree> possibleTheses;
 
 
-
+    /**
+     *
+     * @param degree the name of the degree.
+     * @param university the university which offers this degree.
+     */
     public Degree(String degree, University university){
         this.degree = degree;
         this.university = university;
