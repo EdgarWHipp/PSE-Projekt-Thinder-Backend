@@ -1,9 +1,8 @@
 package com.pse.thinder.backend.controllers;
 
-import com.pse.thinder.backend.databaseFeatures.Form;
-import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
-import com.pse.thinder.backend.databaseFeatures.Pair;
-import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
+import com.pse.thinder.backend.databaseFeatures.dto.Form;
+import com.pse.thinder.backend.databaseFeatures.dto.ThesisDTO;
+import com.pse.thinder.backend.databaseFeatures.dto.Pair;
 import com.pse.thinder.backend.repositories.ThesisRatingRepository;
 import com.pse.thinder.backend.security.ThinderUserDetails;
 import com.pse.thinder.backend.services.StudentService;
@@ -15,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequestMapping("/students")
 @RestController
@@ -46,7 +47,7 @@ public class StudentController {
     }
 
     @GetMapping("/rated-theses/{thesisId}/remove")
-    @PreAuthorize("hasRole('ROLE_STUDENT') && @studentController.thesisIsRated(#thesisId)")
+    @PreAuthorize("hasRole('ROLE_STUDENT') && @studentController.thesisIsPositiveRated(#thesisId)")
     public void removeRatedThesis(@PathVariable("thesisId") UUID thesisId) {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
@@ -63,19 +64,13 @@ public class StudentController {
     }
 
     @PostMapping("/rated-theses/{thesesId}/form")
-    @PreAuthorize("@studentController.thesisIsPositiveRated(#thesesId)")
+    @PreAuthorize("hasRole('ROLE_STUDENT') && @studentController.thesisIsPositiveRated(#thesesId)")
     public void sendThesisForm(@PathVariable("thesesId") UUID thesesId, @RequestBody Form questionForm) {
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
             studentService.sendQuestionForm(details.getUser().getId(), thesesId, questionForm);
     }
 
-    public boolean thesisIsRated(UUID thesisId){
-        ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
-                getContext().getAuthentication().getPrincipal();
-        return thesisRatingRepository.findByIdStudentIdAndThesisIdAndActiveRating(details.getUser().getId(), thesisId
-                , true) != null;
-    }
 
     public boolean thesesAreUnrated(Collection<Pair<UUID, Boolean>> ratings){
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
@@ -86,18 +81,19 @@ public class StudentController {
                 return false;
             }
         }
-        return true;
+        Set<UUID> idSet = ratings.stream().map(pair -> pair.getFirst()).collect(Collectors.toSet());
+        return idSet.size() == ratings.size(); //true if there are no duplicate ids
     }
 
-    public boolean thesisIsPositiveRated(UUID thesisId) {
+    public boolean thesisIsPositiveRated(UUID thesisId){
         ThinderUserDetails details = (ThinderUserDetails) SecurityContextHolder.
                 getContext().getAuthentication().getPrincipal();
-        System.err.println("WHERE AM I");
-        if(!thesisIsRated(thesisId)){
-            return false;
-        }
-        return thesisRatingRepository.findByIdStudentIdAndThesisId(details.getUser().getId(), thesisId).getPositiveRated();
+        UUID studentId = details.getUser().getId();
+        return thesisRatingRepository.findByIdStudentIdAndThesisIdAndPositiveRatedAndActiveRating(studentId, thesisId
+                , true, true) != null;
     }
+
+
 
 
 }

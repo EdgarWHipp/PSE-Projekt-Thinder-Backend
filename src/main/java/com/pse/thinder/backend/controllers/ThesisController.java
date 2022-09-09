@@ -3,16 +3,14 @@ package com.pse.thinder.backend.controllers;
 import java.util.List;
 import java.util.UUID;
 
-import com.pse.thinder.backend.databaseFeatures.InputValidation;
-import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
+import com.pse.thinder.backend.databaseFeatures.Degree;
+import com.pse.thinder.backend.databaseFeatures.dto.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
-import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import com.pse.thinder.backend.security.ThinderUserDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -21,7 +19,7 @@ import com.pse.thinder.backend.services.ThesisService;
 @RestController("thesisController")
 @RequestMapping("/thesis")
 public class ThesisController {
-	
+
 	@Autowired
 	private ThesisService thesisService;
 	
@@ -35,7 +33,7 @@ public class ThesisController {
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('ROLE_SUPERVISOR')") //stimmt das?
+	@PreAuthorize("hasRole('ROLE_SUPERVISOR')")
 	public ThesisDTO getThesis(@PathVariable("id") UUID id) {
 		return thesisService.getThesisById(id);
 	}

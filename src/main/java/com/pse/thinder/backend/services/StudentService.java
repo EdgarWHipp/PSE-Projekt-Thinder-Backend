@@ -1,9 +1,9 @@
 package com.pse.thinder.backend.services;
 
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
-import com.pse.thinder.backend.databaseFeatures.Form;
-import com.pse.thinder.backend.databaseFeatures.Pair;
-import com.pse.thinder.backend.databaseFeatures.ThesisDTO;
+import com.pse.thinder.backend.databaseFeatures.dto.Form;
+import com.pse.thinder.backend.databaseFeatures.dto.Pair;
+import com.pse.thinder.backend.databaseFeatures.dto.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
@@ -20,6 +20,12 @@ import java.util.*;
 
 @Service
 public class StudentService {
+
+    private static final String THESIS_NOT_FOUND = "Thesis not found";
+
+    private static final String RATING_NOT_FOUND = "Rating not found";
+
+    private static final String STUDENT_NOT_FOUND = "Student not found";
 
     @Autowired
     private ThesisRatingRepository thesisRatingRepository;
@@ -55,7 +61,7 @@ public class StudentService {
             boolean liked = rating.getSecond().booleanValue();
 
             Thesis thesis = thesisRepository.findById(thesisId).orElseThrow(
-                    () -> new EntityNotFoundException("") //todo exception
+                    () -> new EntityNotFoundException(THESIS_NOT_FOUND)
             );
             ThesisRating newRating = new ThesisRating(liked, student, thesis);
             newRatings.add(newRating);
@@ -71,10 +77,9 @@ public class StudentService {
 
     }
 
-    //todo Write a test for this, check whether thesis is
     public void removeLikedThesis(UUID studentId, UUID thesisId){
         ThesisRating inactiveRating = thesisRatingRepository.findById(new ThesisRatingKey(studentId, thesisId)).orElseThrow(
-                () -> new EntityNotFoundException(" ") //todo add exception
+                () -> new EntityNotFoundException(RATING_NOT_FOUND)
         );
         Thesis associatedThesis = inactiveRating.getThesis();
         associatedThesis.setNumPositiveRated(associatedThesis.getNumPositiveRated() - 1);
@@ -90,28 +95,13 @@ public class StudentService {
                 .stream().map(thesisRating -> thesisRating.getThesis()).toList());
     }
 
-    //todo move this in the thesis service
-    public ArrayList<ThesisRating> getRatingByThesis(UUID thesisId){
-        return thesisRatingRepository.findByIdThesisId(thesisId);
-    }
-
-    @Transactional
-    public ThesisRating undoLastRating(UUID studentId){
-        Student student = getStudent(studentId);
-
-        List<ThesisRating> ratings = student.getThesesRatings();
-        if(ratings.isEmpty()){
-            //todo add exception
-        }
-        return ratings.remove(ratings.size() - 1);
-    }
 
     @Transactional
     public List<ThesisDTO> getSwipeOrder(UUID studentId){
         Student student = getStudent(studentId);
 
         List<Thesis> possibleTheses = getPossibleTheses(student);
-        //todo Should the controller do the parsing?
+
         return parseToDto(thesisSelectRandom.getThesesForSwipe(new ArrayList<>(possibleTheses)));
     }
 
@@ -131,22 +121,21 @@ public class StudentService {
         possibleTheses = ratedTheses.size() == 0 ? thesesForDegreeRepository.findDistinctThesisByDegreeIdIn(degrees) :
                 thesesForDegreeRepository.findDistinctThesisByDegreeIdInAndThesisIdNotIn(degrees, ratedTheses);
 
-        if(possibleTheses.isEmpty()){
-            //todo add exception
-        }
         return possibleTheses.stream().map(thesesForDegree -> thesesForDegree.getThesis()).toList();
     }
 
-    @Transactional //todo make private if possible
+    @Transactional
     public Student getStudent(UUID studentId){
         return studentRepository.findById(studentId).orElseThrow(
-                () -> new EntityNotFoundException("") //todo add exception here
+                () -> new EntityNotFoundException(STUDENT_NOT_FOUND)
         );
     }
-    //todo mail message could be done better
+
+
+
     public void sendQuestionForm(UUID studentId, UUID thesisId, Form questionForm){
         Thesis thesis = thesisRepository.findById(thesisId).orElseThrow(
-                () -> new EntityNotFoundException("") //todo exception
+                () -> new EntityNotFoundException(THESIS_NOT_FOUND)
         );
         Student student = getStudent(studentId);
 
@@ -154,7 +143,7 @@ public class StudentService {
         message.setFrom("thesisthinder@gmail.com");
         message.setTo(thesis.getSupervisor().getMail());
         String studentName = student.getFirstName() + " " + student.getLastName();
-        message.setSubject("Antowort auf Fragebogen von " + studentName);
+        message.setSubject("Antwort auf Fragebogen von " + studentName);
         String header = "Hallo, \n für Ihre Abschlussarbeit " + thesis.getName() + " hat der Student " + studentName
                 + " den Fragebogen \n" + questionForm.getQuestions() + "\n folgendermaßen ausgefüllt: \n";
         String body = "\n Wenn Sie den Studenten kontaktieren wollen können Sie Ihm unter dieser Mailadresse "

@@ -1,7 +1,7 @@
 package com.pse.thinder.backend.controllers;
 
 import com.pse.thinder.backend.databaseFeatures.InputValidation;
-import com.pse.thinder.backend.databaseFeatures.PasswordResetDTO;
+import com.pse.thinder.backend.databaseFeatures.dto.PasswordResetDTO;
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.databaseFeatures.account.User;
