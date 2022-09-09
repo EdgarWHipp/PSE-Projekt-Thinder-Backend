@@ -5,6 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
+/**
+ * 
+ * Repository to access the Image table of the database
+ *
+ */
 public interface ImageRepository extends JpaRepository<Image, UUID> {
 
     void deleteAllByThesisId(UUID thesisId);

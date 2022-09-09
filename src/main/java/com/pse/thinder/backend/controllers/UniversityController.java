@@ -25,6 +25,9 @@ public class UniversityController {
      * This method is used to access an university by id
      * @param id the id of the requested university
      * @return data of the requested university
+     * 
+     * Protected access
+     * 
      */
     @GetMapping("/{id}")
     public University getUniversityById(@PathVariable("id") UUID id) {
@@ -35,6 +38,8 @@ public class UniversityController {
      * This method is used to access all degrees which an specific university offers
      * @param id the id of the requested university
      * @return all degrees of the requested university
+     * 
+     * Protected access
      */
     @GetMapping("/{id}/degrees")
     public List<Degree> getDegreesById(@PathVariable("id") UUID id){

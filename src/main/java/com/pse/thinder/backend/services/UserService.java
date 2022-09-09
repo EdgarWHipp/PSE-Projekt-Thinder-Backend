@@ -75,10 +75,10 @@ public class UserService {
     @Autowired 
 	Validator validator;
 
-
-    public User getUser(String mail) {
-        return userRepository.findByMail(mail).orElseThrow(() -> new EntityNotFoundException(ERROR_USER_NOT_FOUND + mail));
-    }
+//TODO Remove
+//    public User getUser(String mail) {
+//        return userRepository.findByMail(mail).orElseThrow(() -> new EntityNotFoundException(ERROR_USER_NOT_FOUND + mail));
+//    }
 
     public User getUser(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(ERROR_USER_NOT_FOUND + id));
