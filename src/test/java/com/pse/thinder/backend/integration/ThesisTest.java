@@ -182,10 +182,6 @@ public class ThesisTest {
 
 
         List<ThesesForDegree> degrees = thesesForDegreeRepository.findAll();
-        for(ThesesForDegree n : degrees){
-            System.err.println(n.getDegree().getDegree());
-        }
-        System.err.println(degrees.size());
         Assert.assertTrue(degrees.size() == 3);
 
         List<Image> imageList = imageRepository.findAll();
@@ -268,21 +264,16 @@ public class ThesisTest {
 
     @Test
     void swipeStackAfterAddingThesisTroughAPICallsTest(){
-        System.err.println("Thesis got added" + thesisRepository.findAll().size());
         ResponseEntity<String> response = restTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword())
                 .getForEntity("/students/theses/get-swipe-theses"
                         , String.class);
-        //System.err.println(response.getBody());
+
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Gson gson = new Gson();
         ArrayList<ThesisDTO> swipeStack = gson.fromJson(response.getBody(), new TypeToken<List<ThesisDTO>>(){}.getType());
-        System.err.println("size of swipe stack:" + swipeStack.size());
-        for(ThesisDTO dto : swipeStack){
-            System.err.println(dto.getId());
-        }
+
         Assert.assertTrue(swipeStack.size() == 2);
         Assert.assertTrue(degree.getId().compareTo(swipeStack.get(0).getPossibleDegrees().get(0).getId()) == 0);
-        System.err.println("size of degree " + swipeStack.get(0).getPossibleDegrees().get(0).getId());
         Assert.assertTrue(swipeStack.get(0).getSupervisor().getId().compareTo(supervisor.getId()) == 0);
     }
 
@@ -294,7 +285,6 @@ public class ThesisTest {
 
         Gson gson = new Gson();
 
-        System.err.println(response);
         ArrayList<ThesisDTO> theses = gson.fromJson(response.getBody(), new TypeToken<List<ThesisDTO>>(){}.getType());
         ThesisDTO thesisDTO = theses.get(0);
         Assert.assertTrue(theses.size() == 2);
@@ -399,7 +389,7 @@ public class ThesisTest {
         URL imageUrl = ThesisTest.class.getClassLoader().getResource("Logo.png");
         byte[] image = imageUrl.openStream().readAllBytes();
         String encodedImage = Base64.getEncoder().encodeToString(image);
-        System.err.println(imageUrl);
+
         JSONArray imageJson = new JSONArray();
         imageJson.put(encodedImage);
 
@@ -429,11 +419,11 @@ public class ThesisTest {
             }
         }
         Assert.assertTrue(newlyAddedThesis != null);
-        System.err.println("id is " +newlyAddedThesis.getId());
+
         ResponseEntity<String> getResponse = restTemplate.withBasicAuth(supervisor.getMail(), supervisor.getPassword())
                 .getForEntity("/thesis/" + newlyAddedThesis.getId(), String.class);
         Gson gson = new Gson();
-        System.err.println(getResponse.getBody() + " body");
+
         ThesisDTO previousAddedThesis = gson.fromJson(getResponse.getBody(), ThesisDTO.class);
 
         Assert.assertTrue(previousAddedThesis.getId().compareTo(newlyAddedThesis.getId()) == 0);

@@ -22,6 +22,9 @@ public class ThesisService {
 
 	private static final String WRONG_DEGREE = "You are only allowed to add theses to degrees which are registered at " +
 			"your own university!";
+
+	private static final String  WRONG_ID = "You are not allowed to change the id of theses!";
+
 	@Autowired
 	private ThesisRepository thesisRepository;
 
@@ -44,7 +47,6 @@ public class ThesisService {
 		return parseToDto(Arrays.asList(thesis)).get(0); //id is the primary key thus, the list has only one element.
 	}
 
-	//todo user eingaben müssen besser überprüft werden, bsp. degree dürfen nicht leer
 	@Transactional
 	public void addThesis(ThesisDTO thesis, Supervisor supervisor) {
 		List<Degree> degreeList = degreeRepository.findAllById(thesis.getPossibleDegrees().stream()
@@ -82,7 +84,7 @@ public class ThesisService {
 	public void updateThesis(ThesisDTO newThesis, UUID thesisId)  {
 		Thesis oldThesis = getActualThesisById(thesisId);
 		if(thesisId != newThesis.getId()){
-			//todo add exception
+			throw new IllegalArgumentException(WRONG_ID);
 		}
 
 		if(validator.validateProperty(newThesis, "name", InputValidation.class).isEmpty()){
@@ -103,8 +105,6 @@ public class ThesisService {
 		List<Image> decodedImages = new ArrayList<>();
 		if(validator.validateProperty(newThesis, "images", InputValidation.class).isEmpty()){
 			imageRepository.deleteAllByThesisId(oldThesis.getId());
-			//oldThesis.getImages().removeAll(oldThesis.getImages());
-			//does this workaround work?
 			List<String> encodedImages = newThesis.getImages();
 			for(String encodedImage : encodedImages){
 				byte[] decodedImage = Base64.getDecoder().decode(encodedImage);

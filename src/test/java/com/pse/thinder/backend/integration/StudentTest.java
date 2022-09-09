@@ -9,7 +9,6 @@ import com.pse.thinder.backend.databaseFeatures.*;
 
 import com.pse.thinder.backend.databaseFeatures.account.Student;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
-import com.pse.thinder.backend.databaseFeatures.account.User;
 import com.pse.thinder.backend.databaseFeatures.dto.Form;
 import com.pse.thinder.backend.databaseFeatures.dto.Pair;
 import com.pse.thinder.backend.databaseFeatures.dto.ThesisDTO;
@@ -23,7 +22,6 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -103,12 +101,11 @@ public class StudentTest {
         universityRepository.deleteAll();
         thesisRatingRepository.deleteAll();
         thesesForDegreeRepository.deleteAll();
-        //mailServer.stop();
-        //universityRepository.deleteAll();
+
         testUniversity = new University("KIT", ".*@student.kit.edu", ".*@kit.edu");
         universityRepository.save(testUniversity);
         universityRepository.flush();
-        System.err.println(testUniversity.getId());
+
         testDegree = new Degree("Bsc. Informatik",  testUniversity);
         degreeRepository.saveAndFlush(testDegree);
 
@@ -199,7 +196,7 @@ public class StudentTest {
 
     @Test
     void swipeStackTest(){
-        System.err.println("Thesis got added" + thesisRepository.findAll().size());
+
         ResponseEntity<String> response = testRestTemplate.withBasicAuth(testStudent.getMail(), testStudent.getPassword())
                 .getForEntity("/students/theses/get-swipe-theses"
                         , String.class);
@@ -232,7 +229,6 @@ public class StudentTest {
         MimeMessage[] mail = mailServer.getReceivedMessages();
         Assert.assertTrue(mail.length == 1);
         Assert.assertTrue(mail[0].getContent().toString().contains("Supervisor questions"));
-        System.err.println(mail[0].getContent().toString());
 
     }
 

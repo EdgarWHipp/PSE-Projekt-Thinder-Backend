@@ -39,9 +39,6 @@ public class StudentService {
     @Autowired
     private ThesesForDegreeRepository thesesForDegreeRepository;
 
-    @Autowired
-    private DegreeRepository degreeRepository;
-
     @Autowired //todo add proper strategy
     private ThesisSelectRandom thesisSelectRandom;
 
