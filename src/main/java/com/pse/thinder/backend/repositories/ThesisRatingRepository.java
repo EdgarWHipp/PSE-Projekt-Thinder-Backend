@@ -4,7 +4,6 @@ import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRating;
 import com.pse.thinder.backend.databaseFeatures.thesis.ThesisRatingKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -12,6 +11,11 @@ import java.util.UUID;
 public interface ThesisRatingRepository extends JpaRepository<ThesisRating, ThesisRatingKey> {
 
 
+	/**
+    *
+    * @param thesisId the id of the {@link com.pse.thinder.backend.databaseFeatures.thesis.Thesis}
+    * @return every rating {@link ThesisRating} of that thesis
+    */
     ArrayList<ThesisRating> findByIdThesisId(UUID thesisId);
 
     /**

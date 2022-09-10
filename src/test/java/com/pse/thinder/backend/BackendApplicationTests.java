@@ -27,7 +27,6 @@ import com.pse.thinder.backend.security.ThinderUserDetailsService;
 import com.pse.thinder.backend.services.ThesisService;
 import com.pse.thinder.backend.services.UniversityService;
 import com.pse.thinder.backend.services.UserService;
-import com.pse.thinder.backend.services.VerificationTokenService;
 import com.pse.thinder.backend.services.swipestrategy.ThesisSelectionStrategy;
 
 @SpringBootTest
@@ -82,8 +81,6 @@ class BackendApplicationTests {
 	UniversityService universityService;
 	@Autowired
 	UserService userService;
-	@Autowired
-	VerificationTokenService verificationTokenService;
 	
 	@Autowired
 	BackendApplication backendApplication;
@@ -118,7 +115,6 @@ class BackendApplicationTests {
 		Assertions.assertNotNull(thesisService);
 		Assertions.assertNotNull(universityService);
 		Assertions.assertNotNull(userService);
-		Assertions.assertNotNull(verificationTokenService);
 		
 		Assertions.assertNotNull(backendApplication);
 		Assertions.assertNotNull(config);

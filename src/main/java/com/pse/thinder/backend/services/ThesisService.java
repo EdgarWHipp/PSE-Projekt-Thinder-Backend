@@ -1,6 +1,8 @@
 package com.pse.thinder.backend.services;
 
 import java.util.*;
+
+import com.pse.thinder.backend.controllers.ThesisController;
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
 import com.pse.thinder.backend.databaseFeatures.Degree;
 import com.pse.thinder.backend.databaseFeatures.InputValidation;
@@ -15,6 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.validation.Validator;
 
+/**
+ * This service defines the functionality for the {@link ThesisController}
+ *
+ */
 @Service
 public class ThesisService {
 
@@ -22,8 +28,6 @@ public class ThesisService {
 
 	private static final String WRONG_DEGREE = "You are only allowed to add theses to degrees which are registered at " +
 			"your own university!";
-
-	private static final String  WRONG_ID = "You are not allowed to change the id of theses!";
 
 	@Autowired
 	private ThesisRepository thesisRepository;
@@ -41,12 +45,22 @@ public class ThesisService {
 	private Validator validator;
 
 
+	/**
+	 * 
+	 * @param id
+	 * @return The {@link Thesis} with the given id if it exists
+	 */
 	@Transactional
 	public ThesisDTO getThesisById(UUID id) {
 		Thesis thesis = thesisRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(THESIS_NOT_FOUND));
 		return parseToDto(Arrays.asList(thesis)).get(0); //id is the primary key thus, the list has only one element.
 	}
 
+	/**
+	 * Creates a new Thesis from the supplied {@link ThesisDTO} with the supervisor as owner
+	 * @param thesis the thesis data
+	 * @param supervisor the owner of the thesis
+	 */
 	@Transactional
 	public void addThesis(ThesisDTO thesis, Supervisor supervisor) {
 		List<Degree> degreeList = degreeRepository.findAllById(thesis.getPossibleDegrees().stream()
@@ -80,12 +94,14 @@ public class ThesisService {
 		}
 	}
 
+	/**
+	 * Updated the {@link Thesis} with the given id with the newThesis data but only if the thesis exists
+	 * @param newThesis the new data
+	 * @param thesisId the id of the thesis to update
+	 */
 	@Transactional
 	public void updateThesis(ThesisDTO newThesis, UUID thesisId)  {
 		Thesis oldThesis = getActualThesisById(thesisId);
-		if(thesisId != newThesis.getId()){
-			throw new IllegalArgumentException(WRONG_ID);
-		}
 
 		if(validator.validateProperty(newThesis, "name", InputValidation.class).isEmpty()){
 			oldThesis.setName(newThesis.getName());
@@ -126,20 +142,39 @@ public class ThesisService {
 
 	}
 
+	/**
+	 * 
+	 * @param id the id of the supervisor
+	 * @return All {@link Thesis} owned by the supervisor with the given id
+	 */
 	@Transactional
 	public List<ThesisDTO> getThesesBySupervisor(UUID id){
 		return parseToDto(thesisRepository.findBySupervisorId(id));
 	}
 
 
+	/**
+	 * Deletes the thesis with the given id
+	 * @param id
+	 */
 	public void deleteThesis(UUID id) {
 		thesisRepository.deleteById(id);
 	}
 
+	/**
+	 * 
+	 * @param thesisId
+	 * @return The actual {@link Thesis} with the given id and not as a {@link ThesisDTO}
+	 */
 	public Thesis getActualThesisById(UUID thesisId){
 		return thesisRepository.findById(thesisId).orElseThrow(() -> new EntityNotFoundException(THESIS_NOT_FOUND));
 	}
 
+	/**
+     * Helper method to convert theses to {@link ThesisDTO} to send the user
+     * @param theses the theses to parse
+     * @return the parsed {@link ThesisDTO} list
+     */
 	@Transactional
 	public List<ThesisDTO> parseToDto(List<Thesis> theses){
 		return theses.stream().map(thesis -> new ThesisDTO(

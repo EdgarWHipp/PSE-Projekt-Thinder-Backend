@@ -173,7 +173,7 @@ public class StudentTest {
     @Test
     void rateThesisTest(){
         Collection<Pair<UUID, Boolean>> ratings = new ArrayList<>();
-        ratings.add(new Pair(unratedThesis.getId(), Boolean.valueOf(true)));
+        ratings.add(new Pair<UUID, Boolean>(unratedThesis.getId(), Boolean.valueOf(true)));
         String ratingJson = new Gson().toJson(ratings);
 
         HttpHeaders headers = new HttpHeaders();

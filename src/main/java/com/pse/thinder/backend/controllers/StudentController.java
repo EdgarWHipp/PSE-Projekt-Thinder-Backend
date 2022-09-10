@@ -32,8 +32,6 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
-    //todo error handling
-
     /**
      * Returns a list of the next thesis data for the user to rate them.
      *

@@ -1,17 +1,16 @@
 package com.pse.thinder.backend.services.swipestrategy;
 
 import com.pse.thinder.backend.databaseFeatures.thesis.Thesis;
-import com.pse.thinder.backend.repositories.StudentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+/**
+ * This class implements the {@link ThesisSelectionStrategy} with random selection
+ *
+ */
 @Service
 public class ThesisSelectRandom implements ThesisSelectionStrategy {
-
-
-
 
     @Override
     public ArrayList<Thesis> getThesesForSwipe(ArrayList<Thesis> theses) {

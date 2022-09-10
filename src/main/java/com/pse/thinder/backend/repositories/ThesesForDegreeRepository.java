@@ -14,6 +14,15 @@ import java.util.UUID;
 public interface ThesesForDegreeRepository extends JpaRepository<ThesesForDegree, ThesesForDegreeKey> {
 
 
+	/**
+     * Deletes every connection between a {@link Thesis} and its associated {@link Degree}
+     * @param thesisId the id of the {@link Thesis}
+     */
+	/**
+	 * Finds every connection between a {@link Thesis} and its associated {@link Degree} 
+	 * @param thesisId the id of the {@link Thesis}
+	 * @return the found {@link ThesesForDegree}
+	 */
     List<ThesesForDegree> findByIdThesisId(UUID thesisId);
 
     /**

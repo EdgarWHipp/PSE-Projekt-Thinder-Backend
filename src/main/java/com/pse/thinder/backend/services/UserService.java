@@ -30,6 +30,10 @@ import java.util.regex.Pattern;
 
 import javax.validation.Validator;
 
+/**
+ * This service defines the functionality for the {@link user}
+ *
+ */
 @Service
 public class UserService {
 
@@ -75,15 +79,19 @@ public class UserService {
     @Autowired 
 	Validator validator;
 
-//TODO Remove
-//    public User getUser(String mail) {
-//        return userRepository.findByMail(mail).orElseThrow(() -> new EntityNotFoundException(ERROR_USER_NOT_FOUND + mail));
-//    }
-
+    /**
+     * 
+     * @param id
+     * @return The user with the given id if it exists
+     */
     public User getUser(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(ERROR_USER_NOT_FOUND + id));
     }
     
+    /**
+     * Adds a new User with the supplied data
+     * @param user the user data
+     */
     public void addUser(User user) {
     	Optional<User> existingUserOptional = userRepository.findByMail(user.getMail());
         if(existingUserOptional.isPresent()){
@@ -133,6 +141,10 @@ public class UserService {
         sendVerificationMail(savedUser);
     }
 
+    /**
+     * Sends a verification mail to the mail of the supplied user
+     * @param user
+     */
     private void sendVerificationMail(User user){
         VerificationToken token = new VerificationToken(user, UUID.randomUUID().toString());
         verificationTokenRepository.saveAndFlush(token);
@@ -149,6 +161,10 @@ public class UserService {
         mailSender.send(confirmationMsg);
     }
 
+    /**
+     * Sends a password reset mail to the supplied mail if a user with this mail exists
+     * @param mail
+     */
     public void sendPasswordResetMail(String mail){
         User user = userRepository.findByMail(mail)
             .orElseThrow(() -> new EntityNotFoundException(ERROR_NO_USER_WITH_MAIL));
@@ -167,6 +183,11 @@ public class UserService {
         mailSender.send(resetMsg);
     }
 
+    /**
+     * Changes the password of the user belonging to the token to the new password
+     * @param token the password reset token
+     * @param newPassword the new password
+     */
     public void changePassword(String token, String newPassword){
         PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token).orElseThrow(
                 () -> new EntityNotFoundException(ERROR_INVALID_TOKEN)
@@ -184,6 +205,10 @@ public class UserService {
         passwordResetTokenRepository.flush();
     }
 
+    /**
+     * Confirms the registration for the user belonging to the supplied verification token
+     * @param token the verification token
+     */
     public void confirmRegistration(String token){
         VerificationToken verificationToken = verificationTokenRepository.findByToken(token).orElseThrow(
                 () -> new IllegalArgumentException(ERROR_INVALID_TOKEN)
@@ -205,6 +230,11 @@ public class UserService {
         verificationTokenRepository.flush();
     }
 
+    /**
+     * Updates the {@link Student} with the given id with the supplied data but only if the student exists
+     * @param student the new data
+     * @param target the id of the student to update
+     */
     public void updateStudent(Student student, UUID target) {
         Student newStudent = studentRepository.findById(target)
             .orElseThrow(() -> new UsernameNotFoundException(ERROR_USER_NOT_FOUND + target));
@@ -229,6 +259,11 @@ public class UserService {
         studentRepository.saveAndFlush(newStudent);
     }
     
+    /**
+     * Updates the {@link Supervisor} with the given id with the supplied data but only if the supervisor exists
+     * @param supervisor the new data
+     * @param target the id of the student to update
+     */
     public void updateSupervisor(Supervisor supervisor, UUID target) {
         Supervisor newSupervisor = supervisorRepository.findById(target)
             .orElseThrow(() -> new UsernameNotFoundException(ERROR_USER_NOT_FOUND + target));
@@ -252,10 +287,19 @@ public class UserService {
         supervisorRepository.saveAndFlush(newSupervisor);
     }
 
+    /**
+     * Deletes the User with the given id if it exists
+     * @param id
+     */
     public void deleteUser(UUID id) {
         userRepository.deleteById(id);
     }
 
+    /**
+     * Checks if the supplied token is already expired
+     * @param token the token to check
+     * @return true if the token is expired false if not
+     */
     private boolean isTokenExpired(Token token){
         Date currentDate = Calendar.getInstance().getTime();
         Date expirationDate = token.getExpirationDate();

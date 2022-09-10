@@ -5,9 +5,7 @@ import com.pse.thinder.backend.databaseFeatures.InputValidation;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import java.util.UUID;
 
