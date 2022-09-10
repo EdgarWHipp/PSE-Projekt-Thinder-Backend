@@ -9,6 +9,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.util.Properties;
 
+/**
+ * This class is used to configure the mail service
+ */
 @Configuration
 @ComponentScan(basePackages = { "com.pse.thinder.backend.mail" })
 @PropertySource(value={"classpath:application.properties"})
@@ -34,7 +37,11 @@ public class EmailConfiguration {
     private String mailServerStartTls;
 
 
-
+    /**
+     * This method configures the JavaMailSender
+     * @return the JavaMailSender, which is used to send mails to the
+     * {@link com.pse.thinder.backend.databaseFeatures.account.User}
+     */
     @Bean
     public JavaMailSender getJavaMailSender(){
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
