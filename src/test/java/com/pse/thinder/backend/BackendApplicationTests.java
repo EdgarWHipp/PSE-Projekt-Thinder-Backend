@@ -14,7 +14,6 @@ import com.pse.thinder.backend.controllers.ThesisController;
 import com.pse.thinder.backend.controllers.UniversityController;
 import com.pse.thinder.backend.controllers.UserController;
 import com.pse.thinder.backend.mail.EmailConfiguration;
-import com.pse.thinder.backend.mail.SendMailService;
 import com.pse.thinder.backend.repositories.PasswordResetTokenRepository;
 import com.pse.thinder.backend.repositories.StudentRepository;
 import com.pse.thinder.backend.repositories.SupervisorRepository;
@@ -46,8 +45,6 @@ class BackendApplicationTests {
 	EmailConfiguration emailConfiguration;
 	@Autowired
 	JavaMailSender javaMailSender;
-	@Autowired
-	SendMailService sendMailService;
 	
 	@Autowired
 	PasswordResetTokenRepository passwordResetTokenRepository;
@@ -96,8 +93,7 @@ class BackendApplicationTests {
 		
 		Assertions.assertNotNull(emailConfiguration);
 		Assertions.assertNotNull(javaMailSender);
-		Assertions.assertNotNull(sendMailService);
-		
+
 		Assertions.assertNotNull(passwordResetTokenRepository);
 		Assertions.assertNotNull(studentRepository);
 		Assertions.assertNotNull(supervisorRepository);
