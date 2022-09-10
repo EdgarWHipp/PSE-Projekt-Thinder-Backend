@@ -1,5 +1,6 @@
 package com.pse.thinder.backend.services;
 
+import com.pse.thinder.backend.controllers.StudentController;
 import com.pse.thinder.backend.controllers.errorHandler.exceptions.EntityNotFoundException;
 import com.pse.thinder.backend.databaseFeatures.dto.Form;
 import com.pse.thinder.backend.databaseFeatures.dto.Pair;
@@ -18,6 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+/**
+ * This service defines the functionality for the {@link StudentController}
+ *
+ */
 @Service
 public class StudentService {
 
@@ -39,7 +44,7 @@ public class StudentService {
     @Autowired
     private ThesesForDegreeRepository thesesForDegreeRepository;
 
-    @Autowired //todo add proper strategy
+    @Autowired
     private ThesisSelectRandom thesisSelectRandom;
 
     @Autowired
@@ -47,6 +52,11 @@ public class StudentService {
 
 
 
+    /**
+     * This saves the ratings by the student with the given id for unrated theses
+     * @param ratings the ratings
+     * @param studentId the id of the student
+     */
     @Transactional
     public void rateTheses(Collection<Pair<UUID, Boolean>> ratings, UUID studentId){
         Student student = getStudent(studentId);
@@ -74,6 +84,11 @@ public class StudentService {
 
     }
 
+    /**
+     * This removes the rating for a rated thesis
+     * @param studentId the id of the student
+     * @param thesisId the id of the theses
+     */
     public void removeLikedThesis(UUID studentId, UUID thesisId){
         ThesisRating inactiveRating = thesisRatingRepository.findById(new ThesisRatingKey(studentId, thesisId)).orElseThrow(
                 () -> new EntityNotFoundException(RATING_NOT_FOUND)
@@ -85,6 +100,11 @@ public class StudentService {
         thesisRepository.saveAndFlush(associatedThesis);
     }
 
+    /**
+     * This returns all theses positively rated by the student with the given id
+     * @param studentId the id of the student
+     * @return the list of thesisDTOs
+     */
     @Transactional
     public List<ThesisDTO> getLikedTheses(UUID studentId){
         return parseToDto(thesisRatingRepository.findByIdStudentIdAndPositiveRatedAndActiveRating(studentId
@@ -93,6 +113,11 @@ public class StudentService {
     }
 
 
+    /**
+     * Returns a list of the next thesis data for the student with the given id to rate them. 
+     * @param studentId the id of the student
+     * @return the selected theses
+     */
     @Transactional
     public List<ThesisDTO> getSwipeOrder(UUID studentId){
         Student student = getStudent(studentId);
@@ -104,8 +129,13 @@ public class StudentService {
 
 
 
+    /**
+     * Selects all theses that a student can rate
+     * @param student the id of the student
+     * @return a list with all those theses
+     */
     @Transactional
-    public List<Thesis> getPossibleTheses(Student student){
+    private List<Thesis> getPossibleTheses(Student student){
 
         List<UUID> degrees = student.getDegrees().stream().map(degree -> degree.getId()).toList();
 
@@ -121,6 +151,11 @@ public class StudentService {
         return possibleTheses.stream().map(thesesForDegree -> thesesForDegree.getThesis()).toList();
     }
 
+    /**
+     * 
+     * @param studentId the id of the student
+     * @return The student with the given id if one exists
+     */
     @Transactional
     public Student getStudent(UUID studentId){
         return studentRepository.findById(studentId).orElseThrow(
@@ -130,6 +165,12 @@ public class StudentService {
 
 
 
+    /**
+     * This sends the answers for the questions of the the thesis with the given id to the supervisor of that thesis
+     * @param studentId the id of the student
+     * @param thesisId the thesis id
+     * @param questionForm the answers to the questions
+     */
     public void sendQuestionForm(UUID studentId, UUID thesisId, Form questionForm){
         Thesis thesis = thesisRepository.findById(thesisId).orElseThrow(
                 () -> new EntityNotFoundException(THESIS_NOT_FOUND)
@@ -149,11 +190,20 @@ public class StudentService {
         mailSender.send(message);
     }
 
+    /**
+     * 
+     * @param studentId the id of the student
+     * @return all theses the student has already rated
+     */
     private ArrayList<ThesisRating> getRatedTheses(UUID studentId){
         return thesisRatingRepository.findByIdStudentId(studentId);
     }
 
-
+    /**
+     * Helper method to convert theses to {@link ThesisDTO} to send the user
+     * @param theses the theses to parse
+     * @return the parsed {@link ThesisDTO} list
+     */
     private List<ThesisDTO> parseToDto(List<Thesis> theses){
         return theses.stream().map(thesis -> new ThesisDTO(
                 thesis.getId(),

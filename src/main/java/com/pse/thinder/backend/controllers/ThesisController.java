@@ -3,7 +3,6 @@ package com.pse.thinder.backend.controllers;
 import java.util.List;
 import java.util.UUID;
 
-import com.pse.thinder.backend.databaseFeatures.Degree;
 import com.pse.thinder.backend.databaseFeatures.dto.ThesisDTO;
 import com.pse.thinder.backend.databaseFeatures.account.Supervisor;
 import com.pse.thinder.backend.security.ThinderUserDetails;
