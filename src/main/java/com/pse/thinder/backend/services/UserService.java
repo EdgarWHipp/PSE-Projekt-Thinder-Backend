@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 import javax.validation.Validator;
 
 /**
- * This service defines the functionality for the {@link user}
+ * This service defines the functionality for the {@link User}
  *
  */
 @Service
