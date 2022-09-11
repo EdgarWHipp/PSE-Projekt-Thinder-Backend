@@ -45,7 +45,7 @@ public class UserController {
      * @param mail of the user
      */
     @GetMapping("/resetPassword")
-    public void resetPasswordUser(@RequestParam String mail) {
+    public void resetPassword(@RequestParam String mail) {
         userService.sendPasswordResetMail(mail);
     }
 
@@ -57,7 +57,7 @@ public class UserController {
      * @param resetDTO holds the information about the password reset token and the new password.
      */
     @PostMapping("/resetPassword")
-    public void resetPasswordVerifyUser(@RequestBody PasswordResetDTO resetDTO) {
+    public void setNewPassword(@RequestBody PasswordResetDTO resetDTO) {
         userService.changePassword(resetDTO.getToken(), resetDTO.getNewPassword());
     }
 
